@@ -996,6 +996,112 @@
     .dropdown-item.success { color: #55efc4; }
     .dropdown-item.success:hover { background: rgba(39,174,96,0.12); }
 
+    /* ===== PRIVACY MODAL ===== */
+    .privacy-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+      z-index: 800; display: flex; align-items: center; justify-content: center;
+      padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .privacy-overlay.open { opacity: 1; pointer-events: all; }
+    .privacy-box {
+      background: linear-gradient(135deg, #0d1f3c 0%, #0a1628 60%, #0f2244 100%);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 24px;
+      max-width: 660px; width: 100%;
+      max-height: 85vh;
+      position: relative; overflow: hidden;
+      transform: scale(0.92) translateY(20px);
+      transition: transform 0.3s;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+      display: flex; flex-direction: column;
+    }
+    .privacy-overlay.open .privacy-box { transform: scale(1) translateY(0); }
+    .privacy-box::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #1a3a6b, rgba(255,255,255,0.85), #1a3a6b);
+    }
+    .privacy-header {
+      padding: 1.8rem 2rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .privacy-header h2 {
+      font-family: 'Kanit', sans-serif; font-size: 1.3rem; font-weight: 800;
+      color: var(--white); margin-bottom: 0.3rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .privacy-header p { font-size: 0.82rem; color: rgba(255,255,255,0.45); }
+    .privacy-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7); width: 34px; height: 34px; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: all 0.2s;
+    }
+    .privacy-close:hover { background: rgba(255,255,255,0.15); transform: rotate(90deg); }
+    .privacy-body {
+      padding: 1.5rem 2rem 2rem;
+      overflow-y: auto; flex: 1;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent;
+    }
+    .privacy-body::-webkit-scrollbar { width: 5px; }
+    .privacy-body::-webkit-scrollbar-track { background: transparent; }
+    .privacy-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+    .privacy-section { margin-bottom: 1.8rem; }
+    .privacy-section-title {
+      font-family: 'Kanit', sans-serif; font-size: 0.95rem; font-weight: 700;
+      color: var(--white); margin-bottom: 0.8rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .privacy-text {
+      font-size: 0.87rem; color: rgba(255,255,255,0.7); line-height: 1.75;
+    }
+    .privacy-rule {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.6rem;
+      font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.65;
+      display: flex; gap: 0.6rem; align-items: flex-start;
+    }
+    .privacy-rule-icon { flex-shrink: 0; font-size: 1rem; margin-top: 0.05rem; }
+    .privacy-badge-anon {
+      display: inline-block;
+      background: rgba(74,127,212,0.18); color: #74b9ff;
+      border: 1px solid rgba(74,127,212,0.3);
+      font-size: 0.72rem; font-family: 'Kanit',sans-serif; font-weight: 700;
+      padding: 0.15rem 0.6rem; border-radius: 20px; margin-right: 0.3rem;
+    }
+    .privacy-badge-private {
+      display: inline-block;
+      background: rgba(255,215,0,0.12); color: rgba(255,215,0,0.9);
+      border: 1px solid rgba(255,215,0,0.25);
+      font-size: 0.72rem; font-family: 'Kanit',sans-serif; font-weight: 700;
+      padding: 0.15rem 0.6rem; border-radius: 20px; margin-right: 0.3rem;
+    }
+    .privacy-warn {
+      background: rgba(192,57,43,0.12); border: 1px solid rgba(192,57,43,0.25);
+      border-radius: 10px; padding: 0.8rem 1rem; margin-top: 0.5rem;
+      font-size: 0.83rem; color: rgba(255,140,100,0.9); line-height: 1.6;
+    }
+    .privacy-updated {
+      font-size: 0.75rem; color: rgba(255,255,255,0.3); text-align: center;
+      margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    /* Footer link */
+    .comments-footer {
+      text-align: center; padding: 1rem 0 2rem;
+      display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .footer-link {
+      font-size: 0.78rem; color: rgba(255,255,255,0.35);
+      cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
+      transition: color 0.2s; background: none; border: none;
+      font-family: 'Sarabun', sans-serif;
+    }
+    .footer-link:hover { color: rgba(255,255,255,0.65); }
+
     /* ===== BAN WALL POPUP (ปิดไม่ได้) ===== */
     #banWall {
       position: fixed; inset: 0; z-index: 99999;
@@ -1395,6 +1501,7 @@
       <button class="filter-tab" onclick="setFilter('ร้องเรียน', this)">🚨 ร้องเรียน</button>
       <button class="filter-tab" onclick="setFilter('ขอสิ่งอำนวยความสะดวก', this)">🙏 ขอสิ่งอำนวยความสะดวก</button>
       <button class="filter-tab admin-only-tab" id="adminOnlyTab" style="display:none;background:rgba(192,57,43,0.15);border-color:rgba(192,57,43,0.35);color:#ff8080" onclick="setFilter('__banned__', this)">🛡️ Admin Only</button>
+      <button class="filter-tab" id="councilOnlyTab" style="display:none;background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.25);color:rgba(255,215,0,0.85)" onclick="setFilter('__council__', this)">🔒 เฉพาะสภา</button>
     </div>
 
     <div class="comments-list-title">
@@ -1406,6 +1513,14 @@
         <div class="icon">🌟</div>
         <p>ยังไม่มีความคิดเห็น<br/>เป็นคนแรกที่บอกเราได้เลย!</p>
       </div>
+    </div>
+
+    <div class="comments-footer">
+      <button class="footer-link" onclick="openPrivacyModal('privacy')">🔐 นโยบายความเป็นส่วนตัว</button>
+      <span style="color:rgba(255,255,255,0.15);font-size:0.78rem">·</span>
+      <button class="footer-link" onclick="openPrivacyModal('terms')">📋 ข้อกำหนดการใช้งาน</button>
+      <span style="color:rgba(255,255,255,0.15);font-size:0.78rem">·</span>
+      <button class="footer-link" onclick="openPrivacyModal('modes')">ℹ️ เกี่ยวกับโหมดต่างๆ</button>
     </div>
   </div>
 </div>
@@ -1535,6 +1650,121 @@
     <div class="reveal-comment-preview" id="revealCommentPreview"></div>
   </div>
 </div>
+
+<!-- Privacy / Terms Modal -->
+<div class="privacy-overlay" id="privacyModal" onclick="closePrivacyOutside(event)">
+  <div class="privacy-box">
+    <div class="privacy-header">
+      <h2 id="privacyModalTitle">🔐 นโยบายความเป็นส่วนตัว</h2>
+      <p id="privacyModalSub">สภานักเรียน สารสาสน์วิเทศสมุทรสาคร · ปรับปรุงล่าสุด พ.ค. 2568</p>
+    </div>
+    <button class="privacy-close" onclick="closePrivacyModal()">✕</button>
+    <div class="privacy-body" id="privacyBody">
+      <!-- Content injected by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+  const PRIVACY_CONTENT = {
+    privacy: {
+      title: '🔐 นโยบายความเป็นส่วนตัว',
+      sub: 'สภานักเรียน สารสาสน์วิเทศสมุทรสาคร · ปรับปรุงล่าสุด พ.ค. 2568',
+      html: `
+        <div class="privacy-section">
+          <div class="privacy-section-title">📌 ข้อมูลที่เก็บรวบรวม</div>
+          <div class="privacy-text">เมื่อคุณเข้าสู่ระบบด้วย Google Account ระบบจะจัดเก็บข้อมูลต่อไปนี้เพื่อใช้งานในระบบ:</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">👤</span><span>ชื่อแสดงผล (Display Name) จาก Google Account</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">📧</span><span>อีเมล Google ของคุณ (ใช้สำหรับยืนยันตัวตน ไม่เปิดเผยต่อสาธารณะ)</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🖼️</span><span>รูปโปรไฟล์ Google (แสดงในความคิดเห็น เว้นแต่ใช้โหมดไม่ระบุตัวตน)</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">💬</span><span>ข้อความความคิดเห็นที่คุณส่ง พร้อมวันเวลาและประเภท</span></div>
+        </div>
+        <div class="privacy-section">
+          <div class="privacy-section-title">🔒 การปกป้องข้อมูล</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ข้อมูลส่วนตัวจะไม่ถูกเปิดเผยให้บุคคลภายนอกโดยไม่ได้รับความยินยอม</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>อีเมลและข้อมูลจริงของคุณจะถูกเก็บในระบบ สภานักเรียนสามารถเข้าถึงได้เพื่อวัตถุประสงค์ในการดูแลระบบและป้องกันการกระทำผิดกฎหมายเท่านั้น</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ระบบใช้ Firebase (Google) เป็นฐานข้อมูล มีมาตรฐานความปลอดภัยตาม Google Cloud</span></div>
+        </div>
+        <div class="privacy-section">
+          <div class="privacy-section-title">🗂️ การเก็บข้อมูลและระยะเวลา</div>
+          <div class="privacy-text">ข้อมูลของคุณจะถูกเก็บไว้ตราบเท่าที่จำเป็นสำหรับการทำงานของระบบ หากต้องการลบข้อมูลของคุณ กรุณาติดต่อสภานักเรียนโดยตรง</div>
+        </div>
+        <div class="privacy-updated">นโยบายนี้อาจมีการปรับปรุงได้ตลอดเวลา การใช้งานต่อเนื่องถือว่ายอมรับนโยบายฉบับปัจจุบัน</div>
+      `
+    },
+    terms: {
+      title: '📋 ข้อกำหนดการใช้งาน',
+      sub: 'สภานักเรียน สารสาสน์วิเทศสมุทรสาคร · ปรับปรุงล่าสุด พ.ค. 2568',
+      html: `
+        <div class="privacy-section">
+          <div class="privacy-section-title">✅ สิ่งที่ทำได้</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">💬</span><span>แสดงความคิดเห็น ข้อเสนอแนะ หรือร้องเรียนในนามของตัวเองหรือนิรนาม</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔒</span><span>ส่งเรื่องเป็นความลับ เฉพาะสภานักเรียนเห็น โดยใช้โหมดเฉพาะสภา</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">👍</span><span>กด "เห็นด้วย" ความคิดเห็นที่คุณเห็นด้วย</span></div>
+        </div>
+        <div class="privacy-section">
+          <div class="privacy-section-title">🚫 สิ่งที่ห้ามทำ</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามโพสข้อความที่มีเนื้อหาหมิ่นประมาท ดูหมิ่น หรือใส่ร้ายบุคคลอื่น</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามโพสข้อความที่ขัดต่อกฎหมายไทย ได้แก่ การคุกคาม ข่มขู่ หรือเนื้อหาลามกอนาจาร</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามใช้โหมดนิรนามเพื่อหลบเลี่ยงความรับผิดชอบในการกระทำที่ผิดกฎหมาย เนื่องจากสภาสามารถตรวจสอบตัวตนจริงได้</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามโพสข้อมูลส่วนตัวของผู้อื่นโดยไม่ได้รับอนุญาต</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามสร้างบัญชีหลายบัญชีเพื่อหลีกเลี่ยงการระงับการใช้งาน</span></div>
+        </div>
+        <div class="privacy-section">
+          <div class="privacy-section-title">⚖️ ผลของการละเมิดข้อกำหนด</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔴</span><span>สภานักเรียนมีสิทธิ์ระงับการใช้งานชั่วคราวหรือถาวรหากพบการละเมิด</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔴</span><span>หากการกระทำมีความผิดทางกฎหมาย ข้อมูลตัวตนจริงอาจถูกส่งให้ผู้มีอำนาจที่เกี่ยวข้อง</span></div>
+          <div class="privacy-warn">⚠️ การใช้โหมดนิรนามไม่ได้หมายความว่าคุณไม่สามารถถูกระบุตัวตนได้ สภานักเรียนสามารถดูว่าโพสนั้นเป็นของใครได้เสมอ</div>
+        </div>
+        <div class="privacy-updated">ข้อกำหนดนี้บังคับใช้กับผู้ใช้งานทุกคน การใช้งานระบบถือว่ายอมรับข้อกำหนดทั้งหมด</div>
+      `
+    },
+    modes: {
+      title: 'ℹ️ เกี่ยวกับโหมดต่างๆ',
+      sub: 'คำอธิบายโหมดความเป็นส่วนตัว — สภานักเรียน สารสาสน์วิเทศสมุทรสาคร',
+      html: `
+        <div class="privacy-section">
+          <div class="privacy-section-title">🕵️ โหมดไม่ระบุตัวตน <span class="privacy-badge-anon">Anon Mode</span></div>
+          <div class="privacy-text" style="margin-bottom:0.8rem">เมื่อเปิดโหมดนี้ ความคิดเห็นของคุณจะปรากฏโดยไม่แสดงชื่อหรือรูปโปรไฟล์จริง</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ทุกคนสามารถเห็นความคิดเห็นของคุณ แต่จะไม่รู้ว่าคุณเป็นใคร</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>คุณจะใช้ชื่อนิรนามและอีโมจิสุ่มแทนตัวตนจริง</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🛡️</span><span><strong>สภานักเรียน (Admin)</strong> สามารถดูตัวตนจริงของผู้โพสในโหมดนิรนามได้ เพื่อป้องกันการกระทำที่ผิดกฎหมายและการไม่ยอมรับของระบบ</span></div>
+          <div class="privacy-warn">⚠️ โหมดนิรนามไม่ใช่การปกปิดตัวตนจากสภา เป็นเพียงการซ่อนจากนักเรียนคนอื่นเท่านั้น</div>
+        </div>
+        <div class="privacy-section">
+          <div class="privacy-section-title">🔒 โหมดเฉพาะสภา <span class="privacy-badge-private">Council Only</span></div>
+          <div class="privacy-text" style="margin-bottom:0.8rem">เมื่อเปิดโหมดนี้ ความคิดเห็นของคุณจะถูกส่งตรงถึงสภานักเรียนเท่านั้น ไม่ปรากฏในฟีดสาธารณะ</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>เฉพาะสภานักเรียน (Admin) เท่านั้นที่เห็นความคิดเห็นนี้ในแท็บ "เฉพาะสภา"</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span><strong>คุณเอง</strong> (ผู้โพส) จะเห็นโพสของตัวเองในฟีดปกติด้วย เพื่อยืนยันว่าส่งสำเร็จ</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>นักเรียนคนอื่นจะไม่เห็นความคิดเห็นนี้เลย เหมาะสำหรับเรื่องส่วนตัวหรือเรื่องละเอียดอ่อน</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔍</span><span>สภาจะเห็นชื่อจริงและอีเมลของผู้โพส แม้จะใช้โหมดนิรนามร่วมด้วย</span></div>
+        </div>
+        <div class="privacy-section">
+          <div class="privacy-section-title">🌐 โหมดปกติ (ไม่ติ้กอะไรเลย)</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">👁️</span><span>ทุกคนเห็นความคิดเห็น รวมถึงชื่อและรูปโปรไฟล์ของคุณ</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">👍</span><span>ผู้อื่นสามารถกด "เห็นด้วย" ได้</span></div>
+        </div>
+        <div class="privacy-updated">หากมีข้อสงสัย ติดต่อสภานักเรียนได้โดยตรง หรือส่งเรื่องผ่านโหมดเฉพาะสภา</div>
+      `
+    }
+  };
+
+  window.openPrivacyModal = function(type) {
+    const c = PRIVACY_CONTENT[type] || PRIVACY_CONTENT.privacy;
+    document.getElementById('privacyModalTitle').textContent = c.title;
+    document.getElementById('privacyModalSub').textContent = c.sub;
+    document.getElementById('privacyBody').innerHTML = c.html;
+    document.getElementById('privacyModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+  window.closePrivacyModal = function() {
+    document.getElementById('privacyModal').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  window.closePrivacyOutside = function(e) {
+    if (e.target === document.getElementById('privacyModal')) window.closePrivacyModal();
+  };
+</script>
 
 <script>
   // ========== LOGO/SEAL IMAGE ==========
@@ -2254,6 +2484,8 @@
     updateAuthUI();
     const adminTab = document.getElementById('adminOnlyTab');
     if (adminTab) adminTab.style.display = isAdmin ? '' : 'none';
+    const councilTab = document.getElementById('councilOnlyTab');
+    if (councilTab) councilTab.style.display = isAdmin ? '' : 'none';
     if (allComments.length > 0) renderComments(allComments);
     if (_bansReady) checkAndShowBanWall();
   });
@@ -2479,6 +2711,7 @@
   function renderComments(comments) {
     const list = document.getElementById('commentsList');
     const filterType = window._filterType || 'ทั้งหมด';
+    const myUid = currentUser ? currentUser.uid : null;
     let filtered;
     if (filterType === '__banned__' && isAdmin) {
       // รวม allBans จาก listener ทุกตัว
@@ -2502,17 +2735,20 @@
           filtered.push({ id: '__ban__' + uid, uid, realEmail: ban.email || ban.realEmail || '', name: ban.realName || uid, text: '', avatar: '🚫', isBanOnly: true });
         }
       });
+    } else if (filterType === '__council__' && isAdmin) {
+      // แท็บเฉพาะสภา — แสดงเฉพาะโพส isPrivate ทั้งหมด
+      filtered = comments.filter(c => c.isPrivate);
     } else if (filterType === 'ทั้งหมด') {
       filtered = isAdmin
         ? comments
-        : comments.filter(c => !window._publicBannedUids.has(c.uid) && !c.isPrivate);
+        : comments.filter(c => !window._publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
     } else {
       filtered = isAdmin
         ? comments.filter(c => c.type === filterType)
-        : comments.filter(c => c.type === filterType && !window._publicBannedUids.has(c.uid) && !c.isPrivate);
+        : comments.filter(c => c.type === filterType && !window._publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
     }
 
-    if (filterType !== '__banned__') {
+    if (filterType !== '__banned__' && filterType !== '__council__') {
       filtered = [...filtered].sort((a, b) => {
         const likesDiff = (b.likes || 0) - (a.likes || 0);
         if (likesDiff !== 0) return likesDiff;
@@ -2522,10 +2758,9 @@
 
     document.getElementById('countBadge').textContent = filtered.length;
     if (filtered.length === 0) {
-      list.innerHTML = `<div class="empty-state"><div class="icon">${filterType === '__banned__' ? '✅' : '🌟'}</div><p>${filterType === '__banned__' ? 'ยังไม่มีผู้ถูกระงับ' : 'ยังไม่มีความคิดเห็นในหมวดนี้<br/>เป็นคนแรกที่บอกเราได้เลย!'}</p></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="icon">${filterType === '__banned__' ? '✅' : filterType === '__council__' ? '🔒' : '🌟'}</div><p>${filterType === '__banned__' ? 'ยังไม่มีผู้ถูกระงับ' : filterType === '__council__' ? 'ยังไม่มีข้อความเฉพาะสภา' : 'ยังไม่มีความคิดเห็นในหมวดนี้<br/>เป็นคนแรกที่บอกเราได้เลย!'}</p></div>`;
       return;
     }
-    const myUid = currentUser ? currentUser.uid : null;
 
     list.innerHTML = filtered.map(c => {
       const likedBy = c.likedBy || [];
