@@ -2288,12 +2288,11 @@
 <!-- Firebase module script -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
   // Expose Firestore helpers for reply system
   window._fbImports = { collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc };
-  window._fbImports2 = { collection, query, getDocs, orderBy };
 
   const firebaseConfig = {
     apiKey: "AIzaSyBbTMEyc4-3_sn-i47Xm5xTvw52r36SWkM",
@@ -2645,33 +2644,12 @@
 
   document.getElementById('commentsList').innerHTML = `<div class="empty-state"><div class="icon">⏳</div><p>กำลังโหลด...</p></div>`;
 
-  // Preload reply counts without opening full listeners
-  const replyCountCache = {}; // commentId -> count
-
-  async function preloadReplyCount(commentId) {
-    if (replyCountCache[commentId] !== undefined) return;
-    try {
-      const { collection: col, query: q2, getDocs } = window._fbImports2;
-      const repliesRef = col(db, 'comments', commentId, 'replies');
-      const snap = await getDocs(repliesRef);
-      replyCountCache[commentId] = snap.size;
-      const chip = document.getElementById('reply-count-' + commentId);
-      if (chip) chip.textContent = snap.size;
-    } catch(e) { /* ignore */ }
-  }
-
   const q = query(commentsCol, orderBy('createdAt', 'desc'));
   onSnapshot(q, (snapshot) => {
     allComments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     window._allComments = allComments;
     window._renderComments = renderComments;
     renderComments(allComments);
-    // After render, load reply counts for all visible comments
-    allComments.forEach(c => {
-      if (!replyListeners[c.id]) {
-        preloadReplyCount(c.id);
-      }
-    });
   });
 
   const DAILY_LIMIT = 3;
@@ -2786,6 +2764,8 @@
       document.getElementById('inputText').value = '';
       document.getElementById('inputLevel').value = '';
       document.getElementById('privateCheck').checked = false;
+      document.getElementById('anonCheck').checked = false;
+      toggleAnon(false);
       showToast();
       await refreshButtonState();
     } catch(e) { alert('เกิดข้อผิดพลาด กรุณาลองใหม่'); console.error(e); btn.disabled = false; }
@@ -2845,12 +2825,8 @@
     const rq = q2(repliesRef, ob('createdAt', 'asc'));
     replyListeners[commentId] = ons(rq, (snap) => {
       repliesCache[commentId] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      replyCountCache[commentId] = repliesCache[commentId].length;
       renderReplies(commentId);
-      // update count badge everywhere (button might be re-rendered)
-      document.querySelectorAll('#reply-count-' + commentId).forEach(chip => {
-        chip.textContent = repliesCache[commentId].length;
-      });
+      // update count badge
       const chip = document.getElementById('reply-count-' + commentId);
       if (chip) chip.textContent = repliesCache[commentId].length;
     });
@@ -3081,15 +3057,21 @@
           ${banData && banData.bannedAt ? `<span style="font-size:0.72rem;color:rgba(255,255,255,0.3)">แบนเมื่อ: ${new Date(banData.bannedAt).toLocaleDateString('th-TH')}</span>` : ''}
         </div>` : '';
 
-      const privateBadgeHtml = (isAdmin && c.isPrivate) ? `
+      const isOwnerOfThisPost = currentUser && currentUser.uid === c.uid;
+      const privateBadgeHtml = c.isPrivate ? `
         <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem">
-          <span style="background:rgba(255,215,0,0.15);color:rgba(255,215,0,0.9);border:1px solid rgba(255,215,0,0.3);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 เฉพาะสภาเห็น</span>
+          ${isAdmin
+            ? `<span style="background:rgba(255,215,0,0.15);color:rgba(255,215,0,0.9);border:1px solid rgba(255,215,0,0.3);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 เฉพาะสภาเห็น</span>`
+            : isOwnerOfThisPost
+              ? `<span style="background:rgba(255,215,0,0.1);color:rgba(255,215,0,0.85);border:1px solid rgba(255,215,0,0.25);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 มีแค่คุณและสภาที่เห็นคอมเม้นนี้</span>`
+              : ''
+          }
         </div>` : '';
 
       const nameDisplay = isBanView ? (c.realName || c.name) : c.name;
 
       return `
-        <div class="comment-item ${(userBanned || isBanView) ? 'banned-comment-item' : ''}${(isAdmin && c.isPrivate) ? ' private-comment-item' : ''}">
+        <div class="comment-item ${(userBanned || isBanView) ? 'banned-comment-item' : ''}${c.isPrivate ? ' private-comment-item' : ''}">
           ${bannedBadgesHtml}
           ${privateBadgeHtml}
           <div class="comment-header">
@@ -3113,7 +3095,7 @@
           </div>
           <div class="reply-section">
             <button class="reply-toggle-btn" onclick="toggleReplies('${c.id}', this)">
-              💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${c.id}">${replyCountCache[c.id] !== undefined ? replyCountCache[c.id] : (repliesCache[c.id] ? repliesCache[c.id].length : 0)}</span>
+              💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${c.id}">0</span>
             </button>
             <div class="replies-container" id="replies-${c.id}">
               <div id="replies-list-${c.id}"></div>
