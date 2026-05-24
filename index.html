@@ -2288,11 +2288,12 @@
 <!-- Firebase module script -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
   // Expose Firestore helpers for reply system
   window._fbImports = { collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc };
+  window._fbImports2 = { collection, query, getDocs, orderBy };
 
   const firebaseConfig = {
     apiKey: "AIzaSyBbTMEyc4-3_sn-i47Xm5xTvw52r36SWkM",
@@ -2644,12 +2645,33 @@
 
   document.getElementById('commentsList').innerHTML = `<div class="empty-state"><div class="icon">⏳</div><p>กำลังโหลด...</p></div>`;
 
+  // Preload reply counts without opening full listeners
+  const replyCountCache = {}; // commentId -> count
+
+  async function preloadReplyCount(commentId) {
+    if (replyCountCache[commentId] !== undefined) return;
+    try {
+      const { collection: col, query: q2, getDocs } = window._fbImports2;
+      const repliesRef = col(db, 'comments', commentId, 'replies');
+      const snap = await getDocs(repliesRef);
+      replyCountCache[commentId] = snap.size;
+      const chip = document.getElementById('reply-count-' + commentId);
+      if (chip) chip.textContent = snap.size;
+    } catch(e) { /* ignore */ }
+  }
+
   const q = query(commentsCol, orderBy('createdAt', 'desc'));
   onSnapshot(q, (snapshot) => {
     allComments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     window._allComments = allComments;
     window._renderComments = renderComments;
     renderComments(allComments);
+    // After render, load reply counts for all visible comments
+    allComments.forEach(c => {
+      if (!replyListeners[c.id]) {
+        preloadReplyCount(c.id);
+      }
+    });
   });
 
   const DAILY_LIMIT = 3;
@@ -2803,9 +2825,12 @@
   };
 
   window.deleteComment = async function(docId) {
-    if (!isAdmin) return;
+    if (!currentUser) return;
+    const comment = allComments.find(c => c.id === docId);
+    if (!isAdmin && (!comment || comment.uid !== currentUser.uid)) return;
     if (!confirm('ลบความคิดเห็นนี้?')) return;
-    await deleteDoc(doc(db, 'comments', docId));
+    try { await deleteDoc(doc(db, 'comments', docId)); }
+    catch(e) { alert('ลบไม่สำเร็จ'); console.error(e); }
   };
 
   // ===== REPLY SYSTEM =====
@@ -2820,8 +2845,12 @@
     const rq = q2(repliesRef, ob('createdAt', 'asc'));
     replyListeners[commentId] = ons(rq, (snap) => {
       repliesCache[commentId] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      replyCountCache[commentId] = repliesCache[commentId].length;
       renderReplies(commentId);
-      // update count badge
+      // update count badge everywhere (button might be re-rendered)
+      document.querySelectorAll('#reply-count-' + commentId).forEach(chip => {
+        chip.textContent = repliesCache[commentId].length;
+      });
       const chip = document.getElementById('reply-count-' + commentId);
       if (chip) chip.textContent = repliesCache[commentId].length;
     });
@@ -3009,6 +3038,7 @@
       // Safe strings for inline onclick — use uid for ban functions
       const safeUid = (c.uid || '').replace(/'/g, "\\'");
       const safeName = (c.realName || c.name || '').replace(/'/g, "\\'");
+      const isOwner = currentUser && currentUser.uid === c.uid;
       let dropdownHtml = '';
       if (isAdmin && !c.isBanOnly) {
         const banBtn = userBanned
@@ -3031,6 +3061,14 @@
             <div class="comment-dropdown" id="menu-${c.id}">
               <div class="dropdown-item success" onclick="unbanUser('${safeUid}')">✅ ปลดแบน</div>
               <div class="dropdown-item warn" onclick="openExtendModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏰ เพิ่มเวลาแบน</div>
+            </div>
+          </div>`;
+      } else if (!isAdmin && isOwner && !c.isBanOnly) {
+        dropdownHtml = `
+          <div class="comment-menu-wrap" id="menu-wrap-${c.id}">
+            <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
+            <div class="comment-dropdown" id="menu-${c.id}">
+              <div class="dropdown-item danger" onclick="deleteComment('${c.id}')">🗑️ ลบโพสของฉัน</div>
             </div>
           </div>`;
       }
@@ -3075,7 +3113,7 @@
           </div>
           <div class="reply-section">
             <button class="reply-toggle-btn" onclick="toggleReplies('${c.id}', this)">
-              💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${c.id}">0</span>
+              💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${c.id}">${replyCountCache[c.id] !== undefined ? replyCountCache[c.id] : (repliesCache[c.id] ? repliesCache[c.id].length : 0)}</span>
             </button>
             <div class="replies-container" id="replies-${c.id}">
               <div id="replies-list-${c.id}"></div>
