@@ -1931,6 +1931,11 @@
   /* iOS Safari bfcache fix: hide body instantly when navigating back,
      before JS has a chance to run, to avoid showing the wrong sub-page */
   body.bfcache-restoring { visibility: hidden !important; }
+  @keyframes pageEnter {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .page-entering { animation: pageEnter 0.22s ease forwards; }
   </style>
 </head>
 <body>
@@ -2605,14 +2610,20 @@
     var target = document.getElementById(id);
     if (!target) id = 'lobby', target = document.getElementById('lobby');
 
-    // Instantly clear ALL inline styles from every page (no stuck opacity)
+    // Clear all pages instantly (no setTimeout = no stuck opacity ever)
     document.querySelectorAll('.page').forEach(function(p) {
-      p.classList.remove('active');
+      p.classList.remove('active', 'page-entering');
       p.style.cssText = '';
     });
 
-    target.classList.add('active');
+    // Fade in via CSS animation (animationend cleans up — no timer needed)
+    target.classList.add('active', 'page-entering');
     target.scrollTop = 0;
+    var onEnd = function() {
+      target.classList.remove('page-entering');
+      target.removeEventListener('animationend', onEnd);
+    };
+    target.addEventListener('animationend', onEnd);
 
     var btn = document.getElementById('floatingSupportBtn');
     if (btn) {
