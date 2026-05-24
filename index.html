@@ -2597,10 +2597,18 @@
   function unlockPageScroll() {}
   window.lockPageScroll = lockPageScroll;
   window.unlockPageScroll = unlockPageScroll;
-  window.goTo = function(id) {
+  function _switchPage(id, pushState) {
     var current = document.querySelector('.page.active');
     var target = document.getElementById(id);
     if (!target || (current && current.id === id)) return;
+
+    if (pushState) {
+      if (id === 'lobby') {
+        history.replaceState({ page: 'lobby' }, '', '');
+      } else {
+        history.pushState({ page: id }, '', '');
+      }
+    }
 
     // Fade out current, then switch
     if (current && current !== target) {
@@ -2634,7 +2642,26 @@
       if (id === 'lobby') { btn.classList.remove('compact'); }
       else { btn.classList.add('compact'); }
     }
-  };
+  }
+
+  window.goTo = function(id) { _switchPage(id, true); };
+
+  // Set initial history state so back button works
+  history.replaceState({ page: 'lobby' }, '', '');
+
+  // Handle browser back/forward button on mobile
+  window.addEventListener('popstate', function(e) {
+    var page = (e.state && e.state.page) ? e.state.page : 'lobby';
+    _switchPage(page, false);
+  });
+
+  // Restore correct page state when returning via bfcache (iOS Safari)
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted) {
+      var page = (history.state && history.state.page) ? history.state.page : 'lobby';
+      _switchPage(page, false);
+    }
+  });
   (function() {
     if (SEAL_IMAGE_URL) {
       const img = document.getElementById('sealImg');
