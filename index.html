@@ -1719,6 +1719,215 @@
       .modal-photo { width: 76px; height: 92px; }
       .btn-lobby { width: 92vw; }
     }
+
+    /* ===== ENHANCED UI IMPROVEMENTS ===== */
+    
+    /* Max-width container for large screens */
+    .lobby-content-wrap {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; align-items: center;
+      width: 100%; padding: 2rem 1.5rem;
+    }
+
+    /* Stats section on lobby */
+    .lobby-stats {
+      display: flex; gap: 2rem; margin-bottom: 2.5rem;
+      flex-wrap: wrap; justify-content: center;
+      opacity: 0; animation: fadeUp 0.8s forwards 0.65s;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 0.6rem 1.2rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      min-width: 80px;
+    }
+    .stat-num {
+      font-family: 'Kanit', sans-serif; font-size: 1.5rem; font-weight: 900;
+      background: linear-gradient(135deg, #ffffff, rgba(74,141,232,0.9));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      font-size: 0.72rem; color: rgba(255,255,255,0.5);
+      letter-spacing: 0.5px;
+    }
+
+    /* Announcement banner */
+    .announcement-banner {
+      background: linear-gradient(135deg, rgba(255,200,60,0.12), rgba(255,160,30,0.08));
+      border: 1px solid rgba(255,200,60,0.3);
+      border-radius: 14px; padding: 0.75rem 1.2rem;
+      display: flex; align-items: center; gap: 0.8rem;
+      margin-bottom: 2rem; max-width: 540px; width: 100%;
+      opacity: 0; animation: fadeUp 0.8s forwards 0.55s;
+    }
+    .announcement-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .announcement-text {
+      font-family: 'Kanit', sans-serif; font-size: 0.88rem;
+      color: rgba(255,215,100,0.95); line-height: 1.4;
+    }
+    .announcement-text strong { font-weight: 800; }
+
+    /* Page max-width wrapper */
+    .page-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Enhanced member cards */
+    .members-grid { max-width: 1000px; }
+    
+    /* Category tags for comments */
+    .category-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.2rem 0.65rem; border-radius: 20px;
+      font-family: 'Kanit', sans-serif; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .cat-news { background: rgba(52,152,219,0.18); color: #74b9ff; border: 1px solid rgba(52,152,219,0.3); }
+    .cat-activity { background: rgba(39,174,96,0.18); color: #55efc4; border: 1px solid rgba(39,174,96,0.3); }
+    .cat-announce { background: rgba(255,200,60,0.15); color: rgba(255,215,100,0.95); border: 1px solid rgba(255,200,60,0.3); }
+
+    /* Enhanced nav */
+    .top-nav {
+      max-width: 100%;
+      gap: 0.75rem;
+    }
+    .nav-breadcrumb {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-family: 'Kanit', sans-serif; font-size: 0.78rem;
+      color: rgba(255,255,255,0.4);
+    }
+    .nav-breadcrumb span { color: rgba(255,255,255,0.25); }
+    .nav-breadcrumb strong { color: rgba(255,255,255,0.75); }
+    .nav-right-actions { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; }
+    .nav-action-btn {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+      color: rgba(255,255,255,0.6); padding: 0.35rem 0.8rem;
+      border-radius: 20px; font-family: 'Kanit', sans-serif; font-size: 0.78rem;
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.3rem;
+    }
+    .nav-action-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); color: white; }
+
+    /* View all button */
+    .view-all-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+      color: rgba(255,255,255,0.65); padding: 0.4rem 1rem;
+      border-radius: 20px; font-family: 'Kanit', sans-serif; font-size: 0.82rem;
+      cursor: pointer; transition: all 0.2s; margin-top: 1rem;
+    }
+    .view-all-btn:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.3); }
+
+    /* Section title with see-all */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .section-title-main {
+      font-family: 'Kanit', sans-serif; font-size: 1.05rem; font-weight: 700;
+      color: var(--white); display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    /* Achievement stats on members page */
+    .achievement-strip {
+      background: rgba(26,58,107,0.25);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 1.2rem 2rem;
+      display: flex; justify-content: center; gap: 3rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+    .ach-item { text-align: center; }
+    .ach-num {
+      font-family: 'Kanit', sans-serif; font-size: 1.8rem; font-weight: 900;
+      background: linear-gradient(135deg, #ffffff 30%, rgba(74,141,232,0.9));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1.1;
+    }
+    .ach-label { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-top: 0.15rem; }
+
+    /* Monthly highlight on members page */
+    .highlight-section {
+      max-width: 960px; margin: 0 auto 1rem;
+      padding: 0 2rem;
+    }
+    .highlight-card {
+      background: linear-gradient(135deg, rgba(255,200,60,0.1), rgba(255,160,30,0.06));
+      border: 1px solid rgba(255,200,60,0.25);
+      border-radius: 18px; padding: 1.4rem 1.6rem;
+      display: flex; gap: 1.2rem; align-items: flex-start;
+    }
+    .highlight-badge {
+      background: linear-gradient(135deg, rgba(255,200,60,0.25), rgba(255,160,30,0.2));
+      border: 1px solid rgba(255,200,60,0.4);
+      border-radius: 12px; padding: 0.6rem 0.9rem;
+      font-size: 1.8rem; flex-shrink: 0; line-height: 1;
+    }
+    .highlight-content { flex: 1; }
+    .highlight-label {
+      font-family: 'Kanit', sans-serif; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 2px; color: rgba(255,200,60,0.75); text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .highlight-title {
+      font-family: 'Kanit', sans-serif; font-size: 1.1rem; font-weight: 800;
+      color: rgba(255,230,120,0.95); margin-bottom: 0.4rem; line-height: 1.3;
+    }
+    .highlight-desc { font-size: 0.85rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
+
+    /* Latest news section */
+    .latest-news-section {
+      max-width: 960px; margin: 0 auto 2rem;
+      padding: 0 2rem;
+    }
+    .news-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+    }
+    .news-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 1.1rem;
+      transition: all 0.25s; cursor: default;
+      display: flex; flex-direction: column;
+    }
+    .news-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.16); transform: translateY(-3px); }
+    .news-card-tag {
+      margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;
+    }
+    .news-card-title {
+      font-family: 'Kanit', sans-serif; font-size: 0.92rem; font-weight: 700;
+      color: var(--white); margin-bottom: 0.4rem; line-height: 1.4;
+    }
+    .news-card-desc { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.6; flex: 1; }
+    .news-card-date { font-size: 0.72rem; color: rgba(255,255,255,0.3); margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid rgba(255,255,255,0.06); }
+
+    /* Comment section enhanced */
+    .comment-container { max-width: 780px; }
+    
+    /* Responsive improvements */
+    @media (max-width: 768px) {
+      .news-grid { grid-template-columns: 1fr; }
+      .achievement-strip { gap: 1.5rem; padding: 1rem; }
+      .highlight-section, .latest-news-section { padding: 0 1rem; }
+      .stat-item { min-width: 65px; padding: 0.5rem 0.8rem; }
+      .lobby-stats { gap: 0.8rem; }
+      .announcement-banner { margin-bottom: 1.5rem; }
+      .highlight-card { flex-direction: column; gap: 0.8rem; }
+    }
+    @media (max-width: 600px) {
+      .news-grid { grid-template-columns: 1fr; }
+      .achievement-strip { gap: 1.2rem; padding: 0.8rem; }
+      .ach-num { font-size: 1.4rem; }
+    }
+    @media (min-width: 1200px) {
+      .members-grid { gap: 2rem; }
+      .comment-container { padding: 0 2rem 4rem; }
+    }
   </style>
 </head>
 <body>
@@ -1733,7 +1942,27 @@
   </div>
   <div class="lobby-school">โรงเรียนสารสาสน์วิเทศสมุทรสาคร</div>
   <h1 class="lobby-title">SARASAS PROMAX</h1>
-  <p class="lobby-sub">🗳️ สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569 · ร่วมผลักดันการเปลี่ยนแปลงไปด้วยกัน</p>
+  <p class="lobby-sub">🗳️ สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2568 · ร่วมผลักดันการเปลี่ยนแปลงไปด้วยกัน</p>
+  <div class="announcement-banner">
+    <span class="announcement-icon">📣</span>
+    <div class="announcement-text">
+      <strong>ประกาศสำคัญ:</strong> วันเลือกตั้งสภานักเรียน ปีการศึกษา 2568 — ร่วมใช้สิทธิ์ของคุณ!
+    </div>
+  </div>
+  <div class="lobby-stats">
+    <div class="stat-item">
+      <div class="stat-num">15</div>
+      <div class="stat-label">ผู้สมัคร</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5</div>
+      <div class="stat-label">นโยบาย</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2568</div>
+      <div class="stat-label">ปีการศึกษา</div>
+    </div>
+  </div>
   <div class="lobby-social">
     <a href="https://www.instagram.com/" target="_blank" class="social-link social-ig">
       <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1771,7 +2000,10 @@
 <div id="policy" class="page">
   <nav class="top-nav">
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
-    <span class="nav-title">📜 นโยบายหาเสียง</span>
+    <div class="nav-breadcrumb"><span>หน้าหลัก</span> › <strong>นโยบาย</strong></div>
+    <div class="nav-right-actions">
+      <button class="nav-action-btn" onclick="goTo('members')">👥 ทีมเรา</button>
+    </div>
   </nav>
   <div class="policy-hero">
     <span class="policy-hero-icon">📢</span>
@@ -1855,12 +2087,43 @@
 <div id="members" class="page">
   <nav class="top-nav">
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
-    <span class="nav-title">🗳️ ทีมผู้สมัครของเรา</span>
+    <div class="nav-breadcrumb"><span>หน้าหลัก</span> › <strong>ทีมผู้สมัคร</strong></div>
+    <div class="nav-right-actions">
+      <button class="nav-action-btn" onclick="goTo('policy')">📜 นโยบาย</button>
+    </div>
   </nav>
   <div class="members-hero">
     <h1>ทีมผู้สมัครสภานักเรียน</h1>
     <div class="gold-line"></div>
     <p>โรงเรียนสารสาสน์วิเทศสมุทรสาคร · สมัครเลือกตั้ง ปีการศึกษา 2568</p>
+  </div>
+  <div class="achievement-strip">
+    <div class="ach-item">
+      <div class="ach-num">15</div>
+      <div class="ach-label">ผู้สมัครทั้งหมด</div>
+    </div>
+    <div class="ach-item">
+      <div class="ach-num">2</div>
+      <div class="ach-label">ระดับชั้น</div>
+    </div>
+    <div class="ach-item">
+      <div class="ach-num">7</div>
+      <div class="ach-label">ฝ่ายงาน</div>
+    </div>
+    <div class="ach-item">
+      <div class="ach-num">5</div>
+      <div class="ach-label">นโยบาย</div>
+    </div>
+  </div>
+  <div class="highlight-section">
+    <div class="highlight-card">
+      <div class="highlight-badge">⭐</div>
+      <div class="highlight-content">
+        <div class="highlight-label">กิจกรรมเด่นประจำเดือน</div>
+        <div class="highlight-title">หาเสียงสภานักเรียน ปีการศึกษา 2568</div>
+        <div class="highlight-desc">ทีม SARASAS PROMAX พร้อมนำเสนอนโยบาย 5 ด้าน เพื่อพัฒนาโรงเรียนให้ดียิ่งขึ้น ร่วมแสดงความคิดเห็นและติดตามเราได้ที่ช่องทางโซเชียลมีเดีย</div>
+      </div>
+    </div>
   </div>
   <div class="section-label">
     <div class="section-label-line"></div>
@@ -2003,12 +2266,40 @@
 <div id="comments" class="page">
   <nav class="top-nav">
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
-    <span class="nav-title">💬 เสียงของน้องๆ</span>
+    <div class="nav-breadcrumb"><span>หน้าหลัก</span> › <strong>ความคิดเห็น</strong></div>
+    <div class="nav-right-actions">
+      <button class="nav-action-btn" onclick="goTo('members')">👥 ทีมเรา</button>
+    </div>
   </nav>
   <div class="comments-hero">
     <h1>บอกเราได้เลย! 📣</h1>
     <div class="gold-line"></div>
     <p>อยากให้เราทำอะไรถ้าได้รับเลือก? มีนโยบายอะไรอยากเพิ่ม? เราฟังทุกเสียงของน้องๆ</p>
+  </div>
+  <div class="latest-news-section">
+    <div class="section-header">
+      <div class="section-title-main">🔔 ข่าวล่าสุด</div>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-card-tag"><span class="category-badge cat-announce">#ประกาศ</span></div>
+        <div class="news-card-title">เปิดรับความคิดเห็นจากนักเรียนทุกชั้น</div>
+        <div class="news-card-desc">ทีมเราต้องการฟังเสียงจากน้องๆ ทุกระดับชั้น ตั้งแต่ ป.1 ถึง ม.6</div>
+        <div class="news-card-date">📅 พ.ค. 2568</div>
+      </div>
+      <div class="news-card">
+        <div class="news-card-tag"><span class="category-badge cat-activity">#กิจกรรม</span></div>
+        <div class="news-card-title">นโยบาย 5 ด้านพร้อมแล้ว</div>
+        <div class="news-card-desc">ทีม SARASAS PROMAX เผยนโยบายครบทั้ง 5 ด้าน ทั้งวิชาการ กิจกรรม สุขภาวะ ชุมชน และสิ่งแวดล้อม</div>
+        <div class="news-card-date">📅 เม.ย. 2568</div>
+      </div>
+      <div class="news-card">
+        <div class="news-card-tag"><span class="category-badge cat-news">#ข่าว</span></div>
+        <div class="news-card-title">ทีมผู้สมัครพร้อมแล้ว!</div>
+        <div class="news-card-desc">ผู้สมัครจาก ม.ปลาย และ ม.ต้น พร้อมหน้าแล้วรวม 15 คน ทีมครบ พร้อมลุย!</div>
+        <div class="news-card-date">📅 เม.ย. 2568</div>
+      </div>
+    </div>
   </div>
   <div class="comment-container">
     <div id="loginArea" style="margin-bottom:1.5rem">
