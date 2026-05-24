@@ -2772,7 +2772,7 @@
     const isPrivate = document.getElementById('privateCheck').checked;
     const anonNum = currentUser.uid.split('').reduce((a, c) => (a * 31 + c.charCodeAt(0)) & 0xfffff, 0).toString().slice(0,6).padStart(6,'0');
     const displayName = isAnon ? `User${anonNum}` : (currentUser.displayName || 'นักเรียนนิรนาม');
-    const name = (!isAnon && isAdmin) ? displayName + ' (สภานักเรียน)' : displayName;
+    const name = displayName;  // ชื่อสะอาด — tag สภานักเรียนแสดงใน render เท่านั้น
     const level = document.getElementById('inputLevel').value;
     const text = document.getElementById('inputText').value.trim();
     if (!text) {
@@ -2798,6 +2798,7 @@
         realEmail: currentUser.email || '',
         realPhotoURL: currentUser.photoURL || '',
         time: new Date().toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit', day:'numeric', month:'short' }),
+        isAdmin: isAdmin,
         likes: 0, likedBy: [], createdAt: Date.now()
       });
       if (!isAdmin) await incrementUserTodayCount();
@@ -3129,6 +3130,7 @@
             <div class="comment-meta">
               <div class="comment-author">
                 ${nameDisplay}
+                ${(c.isAdmin && !c.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">🏛️ สภานักเรียน</span>` : ''}
                 ${isBanView && cEmail ? `<span class="comment-level-badge" style="font-size:0.65rem">${cEmail}</span>` : ''}
                 ${c.level ? `<span class="comment-level-badge">${c.level}</span>` : ''}
                 ${c.type ? `<span class="comment-type-pill pill-${c.type}">${c.type}</span>` : ''}
