@@ -1852,6 +1852,7 @@
   // 3-dot menu toggle
   window.toggleCommentMenu = function(id, e) {
     e.stopPropagation();
+    e.stopImmediatePropagation();
     // close all other menus first
     document.querySelectorAll('.comment-dropdown').forEach(d => {
       if (d.id !== 'menu-' + id) d.classList.remove('open');
@@ -1859,9 +1860,11 @@
     const menu = document.getElementById('menu-' + id);
     if (menu) menu.classList.toggle('open');
   };
-  // close menus on outside click
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
+  // close menus on outside click — ใช้ mousedown แทน click เพื่อไม่ชนกับ stopPropagation
+  document.addEventListener('mousedown', (e) => {
+    if (!e.target.closest('.comment-menu-wrap')) {
+      document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
+    }
   });
 
   // Reveal modal
@@ -1890,8 +1893,9 @@
     window._banTargetUid = uid;
     window._banTargetName = name;
     window._banDurationDays = 1;
-    // หา email จาก comments
-    const targetComment = allComments.find(c => c.uid === uid);
+    // หา email จาก window._allComments (ที่ module script expose ไว้)
+    const comments = window._allComments || [];
+    const targetComment = comments.find(c => c.uid === uid);
     window._banTargetEmail = targetComment ? (targetComment.realEmail || '') : '';
     const emailDisplay = window._banTargetEmail ? `<br/><span style="font-size:0.78rem;color:rgba(255,200,100,0.8)">📧 ${window._banTargetEmail}</span>` : '';
     document.getElementById('banTargetInfo').innerHTML = `<strong>👤 ${name}</strong>${emailDisplay}`;
