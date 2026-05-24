@@ -31,12 +31,10 @@
       overflow-x: hidden;
     }
 
-    /* ===== PAGE SYSTEM ===== */
     .page { display: none; min-height: 100vh; }
     .page.active { display: block; }
     #lobby.active { display: flex; }
 
-    /* ===== LOBBY PAGE ===== */
     #lobby {
       background: linear-gradient(135deg, #0a1628 0%, #1a2f5a 50%, #0d2040 100%);
       min-height: 100vh;
@@ -48,7 +46,6 @@
       overflow: hidden;
     }
 
-    /* Diagonal stripe pattern */
     #lobby::before {
       content: '';
       position: absolute; inset: 0;
@@ -194,7 +191,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ===== SOCIAL LINKS ===== */
     .lobby-social {
       display: flex;
       gap: 1rem;
@@ -271,7 +267,6 @@
       font-weight: 400;
     }
 
-    /* ===== SHARED NAV ===== */
     .top-nav {
       background: rgba(10,22,40,0.97);
       backdrop-filter: blur(12px);
@@ -294,7 +289,6 @@
       font-weight: 700; color: var(--white);
     }
 
-    /* ===== MEMBERS PAGE ===== */
     #members {
       background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 100%);
       min-height: 100vh;
@@ -355,7 +349,6 @@
       background: rgba(255,255,255,0.04);
     }
 
-    /* ===== MEMBER CARD ===== */
     .member-card {
       background: linear-gradient(135deg, rgba(26,58,107,0.4), rgba(13,32,64,0.85));
       border: 1px solid rgba(255,255,255,0.15);
@@ -436,7 +429,6 @@
       padding-top: 0.8rem;
     }
 
-    /* President special card */
     .member-card.president {
       background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(26,58,107,0.5), rgba(13,32,64,0.9));
       border-color: rgba(255,255,255,0.3);
@@ -449,7 +441,6 @@
     }
     .member-card.president .member-name { font-size: 1.2rem; }
 
-    /* ===== PROFILE MODAL (POPUP) ===== */
     .modal-overlay {
       position: fixed; inset: 0;
       background: rgba(10,0,0,0.85);
@@ -479,7 +470,6 @@
       transform: scale(1) translateY(0);
     }
 
-    /* Red accent top bar */
     .modal-box::before {
       content: '';
       position: absolute; top: 0; left: 0; right: 0;
@@ -487,7 +477,6 @@
       background: linear-gradient(90deg, rgba(41,128,185,0.8), rgba(255,255,255,0.9), rgba(41,128,185,0.8));
     }
 
-    /* Background watermark */
     .modal-box::after {
       content: '🏛️';
       position: absolute; bottom: -20px; right: -10px;
@@ -508,7 +497,6 @@
     }
     .modal-close:hover { background: rgba(255,255,255,0.15); transform: rotate(90deg); }
 
-    /* === MODAL LAYOUT: photo left + info right === */
     .modal-body {
       display: flex;
       gap: 0;
@@ -517,7 +505,6 @@
       position: relative; z-index: 2;
     }
 
-    /* Left: photo panel */
     .modal-photo-panel {
       flex-shrink: 0;
       width: 160px;
@@ -571,7 +558,6 @@
     .modal-photo-url:focus { border-color: var(--gold); color: var(--white); }
     .modal-photo-url::placeholder { color: rgba(255,255,255,0.2); font-size: 0.65rem; }
 
-    /* Right: info panel */
     .modal-info {
       flex: 1;
       min-width: 0;
@@ -624,7 +610,6 @@
     }
     .info-value { color: rgba(255,255,255,0.9); font-weight: 600; }
 
-    /* Social links */
     .modal-socials {
       display: flex; flex-direction: column; gap: 0.6rem;
     }
@@ -680,7 +665,6 @@
       border-radius: 50px;
     }
 
-    /* ===== COMMENTS PAGE ===== */
     #comments {
       background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 100%);
       min-height: 100vh;
@@ -829,7 +813,6 @@
     .empty-state .icon { font-size: 3rem; margin-bottom: 0.5rem; }
     .empty-state p { font-size: 0.9rem; }
 
-    /* Toast */
     .toast {
       position: fixed; bottom: 2rem; right: 2rem;
       background: linear-gradient(135deg, #1a3a6b, #2563b0);
@@ -842,7 +825,6 @@
     }
     .toast.show { transform: translateY(0); opacity: 1; }
 
-    /* Filter tabs */
     .filter-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
     .filter-tab {
       padding: 0.4rem 1rem; border-radius: 50px;
@@ -864,7 +846,6 @@
       font-weight: 700;
     }
 
-    /* Auth UI */
     .login-prompt {
       background: linear-gradient(135deg, rgba(26,58,107,0.3), rgba(13,32,64,0.5));
       border: 1px solid rgba(255,255,255,0.2);
@@ -899,7 +880,6 @@
     }
     .btn-logout:hover { border-color: rgba(255,255,255,0.4); color: rgba(255,255,255,0.8); }
 
-    /* UID badge */
     .user-uid-badge {
       font-size: 0.65rem;
       color: rgba(255,255,255,0.32);
@@ -911,7 +891,6 @@
       max-width: 180px;
     }
 
-    /* Support button */
     .btn-support {
       display: inline-flex; align-items: center; gap: 0.4rem;
       background: rgba(255,255,255,0.05);
@@ -924,7 +903,6 @@
     }
     .btn-support:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.35); color: rgba(255,255,255,0.85); }
 
-    /* Support Modal */
     .support-overlay {
       position: fixed; inset: 0;
       background: rgba(5,10,25,0.88);
@@ -950,14 +928,13 @@
     }
     .support-overlay.open .support-card { transform: scale(1) translateY(0); }
 
-    /* Top gradient bar like council card */
     .support-card::before {
       content: '';
       position: absolute; top: 0; left: 0; right: 0;
       height: 4px;
       background: linear-gradient(90deg, rgba(41,128,185,0.8), rgba(255,255,255,0.95), rgba(41,128,185,0.8));
     }
-    /* Watermark */
+
     .support-card::after {
       content: '🏛️';
       position: absolute; bottom: -24px; right: -8px;
@@ -1062,7 +1039,6 @@
       padding-top: 1rem;
     }
 
-    /* Floating support button (lobby+members areas) */
     .floating-support {
       position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 90;
       background: linear-gradient(135deg, rgba(26,58,107,0.9), rgba(37,99,176,0.85));
@@ -1084,7 +1060,6 @@
     }
     .delete-btn:hover { opacity: 1; }
 
-    /* Anonymous toggle */
     .anon-row {
       display: flex; align-items: center; gap: 0.6rem;
       margin-bottom: 1rem;
@@ -1098,8 +1073,6 @@
     .anon-label { font-size: 0.85rem; color: rgba(255,255,255,0.75); font-family: 'Kanit', sans-serif; }
     .anon-desc { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-left: auto; }
 
-    /* Photo URL input row */
-    
     .photo-url-input {
       background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
       border-radius: 8px; padding: 0.45rem 0.8rem;
@@ -1109,7 +1082,6 @@
     .photo-url-input:focus { border-color: rgba(255,255,255,0.4); }
     .photo-url-input::placeholder { color: rgba(255,255,255,0.25); }
 
-    /* 3-dot menu */
     .comment-menu-wrap { position: relative; margin-left: auto; flex-shrink: 0; }
     .comment-menu-btn {
       background: none; border: none; color: rgba(255,255,255,0.45);
@@ -1136,7 +1108,6 @@
     .dropdown-item.danger { color: #ff6b6b; }
     .dropdown-item.danger:hover { background: rgba(255,50,50,0.12); }
 
-    /* Admin reveal modal */
     .reveal-overlay {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
@@ -1189,7 +1160,6 @@
       padding: 0.15rem 0.6rem; border-radius: 20px; margin-bottom: 0.8rem;
     }
 
-    /* ===== BAN MODAL ===== */
     .ban-overlay {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
@@ -1283,7 +1253,6 @@
     .dropdown-item.success { color: #55efc4; }
     .dropdown-item.success:hover { background: rgba(39,174,96,0.12); }
 
-    /* ===== PRIVACY MODAL ===== */
     .privacy-overlay {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
@@ -1376,7 +1345,6 @@
       margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.07);
     }
 
-    /* Footer link */
     .comments-footer {
       text-align: center; padding: 1rem 0 2rem;
       display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;
@@ -1389,7 +1357,6 @@
     }
     .footer-link:hover { color: rgba(255,255,255,0.65); }
 
-    /* ===== BAN WALL POPUP (ปิดไม่ได้) ===== */
     #banWall {
       position: fixed; inset: 0; z-index: 99999;
       background: rgba(0,0,0,0.97);
@@ -1490,7 +1457,6 @@
     }
     .ban-wall-lifted-title { color: #55efc4; }
 
-    /* ===== REPLY SYSTEM ===== */
     .reply-section {
       margin-top: 0.8rem;
       border-top: 1px solid rgba(255,255,255,0.06);
@@ -1575,7 +1541,6 @@
       font-family: 'Sarabun', sans-serif; margin-top: 0.5rem;
     }
 
-    /* ===== POLICY PAGE ===== */
     #policy {
       background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 60%, #0a1628 100%);
       min-height: 100vh;
@@ -1721,7 +1686,6 @@
       line-height: 1.7;
     }
 
-    /* Mobile responsive */
     @media (max-width: 720px) {
       .members-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1rem; }
     }
@@ -1746,7 +1710,6 @@
 </head>
 <body>
 
-<!-- ===== LOBBY ===== -->
 <div id="lobby" class="page active">
   <div class="stars" id="starsContainer"></div>
   <div class="lobby-decor decor1"></div>
@@ -1761,7 +1724,6 @@
   <h1 class="lobby-title">SARASAS PROMAX</h1>
   <p class="lobby-sub">🗳️ สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569 · ร่วมผลักดันการเปลี่ยนแปลงไปด้วยกัน</p>
 
-  <!-- Social Media Links -->
   <div class="lobby-social">
     <a href="https://www.instagram.com/" target="_blank" class="social-link social-ig">
       <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1798,7 +1760,6 @@
   </div>
 </div>
 
-<!-- ===== POLICY PAGE ===== -->
 <div id="policy" class="page">
   <nav class="top-nav">
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
@@ -1814,7 +1775,6 @@
 
   <div class="policy-container">
 
-    <!-- Policy 1 -->
     <div class="policy-card" style="--policy-color:linear-gradient(180deg,#ffd060,#ffaa20);--policy-bg:rgba(255,200,60,0.12);--policy-border:rgba(255,200,60,0.4);--policy-text-color:rgba(255,200,60,0.95);--policy-badge-bg:rgba(255,200,60,0.12);--policy-badge-color:rgba(255,200,60,0.9);--policy-badge-border:rgba(255,200,60,0.3)">
       <div class="policy-number">1</div>
       <span class="policy-emoji">📚</span>
@@ -1829,7 +1789,6 @@
       </div>
     </div>
 
-    <!-- Policy 2 -->
     <div class="policy-card" style="--policy-color:linear-gradient(180deg,#74b9ff,#0984e3);--policy-bg:rgba(116,185,255,0.12);--policy-border:rgba(116,185,255,0.4);--policy-text-color:rgba(116,185,255,0.95);--policy-badge-bg:rgba(116,185,255,0.12);--policy-badge-color:rgba(116,185,255,0.9);--policy-badge-border:rgba(116,185,255,0.3)">
       <div class="policy-number">2</div>
       <span class="policy-emoji">🎨</span>
@@ -1844,7 +1803,6 @@
       </div>
     </div>
 
-    <!-- Policy 3 -->
     <div class="policy-card" style="--policy-color:linear-gradient(180deg,#55efc4,#00b894);--policy-bg:rgba(85,239,196,0.1);--policy-border:rgba(85,239,196,0.38);--policy-text-color:rgba(85,239,196,0.95);--policy-badge-bg:rgba(85,239,196,0.1);--policy-badge-color:rgba(85,239,196,0.9);--policy-badge-border:rgba(85,239,196,0.3)">
       <div class="policy-number">3</div>
       <span class="policy-emoji">❤️</span>
@@ -1859,7 +1817,6 @@
       </div>
     </div>
 
-    <!-- Policy 4 -->
     <div class="policy-card" style="--policy-color:linear-gradient(180deg,#fd79a8,#e84393);--policy-bg:rgba(253,121,168,0.1);--policy-border:rgba(253,121,168,0.38);--policy-text-color:rgba(253,121,168,0.95);--policy-badge-bg:rgba(253,121,168,0.1);--policy-badge-color:rgba(253,121,168,0.9);--policy-badge-border:rgba(253,121,168,0.3)">
       <div class="policy-number">4</div>
       <span class="policy-emoji">🤝</span>
@@ -1874,7 +1831,6 @@
       </div>
     </div>
 
-    <!-- Policy 5 -->
     <div class="policy-card" style="--policy-color:linear-gradient(180deg,#a29bfe,#6c5ce7);--policy-bg:rgba(162,155,254,0.1);--policy-border:rgba(162,155,254,0.38);--policy-text-color:rgba(162,155,254,0.95);--policy-badge-bg:rgba(162,155,254,0.1);--policy-badge-color:rgba(162,155,254,0.9);--policy-badge-border:rgba(162,155,254,0.3)">
       <div class="policy-number">5</div>
       <span class="policy-emoji">🌿</span>
@@ -1897,7 +1853,6 @@
   </div>
 </div>
 
-<!-- ===== MEMBERS ===== -->
 <div id="members" class="page">
   <nav class="top-nav">
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
@@ -1910,7 +1865,6 @@
     <p>โรงเรียนสารสาสน์วิเทศสมุทรสาคร · สมัครเลือกตั้ง ปีการศึกษา 2568</p>
   </div>
 
-  <!-- หมวดหมู่มอปลาย -->
   <div class="section-label">
     <div class="section-label-line"></div>
     <div class="section-label-text">🎓 ผู้สมัคร ชั้น มอปลาย</div>
@@ -1918,7 +1872,7 @@
   </div>
 
   <div class="members-grid">
-    <!-- President -->
+
     <div class="member-card president" id="card-president" onclick="openProfile('president')" style="grid-column:1/-1;max-width:300px;margin:0 auto;width:100%">
       <div class="member-avatar">
         <img src="" alt="" onerror="this.style.display='none'" style="display:none" />
@@ -1931,7 +1885,6 @@
       <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
     </div>
 
-    <!-- VP1 -->
     <div class="member-card" id="card-vp1" onclick="openProfile('vp1')">
       <div class="member-avatar"><span class="avatar-emoji">⭐</span></div>
       <div class="member-role-badge">รองประธาน คนที่ 1</div>
@@ -1941,7 +1894,6 @@
       <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
     </div>
 
-    <!-- VP2 -->
     <div class="member-card" id="card-vp2" onclick="openProfile('vp2')">
       <div class="member-avatar"><span class="avatar-emoji">🌟</span></div>
       <div class="member-role-badge">รองประธาน คนที่ 2</div>
@@ -1951,7 +1903,6 @@
       <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
     </div>
 
-    <!-- Dept heads -->
     <div class="member-card" id="card-academic" onclick="openProfile('academic')">
       <div class="member-avatar"><span class="avatar-emoji">📚</span></div>
       <div class="member-role-badge">หัวหน้าฝ่าย</div>
@@ -2016,7 +1967,6 @@
     </div>
   </div>
 
-  <!-- หมวดหมู่มอต้น -->
   <div class="section-label">
     <div class="section-label-line"></div>
     <div class="section-label-text">📘 ผู้สมัคร ชั้น มอต้น</div>
@@ -2071,7 +2021,6 @@
   </div>
 </div>
 
-<!-- ===== COMMENTS ===== -->
 <div id="comments" class="page">
   <nav class="top-nav">
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
@@ -2148,7 +2097,7 @@
       <button class="filter-tab admin-only-tab" id="adminOnlyTab" style="display:none;background:rgba(192,57,43,0.15);border-color:rgba(192,57,43,0.35);color:#ff8080" onclick="setFilter('__banned__', this)">🛡️ Admin Only</button>
       <button class="filter-tab" id="councilOnlyTab" style="display:none;background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.25);color:rgba(255,215,0,0.85)" onclick="setFilter('__council__', this)">🔒 เฉพาะทีมเรา</button>
     </div>
-    <!-- Grade filter row -->
+
     <div style="margin-bottom:1.5rem">
       <div style="font-family:Kanit,sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.38);text-transform:uppercase;margin-bottom:0.6rem">🎓 แสดงเฉพาะระดับชั้น</div>
       <div class="filter-tabs" id="gradeFilterTabs" style="margin-bottom:0">
@@ -2189,12 +2138,11 @@
   </div>
 </div>
 
-<!-- ===== PROFILE MODAL ===== -->
 <div class="modal-overlay" id="profileModal" onclick="closeModalOutside(event)">
   <div class="modal-box" id="modalBox">
     <button class="modal-close" onclick="closeProfile()">✕</button>
     <div class="modal-body">
-      <!-- Left: Photo -->
+
       <div class="modal-photo-panel">
         <div class="modal-photo" id="modalPhoto">
           <img id="modalPhotoImg" src="" alt="" style="display:none" onerror="this.style.display='none'; document.getElementById('modalPhotoEmoji').style.display='flex'" />
@@ -2202,7 +2150,6 @@
         </div>
       </div>
 
-      <!-- Right: Info -->
       <div class="modal-info">
         <div class="modal-role-badge" id="modalRole">-</div>
         <div class="modal-fullname" id="modalFullname">-</div>
@@ -2229,12 +2176,10 @@
 
 <div class="toast" id="toast">✅ ส่งความคิดเห็นแล้ว ขอบคุณมากนะ!</div>
 
-<!-- Floating support button -->
 <button class="floating-support" onclick="openSupportModal()" id="floatingSupportBtn">
   🆘 มีปัญหาใช้เว็บ? คลิกที่นี้
 </button>
 
-<!-- Support Modal -->
 <div class="support-overlay" id="supportModal" onclick="closeSupportOutside(event)">
   <div class="support-card">
     <button class="support-close" onclick="closeSupportModal()">✕</button>
@@ -2245,7 +2190,7 @@
       <div class="support-divider"></div>
       <div class="support-channel-label">ช่องทางการติดต่อ</div>
       <div class="support-channels" id="supportChannels">
-        <!-- Injected by JS -->
+
       </div>
       <div class="support-note">
         โปรดติดต่อ เพจทีมสภาของเรา<br/>
@@ -2255,7 +2200,6 @@
   </div>
 </div>
 
-<!-- Ban Modal -->
 <div class="ban-overlay" id="banModal" onclick="closeBanOutside(event)">
   <div class="ban-box" id="banBox">
     <button class="ban-close" onclick="closeBanModal()">✕</button>
@@ -2275,7 +2219,6 @@
   </div>
 </div>
 
-<!-- Extend Ban Modal -->
 <div class="ban-overlay" id="extendModal" onclick="closeExtendOutside(event)">
   <div class="ban-box extend-box" id="extendBox">
     <button class="ban-close" onclick="closeExtendModal()">✕</button>
@@ -2293,7 +2236,6 @@
   </div>
 </div>
 
-<!-- Reduce Ban Modal -->
 <div class="ban-overlay" id="reduceModal" onclick="closeReduceOutside(event)">
   <div class="ban-box reduce-box" id="reduceBox">
     <button class="ban-close" onclick="closeReduceModal()">✕</button>
@@ -2310,7 +2252,6 @@
   </div>
 </div>
 
-<!-- ===== BAN WALL POPUP (ปิดไม่ได้) ===== -->
 <div id="banWall">
   <div class="ban-wall-box" id="banWallBox">
     <div class="ban-wall-icon">🚫</div>
@@ -2344,7 +2285,6 @@
   </div>
 </div>
 
-<!-- Admin Reveal Modal -->
 <div class="reveal-overlay" id="revealModal" onclick="closeRevealOutside(event)">
   <div class="reveal-box">
     <button class="reveal-close" onclick="closeReveal()">✕</button>
@@ -2358,7 +2298,6 @@
   </div>
 </div>
 
-<!-- Privacy / Terms Modal -->
 <div class="privacy-overlay" id="privacyModal" onclick="closePrivacyOutside(event)">
   <div class="privacy-box">
     <div class="privacy-header">
@@ -2367,7 +2306,7 @@
     </div>
     <button class="privacy-close" onclick="closePrivacyModal()">✕</button>
     <div class="privacy-body" id="privacyBody">
-      <!-- Content injected by JS -->
+
     </div>
   </div>
 </div>
@@ -2474,20 +2413,17 @@
 </script>
 
 <script>
-  // ========== LOGO/SEAL IMAGE ==========
-  // ใส่ URL รูปโลโก้ตรงนี้ (วงกลมตรงกลางหน้าแรก)
-  const SEAL_IMAGE_URL = 'https://i.postimg.cc/02m2CkSh/swsk_promax.png';
-  // ตัวอย่าง: const SEAL_IMAGE_URL = 'https://i.postimg.cc/xxx/logo.png';
 
-  // ========== PAGE NAV (ต้องอยู่บนสุดก่อน HTML กดได้) ==========
+  const SEAL_IMAGE_URL = 'https://i.postimg.cc/02m2CkSh/swsk_promax.png';
+
   window.goTo = function(id) {
-    // ซ่อนทุกหน้า
+
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    // แสดงหน้าที่ต้องการ
+
     var target = document.getElementById(id);
     if (!target) return;
     target.classList.add('active');
-    // scroll ลงไปหาส่วนนั้นแบบ smooth
+
     setTimeout(function() {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 10);
@@ -2503,10 +2439,6 @@
     }
   })();
 
-  // ========== MEMBER DATA ==========
-  // แก้ข้อมูลสมาชิกที่นี่
-  // facebook: ใส่ชื่อ (เช่น 'Joil Jijo') หรือ URL เต็ม (เช่น 'https://facebook.com/...')
-  // instagram: ใส่ชื่อผู้ใช้ (เช่น 'apapeew') ไม่ต้องมี @
   const MEMBERS = {
     president: {
       role: 'ประธานนักเรียน',
@@ -2675,8 +2607,6 @@
     }
   };
 
-  // ========== MEMBER CARD PHOTOS ==========
-  // ใส่รูปลงการ์ดหน้าหลัก
   function setCardPhoto(cardId, url, emoji) {
     const card = document.getElementById(cardId);
     if (!card) return;
@@ -2692,7 +2622,6 @@
     }
   }
 
-  // ========== PROFILE MODAL ==========
   let currentMemberId = null;
 
   function openProfile(id) {
@@ -2707,7 +2636,6 @@
     document.getElementById('modalDept').textContent = m.dept || '-';
     document.getElementById('modalPhotoEmoji').textContent = m.emoji || '👤';
 
-    // Photo
     const img = document.getElementById('modalPhotoImg');
     if (m.photo) {
       img.src = m.photo; img.style.display = 'block';
@@ -2717,13 +2645,12 @@
       document.getElementById('modalPhotoEmoji').style.display = 'block';
     }
 
-    // Socials
     const socialBox = document.getElementById('modalSocials');
     const fbSVG = `<svg style="width:18px;height:18px;flex-shrink:0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     const igSVG = `<svg style="width:18px;height:18px;flex-shrink:0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>`;
     let html = '';
     if (m.facebook) {
-      // Extract display name from facebook URL or use as-is if it's a name
+
       let fbDisplay = m.facebook;
       try {
         const url = new URL(m.facebook);
@@ -2765,7 +2692,7 @@
     if (url) {
       img.src = url; img.style.display = 'block'; emoji.style.display = 'none';
       img.onerror = () => { img.style.display = 'none'; emoji.style.display = 'block'; };
-      // Also update card photo live
+
       if (currentMemberId) {
         setCardPhoto('card-' + currentMemberId, url, '');
         MEMBERS[currentMemberId].photo = url;
@@ -2782,7 +2709,6 @@
   }
   window._selectedType = 'ความคิดเห็น';
 
-  // Anon toggle
   window.toggleAnon = function(checked) {
     const nameInput = document.getElementById('inputName');
     if (checked) {
@@ -2794,29 +2720,27 @@
     }
   };
 
-  // 3-dot menu toggle
   window.toggleCommentMenu = function(id, e) {
     e.stopPropagation();
     e.stopImmediatePropagation();
-    // close all other menus first
+
     document.querySelectorAll('.comment-dropdown').forEach(d => {
       if (d.id !== 'menu-' + id) d.classList.remove('open');
     });
     const menu = document.getElementById('menu-' + id);
     if (menu) menu.classList.toggle('open');
   };
-  // close menus on outside click — ใช้ mousedown แทน click เพื่อไม่ชนกับ stopPropagation
+
   document.addEventListener('mousedown', (e) => {
     if (!e.target.closest('.comment-menu-wrap')) {
       document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     }
   });
 
-  // Reveal modal
   window.revealIdentity = function(docId) {
-    // close dropdown
+
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
-    // will be called from firebase scope via window._revealComment
+
     if (window._revealComment) window._revealComment(docId);
   };
   window.closeReveal = function() {
@@ -2826,7 +2750,6 @@
     if (e.target === document.getElementById('revealModal')) window.closeReveal();
   };
 
-  // Ban modal state
   window._banTargetUid = null;
   window._banTargetName = null;
   window._banDurationDays = 1;
@@ -2838,7 +2761,7 @@
     window._banTargetUid = uid;
     window._banTargetName = name;
     window._banDurationDays = 1;
-    // หา email จาก window._allComments (ที่ module script expose ไว้)
+
     const comments = window._allComments || [];
     const targetComment = comments.find(c => c.uid === uid);
     window._banTargetEmail = targetComment ? (targetComment.realEmail || '') : '';
@@ -2899,7 +2822,6 @@
     el.classList.add('active');
   };
 
-  // Stars
   const container = document.getElementById('starsContainer');
   for (let i = 0; i < 60; i++) {
     const s = document.createElement('div');
@@ -2911,7 +2833,6 @@
     container.appendChild(s);
   }
 
-  // Load card photos from MEMBERS data
   Object.entries(MEMBERS).forEach(([id, m]) => {
     if (m.photo) setCardPhoto('card-' + id, m.photo, m.emoji);
   });
@@ -2939,11 +2860,9 @@
     setTimeout(() => { t.classList.remove('show'); t.style.background = ''; }, 3000);
   }
 
-  // ===== SUPPORT MODAL CONFIG =====
-  // แก้ไขช่องทางติดต่อ Admin ตรงนี้ได้เลย
   const SUPPORT_CONTACTS = {
-    instagram: 'junr_xn',   // ← ใส่ชื่อ IG ของ Admin
-    facebook:  'gghghij.igfggh',    // ← ใส่ชื่อ Facebook ของ Admin
+    instagram: 'junr_xn',
+    facebook:  'gghghij.igfggh',
   };
 
   function renderSupportChannels() {
@@ -2998,13 +2917,11 @@
   };
 </script>
 
-<!-- Firebase module script -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
   import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
-  // Expose Firestore helpers for reply system
   window._fbImports = { collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc };
 
   const firebaseConfig = {
@@ -3017,63 +2934,6 @@
     measurementId: "G-Z8YN9WD8C1"
   };
 
-  // ============================================================
-  // 🛡️ FIREBASE SECURITY RULES (ตั้งใน Firebase Console)
-  // ============================================================
-  // ไปที่: Firebase Console → Firestore Database → Rules
-  // แล้ว copy rules ด้านล่างนี้ไปใส่ให้ครบ
-  //
-  // rules_version = '2';
-  // service cloud.firestore {
-  //   match /databases/{database}/documents {
-  //
-  //     // COMMENTS — อ่านได้ทุกคน เขียนได้เฉพาะ login แล้ว
-  //     match /comments/{commentId} {
-  //       allow read: if true;
-  //       allow create: if request.auth != null
-  //         && request.resource.data.uid == request.auth.uid
-  //         && request.resource.data.text is string
-  //         && request.resource.data.text.size() >= 5
-  //         && request.resource.data.text.size() <= 1000;
-  //       allow update: if request.auth != null
-  //         && (resource.data.uid == request.auth.uid
-  //             || request.auth.token.email in ['fyhn.6bi@gmail.com']);
-  //       allow delete: if request.auth != null
-  //         && (resource.data.uid == request.auth.uid
-  //             || request.auth.token.email in ['fyhn.6bi@gmail.com']);
-  //
-  //       // REPLIES subcollection
-  //       match /replies/{replyId} {
-  //         allow read: if true;
-  //         allow create: if request.auth != null
-  //           && request.resource.data.uid == request.auth.uid
-  //           && request.resource.data.text is string
-  //           && request.resource.data.text.size() >= 1
-  //           && request.resource.data.text.size() <= 500;
-  //         allow delete: if request.auth != null
-  //           && (resource.data.uid == request.auth.uid
-  //               || request.auth.token.email in ['fyhn.6bi@gmail.com']);
-  //       }
-  //     }
-  //
-  //     // BANS — อ่านได้เฉพาะ doc ตัวเอง + admin เขียนได้เฉพาะ admin
-  //     match /bans/{userId} {
-  //       allow read: if request.auth != null
-  //         && (request.auth.uid == userId
-  //             || request.auth.token.email in ['fyhn.6bi@gmail.com']);
-  //       allow write: if request.auth != null
-  //         && request.auth.token.email in ['fyhn.6bi@gmail.com'];
-  //     }
-  //
-  //     // DAILY LIMITS — เขียน/อ่านได้เฉพาะ uid ตัวเอง
-  //     match /daily_limits/{docId} {
-  //       allow read, write: if request.auth != null
-  //         && docId.matches(request.auth.uid + '_.*');
-  //     }
-  //   }
-  // }
-  // ============================================================
-
   const ADMIN_EMAILS = ['fyhn.6bi@gmail.com'];
 
   const app = initializeApp(firebaseConfig);
@@ -3083,14 +2943,12 @@
   const commentsCol = collection(db, 'comments');
   const bansCol = collection(db, 'bans');
 
-  let allBans = {}; // uid -> ban data (admin only)
+  let allBans = {};
   let banWallInterval = null;
   let banWallCountdownInterval = null;
   let _bansReady = false;
   let _authReady = false;
-  let _userBanUnsub = null; // listener สำหรับ ban ของ user คนปัจจุบัน
-
-  // ========== BAN WALL FUNCTIONS ==========
+  let _userBanUnsub = null;
 
   function getBanForUser(user) {
     if (!user) return null;
@@ -3128,7 +2986,6 @@
     return `เหลือ ${hours} ชม.`;
   }
 
-  // subscribe ฟัง ban doc ของ user คนนี้คนเดียว (user มีสิทธิ์อ่าน doc ตัวเอง)
   function subscribeUserBan(user) {
     if (_userBanUnsub) { _userBanUnsub(); _userBanUnsub = null; }
     if (!user) return;
@@ -3149,13 +3006,12 @@
       checkAndShowBanWall();
       if (allComments.length > 0) renderComments(allComments);
     }, (err) => {
-      // ถ้าอ่านไม่ได้ (Security Rules) ให้ถือว่าไม่มีแบน
+
       console.warn('ban doc read error:', err);
       _bansReady = true;
     });
   }
 
-  // admin ฟัง collection ทั้งหมด
   function subscribeAllBans() {
     onSnapshot(bansCol, (snap) => {
       allBans = {};
@@ -3170,7 +3026,7 @@
       if (_authReady) checkAndShowBanWall();
       if (allComments.length > 0) renderComments(allComments);
     }, (err) => {
-      // Security Rules ยังไม่อนุญาต — fallback: ดึงจาก window._allBans ที่ user ban listener อาจเพิ่มไว้
+
       console.warn('bans collection error (check Firestore Rules):', err);
       _bansReady = true;
     });
@@ -3193,7 +3049,6 @@
     const box = document.getElementById('banWallBox');
     const isPermanent = ban.until === -1;
 
-    // Fill info
     document.getElementById('banWallBannedAt').textContent =
       ban.bannedAt ? new Date(ban.bannedAt).toLocaleString('th-TH') : '-';
     document.getElementById('banWallReason').textContent =
@@ -3233,11 +3088,9 @@
       banWallCountdownInterval = setInterval(tick, 1000);
     }
 
-    // Block scrolling and interaction with page
     document.body.style.overflow = 'hidden';
     wall.classList.add('show');
 
-    // Extra: block keyboard interaction (Escape etc.)
     document.addEventListener('keydown', blockKeyboard, true);
   }
 
@@ -3261,17 +3114,16 @@
   }
 
   function blockKeyboard(e) {
-    // ให้ Admin bypass ด้วย Ctrl+Shift+F12 ถ้าจำเป็น
+
     if (e.ctrlKey && e.shiftKey && e.key === 'F12') return;
     e.stopPropagation();
     e.preventDefault();
   }
 
-  // ตรวจสอบและแสดง ban wall เมื่อ bans เปลี่ยน (real-time)
   function checkAndShowBanWall() {
     if (!currentUser || isAdmin) return;
     const ban = getBanForUser(currentUser);
-    // ซ่อน/แสดง form ตามสถานะแบน
+
     const formBox = document.getElementById('formBox');
     if (formBox) formBox.style.display = ban ? 'none' : 'block';
     if (ban) {
@@ -3283,8 +3135,6 @@
     }
   }
 
-  // ========== BAN ACTIONS ==========
-
   window.confirmBan = async function() {
     const uid = window._banTargetUid;
     const days = window._banDurationDays;
@@ -3292,7 +3142,6 @@
     if (!uid) { alert('ไม่พบข้อมูลผู้ใช้'); return; }
     const until = days === -1 ? -1 : Date.now() + days * 86400000;
 
-    // หา email จาก comments หรือ ban target info
     const targetComment = allComments.find(c => c.uid === uid);
     const targetEmail = targetComment ? (targetComment.realEmail || '') : (window._banTargetEmail || '');
 
@@ -3307,7 +3156,6 @@
         realName: window._banTargetName || ''
       });
 
-      // ลบคอมเม้นทั้งหมดของคนโดนแบน (รวม subcollection replies)
       const userComments = allComments.filter(c => c.uid === uid);
       for (const c of userComments) {
         try {
@@ -3328,7 +3176,7 @@
     if (!confirm('ปลดแบนผู้ใช้นี้?')) return;
     try {
       await deleteDoc(doc(db, 'bans', uid));
-      // อัพเดต allBans ทันทีแล้ว re-render เพื่อให้รายชื่อแบนหายออกทันที
+
       delete allBans[uid];
       window._allBans = allBans;
       window._publicBannedUids = new Set(
@@ -3336,7 +3184,7 @@
           .filter(([u, b]) => b && isActiveBan(b))
           .map(([u]) => u)
       );
-      // Force re-render ทันที ไม่รอ Firestore snapshot
+
       if (allComments.length > 0) renderComments(allComments);
       else renderComments([]);
     }
@@ -3353,7 +3201,7 @@
     const newUntil = ban.until - days * 86400000;
     try {
       if (newUntil <= Date.now()) {
-        // ถ้าลดแล้วหมดอายุแล้ว — ปลดแบนเลย
+
         if (!confirm('หลังจากลดเวลาแล้ว การระงับจะหมดอายุทันที ต้องการปลดแบนผู้ใช้นี้เลยหรือไม่?')) return;
         await deleteDoc(doc(db, 'bans', uid));
         delete allBans[uid];
@@ -3397,10 +3245,10 @@
     _authReady = true;
 
     if (isAdmin) {
-      // admin ฟัง collection ทั้งหมดเพื่อแสดงในหน้า admin
+
       subscribeAllBans();
     } else {
-      // user ทั่วไป ฟังเฉพาะ ban doc ของตัวเอง
+
       subscribeUserBan(user);
     }
 
@@ -3417,7 +3265,7 @@
     const loginArea = document.getElementById('loginArea');
     const formBox = document.getElementById('formBox');
     if (currentUser) {
-      // ซ่อน form ถ้าโดนแบน
+
       const ban = getBanForUser(currentUser);
       const banned = !isAdmin && ban;
       loginArea.innerHTML = `
@@ -3435,7 +3283,7 @@
       formBox.style.display = banned ? 'none' : 'block';
       if (!banned) {
         refreshButtonState();
-        setTimeout(initCharCounter, 100); // 🛡️ character counter
+        setTimeout(initCharCounter, 100);
         const nameInput = document.getElementById('inputName');
         nameInput.value = currentUser.displayName || '';
         nameInput.readOnly = true;
@@ -3457,7 +3305,7 @@
   window.loginWithGoogle = async function() {
     try {
       await signInWithPopup(auth, provider);
-      // ตรวจสอบแบนหลัง login ทันที (onAuthStateChanged จะจัดการ)
+
     } catch(e) { if (e.code !== 'auth/popup-closed-by-user') alert('เข้าสู่ระบบไม่สำเร็จ'); }
   };
   window.logoutUser = async function() {
@@ -3491,7 +3339,7 @@
     window._allComments = allComments;
     window._renderComments = renderComments;
     renderComments(allComments);
-    // subscribe replies แบบ real-time ทันทีทุก comment (ไม่ต้องกดเปิดก่อน)
+
     allComments.forEach(function(cm) {
       if (!replyListeners[cm.id]) subscribeReplies(cm.id);
     });
@@ -3499,33 +3347,29 @@
 
   const DAILY_LIMIT = 3;
 
-  // ===== 🛡️ ANTI-SPAM / ANTI-DDOS SYSTEM =====
-  // Cooldown ระหว่าง submit (วินาที)
-  const SUBMIT_COOLDOWN_MS = 30000; // 30 วินาที
-  const REPLY_COOLDOWN_MS = 15000;  // 15 วินาที
-  const MAX_TEXT_LENGTH = 1000;      // ตัวอักษรสูงสุด
+  const SUBMIT_COOLDOWN_MS = 30000;
+  const REPLY_COOLDOWN_MS = 15000;
+  const MAX_TEXT_LENGTH = 1000;
   const MAX_REPLY_LENGTH = 500;
-  const MIN_TEXT_LENGTH = 5;         // สั้นเกินไป
-  // ป้องกัน rapid submit ซ้ำๆ ในหน่วยความจำ (ไม่พึ่ง localStorage)
+  const MIN_TEXT_LENGTH = 5;
+
   let _lastSubmitTime = 0;
   let _lastReplyTime = 0;
-  let _submitAttempts = 0;          // นับครั้งพยายาม submit ผิดปกติ
+  let _submitAttempts = 0;
   let _cooldownTimerInterval = null;
 
-  // Spam patterns — regex ป้องกันข้อความ spam/โฆษณา/XSS พื้นฐาน
   const SPAM_PATTERNS = [
     /<script[\s\S]*?>/i,
     /javascript\s*:/i,
-    /on\w+\s*=/i,            // onerror= onclick= etc.
+    /on\w+\s*=/i,
     /data:\s*text\/html/i,
-    /(https?:\/\/[^\s]{60,})/i,   // URL ยาวผิดปกติ
+    /(https?:\/\/[^\s]{60,})/i,
   ];
 
-  // คำที่ผิดกฎหมาย/รุนแรงชัดเจน (basic list)
   const BLOCKED_WORDS = ['สคริปต์', 'javascript', '<script', 'alert(', 'document.cookie'];
 
   function sanitizeText(text) {
-    // ลบ HTML tags ทั้งหมด
+
     return text.replace(/<[^>]*>/g, '').trim();
   }
 
@@ -3543,7 +3387,7 @@
     for (const w of BLOCKED_WORDS) {
       if (lower.includes(w.toLowerCase())) return { ok: false, reason: '🚫 ตรวจพบเนื้อหาที่ไม่อนุญาต' };
     }
-    // ตรวจซ้ำอักขระมากผิดปกติ (spam เช่น aaaaaaa...)
+
     if (/(.)\1{29,}/.test(text)) {
       return { ok: false, reason: '⚠️ ตรวจพบอักขระซ้ำกันมากผิดปกติ' };
     }
@@ -3575,7 +3419,6 @@
     _cooldownTimerInterval = setInterval(tick, 1000);
   }
 
-  // Exponential backoff สำหรับ error ต่อเนื่อง
   function getBackoffDelay(attempts) {
     return Math.min(1000 * Math.pow(2, attempts), 30000);
   }
@@ -3585,7 +3428,6 @@
     return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
   }
 
-  // ดึงจำนวน comment วันนี้จาก Firestore
   async function getUserTodayCount() {
     if (!currentUser) return 0;
     const limitDoc = doc(db, 'daily_limits', `${currentUser.uid}_${getTodayKey()}`);
@@ -3595,7 +3437,6 @@
     } catch(e) { return 0; }
   }
 
-  // เพิ่มนับใน Firestore
   async function incrementUserTodayCount() {
     if (!currentUser) return;
     const limitDoc = doc(db, 'daily_limits', `${currentUser.uid}_${getTodayKey()}`);
@@ -3612,7 +3453,7 @@
   function updateSubmitButtonState(count) {
     const btn = document.querySelector('.btn-submit');
     if (!btn) return;
-    // ถ้ากำลัง cooldown อยู่ ไม่ override
+
     if (_cooldownTimerInterval) return;
     const remaining = DAILY_LIMIT - count;
     if (remaining <= 0) {
@@ -3636,8 +3477,6 @@
     updateSubmitButtonState(count);
   }
 
-  // ===== CHARACTER COUNTER =====
-  // เพิ่ม counter ให้ textarea
   function initCharCounter() {
     const ta = document.getElementById('inputText');
     if (!ta || ta._counterAdded) return;
@@ -3661,7 +3500,6 @@
   window.submitComment = async function() {
     if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
 
-    // ตรวจสอบแบน (UID และ Email) — block ทุกทาง
     if (!isAdmin) {
       const ban = getBanForUser(currentUser);
       if (ban) {
@@ -3670,7 +3508,6 @@
       }
     }
 
-    // 🛡️ Cooldown check — ป้องกัน rapid fire
     if (!isAdmin) {
       const sinceLastSubmit = Date.now() - _lastSubmitTime;
       if (sinceLastSubmit < SUBMIT_COOLDOWN_MS) {
@@ -3682,7 +3519,6 @@
       }
     }
 
-    // ตรวจสอบ limit จาก Firestore ก่อนส่ง (admin ไม่มีลิมิต)
     const todayCount = isAdmin ? 0 : await getUserTodayCount();
     if (!isAdmin && todayCount >= DAILY_LIMIT) {
       alert('❌ วันนี้ส่งความคิดเห็นครบ 3 ครั้งแล้ว\nกลับมาใหม่พรุ่งนี้นะครับ 😊');
@@ -3694,7 +3530,7 @@
     const isPrivate = document.getElementById('privateCheck').checked;
     const anonNum = currentUser.uid.split('').reduce((a, c) => (a * 31 + c.charCodeAt(0)) & 0xfffff, 0).toString().slice(0,6).padStart(6,'0');
     const displayName = isAnon ? `User${anonNum}` : (currentUser.displayName || 'นักเรียนนิรนาม');
-    const name = displayName;  // ชื่อสะอาด — tag สภานักเรียนแสดงใน render เท่านั้น
+    const name = displayName;
     const level = document.getElementById('inputLevel').value;
     if (!level) {
       const sel = document.getElementById('inputLevel');
@@ -3707,7 +3543,6 @@
     }
     const rawText = document.getElementById('inputText').value.trim();
 
-    // 🛡️ Validate + sanitize content
     const cleanText = sanitizeText(rawText);
     const validation = validateTextContent(cleanText, MAX_TEXT_LENGTH);
     if (!validation.ok) {
@@ -3723,7 +3558,6 @@
     const btn = document.querySelector('.btn-submit');
     btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...';
 
-    // 🛡️ บันทึกเวลาก่อนส่ง (ป้องกัน double-click)
     _lastSubmitTime = Date.now();
 
     try {
@@ -3745,8 +3579,8 @@
       document.getElementById('inputText').value = '';
       document.getElementById('inputLevel').value = '';
       showToast();
-      _submitAttempts = 0; // reset เมื่อสำเร็จ
-      // 🛡️ เริ่ม cooldown หลัง submit สำเร็จ
+      _submitAttempts = 0;
+
       if (!isAdmin) {
         const newCount = todayCount + 1;
         if (newCount < DAILY_LIMIT) {
@@ -3762,7 +3596,7 @@
       const backoff = getBackoffDelay(_submitAttempts);
       console.error(e);
       showToast(`❌ เกิดข้อผิดพลาด กรุณารอ ${Math.ceil(backoff/1000)} วิแล้วลองใหม่`, '#c0392b');
-      // Exponential backoff
+
       setTimeout(() => { btn.disabled = false; btn.style.opacity = '1'; refreshButtonState(); }, backoff);
     }
   };
@@ -3778,13 +3612,12 @@
     else await updateDoc(ref, { likes: increment(1), likedBy: arrayUnion(uid) });
   };
 
-  // Admin: reveal real identity of anon comment
   window._revealComment = function(docId) {
     const c = allComments.find(x => x.id === docId);
     if (!c) return;
     const revealPhoto = document.getElementById('revealPhoto');
     const revealPhotoEmoji = document.getElementById('revealPhotoEmoji');
-    // photo
+
     revealPhoto.innerHTML = '';
     if (c.realPhotoURL) {
       const img = document.createElement('img');
@@ -3806,7 +3639,7 @@
     if (!isAdmin && (!comment || comment.uid !== currentUser.uid)) return;
     if (!confirm('ลบความคิดเห็นนี้?')) return;
     try {
-      // ลบ replies ทั้งหมดใน subcollection ก่อน แล้วค่อยลบ comment หลัก
+
       const repliesSnap = await getDocs(collection(db, 'comments', docId, 'replies'));
       for (const rd of repliesSnap.docs) {
         await deleteDoc(doc(db, 'comments', docId, 'replies', rd.id));
@@ -3816,13 +3649,11 @@
     catch(e) { alert('ลบไม่สำเร็จ'); console.error(e); }
   };
 
-  // ===== REPLY SYSTEM =====
-  // Cache replies per comment: { [commentId]: [{id, ...}] }
   const repliesCache = {};
-  const replyListeners = {}; // commentId -> unsubscribe
+  const replyListeners = {};
 
   function subscribeReplies(commentId) {
-    if (replyListeners[commentId]) return; // already listening
+    if (replyListeners[commentId]) return;
     const { collection: col, query: q2, orderBy: ob, onSnapshot: ons } = window._fbImports;
     const repliesRef = col(db, 'comments', commentId, 'replies');
     const rq = q2(repliesRef, ob('createdAt', 'asc'));
@@ -3889,12 +3720,12 @@
 
   window.submitReply = async function(commentId) {
     if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
-    // ตรวจแบน
+
     if (!isAdmin) {
       const ban = getBanForUser(currentUser);
       if (ban) { showBanWall(currentUser); return; }
     }
-    // 🛡️ Reply cooldown
+
     if (!isAdmin) {
       const sinceLastReply = Date.now() - _lastReplyTime;
       if (sinceLastReply < REPLY_COOLDOWN_MS) {
@@ -3907,7 +3738,7 @@
     const sendBtn = document.getElementById('reply-btn-' + commentId);
     if (!input) return;
     const rawReplyText = input.value.trim();
-    // 🛡️ Validate reply content
+
     const cleanReply = sanitizeText(rawReplyText);
     const replyValidation = validateTextContent(cleanReply, MAX_REPLY_LENGTH);
     if (!replyValidation.ok) {
@@ -3920,7 +3751,6 @@
 
     sendBtn.disabled = true; sendBtn.textContent = '⏳';
 
-    // อ่านสถานะ anon จาก checkbox เดียวกับฟอร์ม comment หลัก
     const anonCheckEl = document.getElementById('anonCheck');
     const isAnon = !!(anonCheckEl && anonCheckEl.checked);
     const anonNum = currentUser.uid.split('').reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) & 0xfffff, 0)
@@ -3943,7 +3773,7 @@
       });
       input.value = '';
       input.style.height = 'auto';
-      if (!isAdmin) _lastReplyTime = Date.now(); // 🛡️ reset cooldown
+      if (!isAdmin) _lastReplyTime = Date.now();
     } catch(e) {
       alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
       console.error(e);
@@ -3964,7 +3794,7 @@
     const list = document.getElementById('commentsList');
     const filterType = window._filterType || 'ทั้งหมด';
     const myUid = currentUser ? currentUser.uid : null;
-    // ถ้า _publicBannedUids ยังไม่ถูก set ให้สร้างจาก allBans (หรือ Set ว่างถ้ายังไม่มีข้อมูล)
+
     if (!window._publicBannedUids) {
       window._publicBannedUids = new Set(
         Object.entries(allBans)
@@ -3975,7 +3805,7 @@
     const publicBannedUids = window._publicBannedUids;
     let filtered;
     if (filterType === '__banned__' && isAdmin) {
-      // รวม allBans จาก listener ทุกตัว
+
       const bans = window._allBans || allBans;
       const bannedUids = Object.keys(bans).filter(uid => {
         const b = bans[uid];
@@ -3989,7 +3819,7 @@
           filtered.push(c);
         }
       }
-      // Include banned users with no comments at all
+
       bannedUids.forEach(uid => {
         if (!seen.has(uid)) {
           const ban = bans[uid];
@@ -3997,7 +3827,7 @@
         }
       });
     } else if (filterType === '__council__' && isAdmin) {
-      // แท็บเฉพาะสภา — แสดงเฉพาะโพส isPrivate ทั้งหมด
+
       filtered = comments.filter(c => c.isPrivate);
     } else if (filterType === 'ทั้งหมด') {
       filtered = isAdmin
@@ -4009,7 +3839,6 @@
         : comments.filter(c => c.type === filterType && !publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
     }
 
-    // Apply grade filter
     const gradeFilter = window._gradeFilter || '';
     if (gradeFilter) {
       filtered = filtered.filter(c => c.level === gradeFilter);
@@ -4039,12 +3868,10 @@
       const timeLeft = getBanTimeLeft(c.uid);
       const isBanView = filterType === '__banned__';
 
-      // Avatar: show real photo for non-anon, emoji for anon
       const avatarHtml = (c.photoURL && !c.isAnon)
         ? `<img src="${c.photoURL}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block" onerror="this.style.display='none';this.nextSibling.style.display='flex'" /><span style="display:none;font-size:1.3rem;align-items:center;justify-content:center;width:100%;height:100%">${c.avatar || '😊'}</span>`
         : `<span style="font-size:1.3rem;display:flex;align-items:center;justify-content:center;width:100%;height:100%">${c.avatar || '😊'}</span>`;
 
-      // Safe strings for inline onclick — use uid for ban functions
       const safeUid = (c.uid || '').replace(/'/g, "\\'");
       const safeName = (c.realName || c.name || '').replace(/'/g, "\\'");
       const isOwner = currentUser && currentUser.uid === c.uid;
