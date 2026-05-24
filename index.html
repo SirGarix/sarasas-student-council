@@ -1936,8 +1936,8 @@
     from { opacity: 1; transform: translateY(0)     scale(1);    }
     to   { opacity: 0; transform: translateY(-10px) scale(0.98); }
   }
-  .page-entering { animation: pageEnter 0.32s cubic-bezier(0.22,1,0.36,1) both; }
-  .page-leaving  { animation: pageLeave 0.18s cubic-bezier(0.4,0,1,1) both; pointer-events: none; }
+  .page-entering { animation: pageEnter 0.32s cubic-bezier(0.22,1,0.36,1) forwards; }
+  .page-leaving  { animation: pageLeave 0.18s cubic-bezier(0.4,0,1,1) forwards; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -2617,27 +2617,33 @@
   }
 
   function _showPage(id) {
-    // Always trust the id given — no "same page" guard that can get out of sync
     var target = document.getElementById(id);
     if (!target) { id = 'lobby'; target = document.getElementById('lobby'); }
 
     _clearTimers();
 
-    // Wipe all pages instantly
+    // Hide all pages, clear all styles and animation classes
     document.querySelectorAll('.page').forEach(function(p) {
       p.classList.remove('active', 'page-entering', 'page-leaving');
       p.style.cssText = '';
     });
 
-    // Show target with enter animation
-    target.classList.add('active', 'page-entering');
+    // Make target visible first (so display:flex kicks in for lobby)
+    // then add animation class — prevents 'both' backwards-fill from hiding it
+    target.classList.add('active');
     target.scrollTop = 0;
+
+    // Force reflow so browser registers 'active' before animation starts
+    void target.offsetHeight;
+
+    // Now add animation — since element is already visible, 'from' state won't flash
+    target.classList.add('page-entering');
+
     _enterTimer = setTimeout(function() {
       target.classList.remove('page-entering');
       _enterTimer = null;
     }, 400);
 
-    // Floating button state
     var btn = document.getElementById('floatingSupportBtn');
     if (btn) {
       if (id === 'lobby') btn.classList.remove('compact');
