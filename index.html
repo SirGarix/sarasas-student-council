@@ -1989,20 +1989,19 @@
   const commentsCol = collection(db, 'comments');
   const bansCol = collection(db, 'bans');
 
-  let allBans = {}; // uid -> ban data
+  let allBans = {}; // uid -> ban data (admin only)
   let banWallInterval = null;
   let banWallCountdownInterval = null;
   let _bansReady = false;
   let _authReady = false;
+  let _userBanUnsub = null; // listener สำหรับ ban ของ user คนปัจจุบัน
 
   // ========== BAN WALL FUNCTIONS ==========
 
   function getBanForUser(user) {
     if (!user) return null;
-    // ตรวจสอบด้วย UID ก่อน
     const byUid = allBans[user.uid];
     if (byUid && isActiveBan(byUid)) return byUid;
-    // ตรวจสอบด้วย Email (normalize lowercase)
     const email = (user.email || '').toLowerCase().trim();
     const byEmail = Object.values(allBans).find(b =>
       b.email && b.email.toLowerCase().trim() === email && isActiveBan(b)
@@ -2033,6 +2032,43 @@
     const hours = Math.floor((ms % 86400000) / 3600000);
     if (days > 0) return `เหลือ ${days} วัน ${hours} ชม.`;
     return `เหลือ ${hours} ชม.`;
+  }
+
+  // subscribe ฟัง ban doc ของ user คนนี้คนเดียว (user มีสิทธิ์อ่าน doc ตัวเอง)
+  function subscribeUserBan(user) {
+    if (_userBanUnsub) { _userBanUnsub(); _userBanUnsub = null; }
+    if (!user) return;
+    const banDocRef = doc(db, 'bans', user.uid);
+    _userBanUnsub = onSnapshot(banDocRef, (snap) => {
+      if (snap.exists()) {
+        allBans[user.uid] = { id: snap.id, ...snap.data() };
+      } else {
+        delete allBans[user.uid];
+      }
+      window._allBans = allBans;
+      _bansReady = true;
+      checkAndShowBanWall();
+      if (allComments.length > 0) renderComments(allComments);
+    }, (err) => {
+      // ถ้าอ่านไม่ได้ (Security Rules) ให้ถือว่าไม่มีแบน
+      console.warn('ban doc read error:', err);
+      _bansReady = true;
+    });
+  }
+
+  // admin ฟัง collection ทั้งหมด
+  function subscribeAllBans() {
+    onSnapshot(bansCol, (snap) => {
+      allBans = {};
+      snap.docs.forEach(d => { allBans[d.id] = { id: d.id, ...d.data() }; });
+      window._allBans = allBans;
+      _bansReady = true;
+      if (_authReady) checkAndShowBanWall();
+      if (allComments.length > 0) renderComments(allComments);
+    }, (err) => {
+      console.warn('bans collection error:', err);
+      _bansReady = true;
+    });
   }
 
   function formatCountdown(ms) {
@@ -2142,17 +2178,6 @@
     }
   }
 
-  // Listen to bans - key by uid, real-time
-  onSnapshot(bansCol, (snap) => {
-    allBans = {};
-    snap.docs.forEach(d => { allBans[d.id] = { id: d.id, ...d.data() }; });
-    window._allBans = allBans;
-    _bansReady = true;
-    // ตรวจสอบทันที: ถ้า auth พร้อมแล้ว หรือจะรอ auth มาเรียก checkAndShowBanWall อีกที
-    if (_authReady) checkAndShowBanWall();
-    if (allComments.length > 0) renderComments(allComments);
-  });
-
   // ========== BAN ACTIONS ==========
 
   window.confirmBan = async function() {
@@ -2210,13 +2235,20 @@
     currentUser = user;
     isAdmin = user && ADMIN_EMAILS.includes(user.email);
     _authReady = true;
+
+    if (isAdmin) {
+      // admin ฟัง collection ทั้งหมดเพื่อแสดงในหน้า admin
+      subscribeAllBans();
+    } else {
+      // user ทั่วไป ฟังเฉพาะ ban doc ของตัวเอง
+      subscribeUserBan(user);
+    }
+
     updateAuthUI();
     const adminTab = document.getElementById('adminOnlyTab');
     if (adminTab) adminTab.style.display = isAdmin ? '' : 'none';
     if (allComments.length > 0) renderComments(allComments);
-    // ตรวจสอบแบน — ถ้า bans โหลดแล้วตรวจได้เลย, ถ้ายังรอจะตรวจเมื่อ bans มา
     if (_bansReady) checkAndShowBanWall();
-    // ถ้า bans ยังไม่มา _tryBanCheck จะทำงานเมื่อ onSnapshot fires
   });
 
   function updateAuthUI() {
@@ -2263,10 +2295,13 @@
     } catch(e) { if (e.code !== 'auth/popup-closed-by-user') alert('เข้าสู่ระบบไม่สำเร็จ'); }
   };
   window.logoutUser = async function() {
+    if (_userBanUnsub) { _userBanUnsub(); _userBanUnsub = null; }
     if (banWallCountdownInterval) clearInterval(banWallCountdownInterval);
     document.getElementById('banWall').classList.remove('show');
     document.body.style.overflow = '';
     document.removeEventListener('keydown', blockKeyboard, true);
+    allBans = {};
+    _bansReady = false;
     await signOut(auth);
   };
 
