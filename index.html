@@ -40,6 +40,7 @@
       overscroll-behavior-y: contain;
       transform: translateZ(0);
       will-change: transform;
+      scrollbar-gutter: stable;
     }
     .page.active { display: block; }
     #lobby.active { display: flex; }
@@ -2365,11 +2366,16 @@
   const SEAL_IMAGE_URL = 'https://i.postimg.cc/02m2CkSh/swsk_promax.png';
   function lockPageScroll() {
     var active = document.querySelector('.page.active');
-    if (active) active.style.overflow = 'hidden';
+    if (!active) return;
+    var sb = window.innerWidth - active.clientWidth;
+    if (sb > 0) active.style.paddingRight = sb + 'px';
+    active.style.overflowY = 'hidden';
   }
   function unlockPageScroll() {
     var active = document.querySelector('.page.active');
-    if (active) active.style.overflow = '';
+    if (!active) return;
+    active.style.overflowY = '';
+    active.style.paddingRight = '';
   }
   window.lockPageScroll = lockPageScroll;
   window.unlockPageScroll = unlockPageScroll;
