@@ -986,6 +986,11 @@
     .extend-title { color: #f39c12 !important; }
     .extend-confirm-btn { background: linear-gradient(135deg, #e67e22, #f39c12); }
     .extend-confirm-btn:hover { box-shadow: 0 6px 20px rgba(230,126,34,0.5); }
+    .reduce-box { border-color: rgba(39,174,96,0.35); }
+    .reduce-box::before { background: linear-gradient(90deg, #27ae60, #55efc4, #27ae60); }
+    .reduce-title { color: #55efc4 !important; }
+    .reduce-confirm-btn { background: linear-gradient(135deg, #27ae60, #55efc4); color: #0a1628; }
+    .reduce-confirm-btn:hover { box-shadow: 0 6px 20px rgba(39,174,96,0.5); }
     .banned-comment-item { background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.2); }
     .private-comment-item { background: rgba(255,215,0,0.04); border: 1px solid rgba(255,215,0,0.18); }
     .banned-badge { background: rgba(192,57,43,0.2); color: #ff8080; border: 1px solid rgba(192,57,43,0.35); font-size: 0.7rem; font-family: 'Kanit', sans-serif; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 20px; }
@@ -1688,6 +1693,23 @@
   </div>
 </div>
 
+<!-- Reduce Ban Modal -->
+<div class="ban-overlay" id="reduceModal" onclick="closeReduceOutside(event)">
+  <div class="ban-box reduce-box" id="reduceBox">
+    <button class="ban-close" onclick="closeReduceModal()">✕</button>
+    <div class="ban-title reduce-title">⏬ ลดเวลาระงับ</div>
+    <div class="ban-target-info" id="reduceTargetInfo">กำลังโหลด...</div>
+    <div class="ban-duration-label">⏱ ลดระยะเวลา</div>
+    <div class="ban-duration-grid">
+      <button class="ban-duration-btn active" onclick="selectReduceDuration(this,1)">-1 วัน</button>
+      <button class="ban-duration-btn" onclick="selectReduceDuration(this,3)">-3 วัน</button>
+      <button class="ban-duration-btn" onclick="selectReduceDuration(this,7)">-7 วัน</button>
+      <button class="ban-duration-btn" onclick="selectReduceDuration(this,30)">-30 วัน</button>
+    </div>
+    <button class="ban-confirm-btn reduce-confirm-btn" onclick="confirmReduce()">⏬ ยืนยันลดเวลา</button>
+  </div>
+</div>
+
 <!-- ===== BAN WALL POPUP (ปิดไม่ได้) ===== -->
 <div id="banWall">
   <div class="ban-wall-box" id="banWallBox">
@@ -2253,6 +2275,28 @@
     el.classList.add('active');
   };
 
+  window._reduceTargetUid = null;
+  window._reduceDurationDays = 1;
+
+  window.openReduceModal = function(uid, name, currentExpiry) {
+    document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
+    window._reduceTargetUid = uid;
+    window._reduceDurationDays = 1;
+    const expiryText = currentExpiry === -1 ? 'ถาวร' : (currentExpiry ? new Date(currentExpiry).toLocaleDateString('th-TH') : 'ไม่ทราบ');
+    document.getElementById('reduceTargetInfo').innerHTML = `<strong>👤 ${name}</strong><br/><span style="font-size:0.78rem;color:rgba(100,255,180,0.85)">หมดอายุปัจจุบัน: ${expiryText}</span>`;
+    document.querySelectorAll('#reduceModal .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    document.getElementById('reduceModal').classList.add('open');
+  };
+
+  window.closeReduceModal = function() { document.getElementById('reduceModal').classList.remove('open'); };
+  window.closeReduceOutside = function(e) { if (e.target === document.getElementById('reduceModal')) window.closeReduceModal(); };
+
+  window.selectReduceDuration = function(el, days) {
+    window._reduceDurationDays = days;
+    document.querySelectorAll('#reduceModal .ban-duration-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  };
+
   // Stars
   const container = document.getElementById('starsContainer');
   for (let i = 0; i < 60; i++) {
@@ -2566,9 +2610,40 @@
           .filter(([u, b]) => b && isActiveBan(b))
           .map(([u]) => u)
       );
+      // Force re-render ทันที ไม่รอ Firestore snapshot
       if (allComments.length > 0) renderComments(allComments);
+      else renderComments([]);
     }
     catch(e) { alert('เกิดข้อผิดพลาด'); console.error(e); }
+  };
+
+  window.confirmReduce = async function() {
+    const uid = window._reduceTargetUid;
+    const days = window._reduceDurationDays;
+    if (!uid) return;
+    const ban = (window._allBans || allBans)[uid];
+    if (!ban) { alert('ไม่พบข้อมูลการระงับ'); return; }
+    if (ban.until === -1) { alert('ไม่สามารถลดเวลาแบนถาวรได้ กรุณาใช้ปลดแบนแทน'); return; }
+    const newUntil = ban.until - days * 86400000;
+    try {
+      if (newUntil <= Date.now()) {
+        // ถ้าลดแล้วหมดอายุแล้ว — ปลดแบนเลย
+        if (!confirm('หลังจากลดเวลาแล้ว การระงับจะหมดอายุทันที ต้องการปลดแบนผู้ใช้นี้เลยหรือไม่?')) return;
+        await deleteDoc(doc(db, 'bans', uid));
+        delete allBans[uid];
+        window._allBans = allBans;
+        window._publicBannedUids = new Set(
+          Object.entries(allBans)
+            .filter(([u, b]) => b && isActiveBan(b))
+            .map(([u]) => u)
+        );
+        if (allComments.length > 0) renderComments(allComments);
+        else renderComments([]);
+      } else {
+        await updateDoc(doc(db, 'bans', uid), { until: newUntil });
+      }
+      window.closeReduceModal();
+    } catch(e) { alert('เกิดข้อผิดพลาด'); console.error(e); }
   };
 
   window.confirmExtend = async function() {
@@ -3070,7 +3145,8 @@
       if (isAdmin && !c.isBanOnly) {
         const banBtn = userBanned
           ? `<div class="dropdown-item success" onclick="unbanUser('${safeUid}')">✅ ปลดแบน</div>
-             <div class="dropdown-item warn" onclick="openExtendModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏰ เพิ่มเวลาแบน</div>`
+             <div class="dropdown-item warn" onclick="openExtendModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏰ เพิ่มเวลาแบน</div>
+             <div class="dropdown-item" style="color:#55efc4" onclick="openReduceModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏬ ลดเวลาแบน</div>`
           : `<div class="dropdown-item warn" onclick="openBanModal('${safeUid}','${safeName}')">🚫 ระงับคอมเม้น</div>`;
         dropdownHtml = `
           <div class="comment-menu-wrap" id="menu-wrap-${c.id}">
@@ -3088,6 +3164,7 @@
             <div class="comment-dropdown" id="menu-${c.id}">
               <div class="dropdown-item success" onclick="unbanUser('${safeUid}')">✅ ปลดแบน</div>
               <div class="dropdown-item warn" onclick="openExtendModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏰ เพิ่มเวลาแบน</div>
+              <div class="dropdown-item" style="color:#55efc4" onclick="openReduceModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏬ ลดเวลาแบน</div>
             </div>
           </div>`;
       } else if (!isAdmin && isOwner && !c.isBanOnly) {
