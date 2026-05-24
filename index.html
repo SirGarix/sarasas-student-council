@@ -2934,8 +2934,6 @@
     measurementId: "G-Z8YN9WD8C1"
   };
 
-  const ADMIN_EMAILS = ['fyhn.6bi@gmail.com'];
-
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const auth = getAuth(app);
@@ -3241,7 +3239,12 @@
 
   onAuthStateChanged(auth, async (user) => {
     currentUser = user;
-    isAdmin = user && ADMIN_EMAILS.includes(user.email);
+    if (user) {
+      const tokenResult = await user.getIdTokenResult();
+      isAdmin = tokenResult.claims.role === 'admin';
+    } else {
+      isAdmin = false;
+    }
     _authReady = true;
 
     if (isAdmin) {
