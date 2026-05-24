@@ -2655,11 +2655,21 @@
     _switchPage(page, false);
   });
 
-  // Restore correct page state when returning via bfcache (iOS Safari)
+  // iOS Safari bfcache: page is restored from snapshot, not reloaded.
+  // Force-reset to lobby so all buttons are visible.
   window.addEventListener('pageshow', function(e) {
     if (e.persisted) {
-      var page = (history.state && history.state.page) ? history.state.page : 'lobby';
-      _switchPage(page, false);
+      // Hard reset: remove active from all pages, show lobby instantly (no fade)
+      document.querySelectorAll('.page').forEach(function(p) {
+        p.classList.remove('active');
+        p.style.opacity = '';
+        p.style.transition = '';
+      });
+      var lobby = document.getElementById('lobby');
+      if (lobby) { lobby.classList.add('active'); lobby.scrollTop = 0; }
+      var btn = document.getElementById('floatingSupportBtn');
+      if (btn) btn.classList.remove('compact');
+      history.replaceState({ page: 'lobby' }, '', '');
     }
   });
   (function() {
