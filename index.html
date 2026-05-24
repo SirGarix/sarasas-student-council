@@ -137,7 +137,7 @@
       display: flex; gap: 1.5rem;
       flex-wrap: wrap; justify-content: center;
       opacity: 0;
-      animation: fadeUp 0.8s forwards 0.9s;
+      animation: fadeUp 0.8s forwards 1.05s;
     }
 
     .btn-lobby {
@@ -171,6 +171,12 @@
       border: 2px solid rgba(255,255,255,0.35);
     }
     .btn-secondary:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.8); color: var(--white); }
+    .btn-policy {
+      background: linear-gradient(135deg, rgba(255,215,100,0.15), rgba(255,180,50,0.1));
+      color: rgba(255,220,100,0.95);
+      border: 2px solid rgba(255,200,80,0.45);
+    }
+    .btn-policy:hover { transform: translateY(-3px); border-color: rgba(255,210,80,0.85); box-shadow: 0 8px 28px rgba(255,190,60,0.25); }
 
     .lobby-decor {
       position: absolute; border-radius: 50%;
@@ -183,6 +189,83 @@
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== SOCIAL LINKS ===== */
+    .lobby-social {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s forwards 0.85s;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 1.2rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-family: 'Kanit', sans-serif;
+      transition: all 0.3s;
+      border: 1.5px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .social-link::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.08);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+    }
+    .social-link:hover::before { transform: translateX(0); }
+    .social-link:hover { transform: translateY(-3px); }
+
+    .social-ig {
+      background: linear-gradient(135deg, rgba(131,58,180,0.25), rgba(252,176,69,0.18));
+      border-color: rgba(200,100,200,0.45);
+      color: #e090f0;
+    }
+    .social-ig:hover {
+      border-color: rgba(220,130,255,0.8);
+      box-shadow: 0 6px 24px rgba(180,80,220,0.35);
+      color: #f0b8ff;
+    }
+
+    .social-fb {
+      background: linear-gradient(135deg, rgba(24,119,242,0.25), rgba(66,103,178,0.18));
+      border-color: rgba(80,130,240,0.45);
+      color: #80b0ff;
+    }
+    .social-fb:hover {
+      border-color: rgba(100,160,255,0.8);
+      box-shadow: 0 6px 24px rgba(24,119,242,0.35);
+      color: #a8ccff;
+    }
+
+    .social-icon {
+      width: 20px; height: 20px;
+      flex-shrink: 0;
+    }
+
+    .social-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+    .social-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .social-handle {
+      font-size: 0.7rem;
+      opacity: 0.65;
+      font-weight: 400;
     }
 
     /* ===== SHARED NAV ===== */
@@ -540,31 +623,50 @@
 
     /* Social links */
     .modal-socials {
-      display: flex; flex-direction: column; gap: 0.5rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
     }
     .social-link {
       display: flex; align-items: center; gap: 0.6rem;
-      padding: 0.5rem 0.8rem;
-      border-radius: 10px;
+      padding: 0.55rem 1.1rem;
+      border-radius: 50px;
       text-decoration: none;
       font-size: 0.83rem;
       font-family: 'Kanit', sans-serif;
       font-weight: 600;
-      transition: all 0.2s;
-      border: 1px solid transparent;
+      transition: all 0.3s;
+      border: 1.5px solid transparent;
+      position: relative; overflow: hidden;
     }
+    .social-link::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.08);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+    }
+    .social-link:hover::before { transform: translateX(0); }
     .social-link.facebook {
-      background: rgba(24,119,242,0.12);
-      color: #74b4ff;
-      border-color: rgba(24,119,242,0.2);
+      background: linear-gradient(135deg, rgba(24,119,242,0.25), rgba(66,103,178,0.18));
+      color: #80b0ff;
+      border-color: rgba(80,130,240,0.45);
     }
-    .social-link.facebook:hover { background: rgba(24,119,242,0.22); border-color: rgba(24,119,242,0.4); transform: translateX(3px); }
+    .social-link.facebook:hover {
+      transform: translateY(-2px);
+      border-color: rgba(100,160,255,0.8);
+      box-shadow: 0 4px 18px rgba(24,119,242,0.35);
+      color: #a8ccff;
+    }
     .social-link.instagram {
-      background: rgba(225,48,108,0.12);
-      color: #ff8fab;
-      border-color: rgba(225,48,108,0.2);
+      background: linear-gradient(135deg, rgba(131,58,180,0.25), rgba(252,176,69,0.18));
+      color: #e090f0;
+      border-color: rgba(200,100,200,0.45);
     }
-    .social-link.instagram:hover { background: rgba(225,48,108,0.22); border-color: rgba(225,48,108,0.4); transform: translateX(3px); }
+    .social-link.instagram:hover {
+      transform: translateY(-2px);
+      border-color: rgba(220,130,255,0.8);
+      box-shadow: 0 4px 18px rgba(180,80,220,0.35);
+      color: #f0b8ff;
+    }
     .social-link.no-link {
       color: rgba(255,255,255,0.25);
       border-color: rgba(255,255,255,0.06);
@@ -572,16 +674,8 @@
       cursor: default;
       font-style: italic;
       font-size: 0.78rem;
+      border-radius: 50px;
     }
-
-    .social-icon {
-      width: 22px; height: 22px;
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.85rem; flex-shrink: 0;
-    }
-    .social-icon.fb { background: #1877f2; }
-    .social-icon.ig { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
 
     /* ===== COMMENTS PAGE ===== */
     #comments {
@@ -1478,6 +1572,152 @@
       font-family: 'Sarabun', sans-serif; margin-top: 0.5rem;
     }
 
+    /* ===== POLICY PAGE ===== */
+    #policy {
+      background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 60%, #0a1628 100%);
+      min-height: 100vh;
+    }
+    .policy-hero {
+      text-align: center;
+      padding: 3.5rem 1.5rem 2.5rem;
+      background: linear-gradient(180deg, rgba(26,58,107,0.5) 0%, transparent 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: relative;
+      overflow: hidden;
+    }
+    .policy-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        60deg, transparent, transparent 80px,
+        rgba(255,200,60,0.02) 80px, rgba(255,200,60,0.02) 81px
+      );
+      pointer-events: none;
+    }
+    .policy-hero-icon {
+      font-size: 3.2rem;
+      margin-bottom: 1rem;
+      display: block;
+      filter: drop-shadow(0 0 18px rgba(255,200,60,0.4));
+      animation: float 4s ease-in-out infinite;
+    }
+    .policy-hero h1 {
+      font-family: 'Kanit', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 900;
+      color: var(--white);
+      text-shadow: 0 0 40px rgba(255,200,60,0.2);
+      margin-bottom: 0.5rem;
+    }
+    .policy-hero p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.95rem;
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+    .policy-gold-line {
+      width: 90px; height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(255,200,60,0.7), transparent);
+      margin: 1.2rem auto;
+      border-radius: 2px;
+    }
+
+    .policy-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    .policy-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
+      padding: 2rem 2rem 2rem 5rem;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      cursor: default;
+    }
+    .policy-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--policy-color, linear-gradient(180deg, #ffd060, #ffaa20));
+      border-radius: 4px 0 0 4px;
+    }
+    .policy-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.16);
+    }
+    .policy-number {
+      position: absolute;
+      left: 1.4rem;
+      top: 1.8rem;
+      width: 2.2rem; height: 2.2rem;
+      border-radius: 50%;
+      background: var(--policy-bg, rgba(255,200,60,0.15));
+      border: 1.5px solid var(--policy-border, rgba(255,200,60,0.4));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Kanit', sans-serif;
+      font-size: 0.9rem; font-weight: 800;
+      color: var(--policy-text-color, rgba(255,200,60,0.95));
+    }
+    .policy-emoji {
+      position: absolute;
+      right: 1.6rem; top: 1.6rem;
+      font-size: 1.8rem;
+      opacity: 0.18;
+    }
+    .policy-title {
+      font-family: 'Kanit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 0.7rem;
+      line-height: 1.3;
+      letter-spacing: 0.2px;
+    }
+    .policy-title-accent {
+      display: inline-block;
+      padding: 0.15rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+      background: var(--policy-badge-bg, rgba(255,200,60,0.15));
+      color: var(--policy-badge-color, rgba(255,200,60,0.9));
+      border: 1px solid var(--policy-badge-border, rgba(255,200,60,0.3));
+    }
+    .policy-desc {
+      color: rgba(255,255,255,0.65);
+      font-size: 0.93rem;
+      line-height: 1.8;
+    }
+    .policy-desc ul {
+      margin: 0.6rem 0 0 0;
+      padding-left: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .policy-desc ul li { color: rgba(255,255,255,0.6); }
+
+    .policy-footer-note {
+      text-align: center;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.82rem;
+      margin-top: 2.5rem;
+      padding: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      line-height: 1.7;
+    }
+
     /* Mobile responsive */
     @media (max-width: 720px) {
       .members-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1rem; }
@@ -1518,13 +1758,139 @@
   <h1 class="lobby-title">SARASAS PROMAX</h1>
   <p class="lobby-sub">เสียงของเราคือการเปลี่ยนแปลง · ร่วมสร้างโรงเรียนในฝันของเราไปด้วยกัน</p>
 
+  <!-- Social Media Links -->
+  <div class="lobby-social">
+    <a href="https://www.instagram.com/" target="_blank" class="social-link social-ig">
+      <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="2"/>
+        <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+      </svg>
+      <div class="social-text">
+        <span class="social-label">Instagram</span>
+        <span class="social-handle">ของพรรคเรา</span>
+      </div>
+    </a>
+    <a href="https://www.facebook.com/" target="_blank" class="social-link social-fb">
+      <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="social-text">
+        <span class="social-label">Facebook</span>
+        <span class="social-handle">ของพรรคเรา</span>
+      </div>
+    </a>
+  </div>
+
   <div class="lobby-buttons">
     <button class="btn-lobby btn-primary" onclick="goTo('members')">
       👥 สมาชิกสภานักเรียน
     </button>
-    <button class="btn-lobby btn-secondary" onclick="goTo('comments')">
+    <button class="btn-lobby btn-primary" onclick="goTo('comments')">
       💬 ร้องเรียน / แสดงความคิดเห็น
     </button>
+    <button class="btn-lobby btn-primary" onclick="goTo('policy')">
+      📜 นโยบายสภานักเรียน
+    </button>
+  </div>
+</div>
+
+<!-- ===== POLICY PAGE ===== -->
+<div id="policy" class="page">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
+    <span class="nav-title">📜 นโยบายสภานักเรียน</span>
+  </nav>
+
+  <div class="policy-hero">
+    <span class="policy-hero-icon">📜</span>
+    <h1>นโยบาย 5 ด้าน</h1>
+    <div class="policy-gold-line"></div>
+    <p>สภานักเรียนโรงเรียนสารสาสน์วิเทศสมุทรสาคร ปีการศึกษา 2568<br/>มุ่งมั่นทำงานเพื่อนักเรียนทุกคนอย่างจริงจัง</p>
+  </div>
+
+  <div class="policy-container">
+
+    <!-- Policy 1 -->
+    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#ffd060,#ffaa20);--policy-bg:rgba(255,200,60,0.12);--policy-border:rgba(255,200,60,0.4);--policy-text-color:rgba(255,200,60,0.95);--policy-badge-bg:rgba(255,200,60,0.12);--policy-badge-color:rgba(255,200,60,0.9);--policy-badge-border:rgba(255,200,60,0.3)">
+      <div class="policy-number">1</div>
+      <span class="policy-emoji">📚</span>
+      <div class="policy-title">นโยบายด้านวิชาการ <span class="policy-title-accent">Academic</span></div>
+      <div class="policy-desc">
+        ส่งเสริมการเรียนรู้และพัฒนาศักยภาพทางวิชาการของนักเรียนทุกระดับชั้น ให้มีความพร้อมในการแข่งขัน และมีทักษะที่จำเป็นในศตวรรษที่ 21
+        <ul>
+          <li>จัดกิจกรรมติวเสริมและแลกเปลี่ยนความรู้ระหว่างรุ่นพี่–รุ่นน้อง</li>
+          <li>ผลักดันห้องสมุดและพื้นที่การเรียนรู้ให้ทันสมัยและเข้าถึงง่าย</li>
+          <li>สนับสนุนการส่งนักเรียนเข้าแข่งขันทางวิชาการทั้งระดับภูมิภาคและระดับประเทศ</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Policy 2 -->
+    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#74b9ff,#0984e3);--policy-bg:rgba(116,185,255,0.12);--policy-border:rgba(116,185,255,0.4);--policy-text-color:rgba(116,185,255,0.95);--policy-badge-bg:rgba(116,185,255,0.12);--policy-badge-color:rgba(116,185,255,0.9);--policy-badge-border:rgba(116,185,255,0.3)">
+      <div class="policy-number">2</div>
+      <span class="policy-emoji">🎨</span>
+      <div class="policy-title">นโยบายด้านกิจกรรมและความคิดสร้างสรรค์ <span class="policy-title-accent">Activities</span></div>
+      <div class="policy-desc">
+        สนับสนุนกิจกรรมนอกห้องเรียนที่หลากหลาย เพื่อให้นักเรียนได้ค้นพบความสามารถพิเศษของตนเอง และเปิดโอกาสให้ทุกคนได้แสดงออก
+        <ul>
+          <li>จัดงานนิทรรศการและเวทีแสดงความสามารถประจำปี</li>
+          <li>เพิ่มชมรมและกิจกรรม Extracurricular ที่ตรงความต้องการของนักเรียน</li>
+          <li>สร้างพื้นที่สร้างสรรค์ให้นักเรียนได้ริเริ่มโครงการของตนเอง</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Policy 3 -->
+    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#55efc4,#00b894);--policy-bg:rgba(85,239,196,0.1);--policy-border:rgba(85,239,196,0.38);--policy-text-color:rgba(85,239,196,0.95);--policy-badge-bg:rgba(85,239,196,0.1);--policy-badge-color:rgba(85,239,196,0.9);--policy-badge-border:rgba(85,239,196,0.3)">
+      <div class="policy-number">3</div>
+      <span class="policy-emoji">❤️</span>
+      <div class="policy-title">นโยบายด้านสุขภาวะและความเป็นอยู่ที่ดี <span class="policy-title-accent">Well-being</span></div>
+      <div class="policy-desc">
+        ใส่ใจสุขภาพกายและสุขภาพจิตของนักเรียนทุกคน สร้างสภาพแวดล้อมโรงเรียนที่ปลอดภัย อบอุ่น และเป็นมิตร
+        <ul>
+          <li>ผลักดันมาตรการป้องกันการกลั่นแกล้ง (Anti-Bullying) อย่างเป็นรูปธรรม</li>
+          <li>จัดกิจกรรมส่งเสริมสุขภาพจิตและพื้นที่ระบาย–ปรึกษาปัญหา</li>
+          <li>ดูแลความสะอาดและความปลอดภัยของพื้นที่ส่วนกลางในโรงเรียน</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Policy 4 -->
+    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#fd79a8,#e84393);--policy-bg:rgba(253,121,168,0.1);--policy-border:rgba(253,121,168,0.38);--policy-text-color:rgba(253,121,168,0.95);--policy-badge-bg:rgba(253,121,168,0.1);--policy-badge-color:rgba(253,121,168,0.9);--policy-badge-border:rgba(253,121,168,0.3)">
+      <div class="policy-number">4</div>
+      <span class="policy-emoji">🤝</span>
+      <div class="policy-title">นโยบายด้านความสัมพันธ์และชุมชน <span class="policy-title-accent">Community</span></div>
+      <div class="policy-desc">
+        เสริมสร้างความสัมพันธ์อันดีระหว่างนักเรียน ครู ผู้ปกครอง และชุมชน เพื่อสร้างวัฒนธรรมโรงเรียนที่เข้มแข็งและอบอุ่น
+        <ul>
+          <li>เปิดช่องทางสื่อสารระหว่างนักเรียนกับฝ่ายบริหารอย่างโปร่งใส</li>
+          <li>จัดโครงการบำเพ็ญประโยชน์และกิจกรรมเพื่อชุมชนโดยรอบ</li>
+          <li>ส่งเสริมความสามัคคีระหว่างรุ่นพี่–รุ่นน้องทุกระดับชั้น</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Policy 5 -->
+    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#a29bfe,#6c5ce7);--policy-bg:rgba(162,155,254,0.1);--policy-border:rgba(162,155,254,0.38);--policy-text-color:rgba(162,155,254,0.95);--policy-badge-bg:rgba(162,155,254,0.1);--policy-badge-color:rgba(162,155,254,0.9);--policy-badge-border:rgba(162,155,254,0.3)">
+      <div class="policy-number">5</div>
+      <span class="policy-emoji">🌿</span>
+      <div class="policy-title">นโยบายด้านสิ่งแวดล้อมและเทคโนโลยี <span class="policy-title-accent">Green & Tech</span></div>
+      <div class="policy-desc">
+        ปลูกฝังจิตสำนึกรักสิ่งแวดล้อม ควบคู่กับการนำเทคโนโลยีมาใช้ยกระดับคุณภาพชีวิตนักเรียนในโรงเรียน
+        <ul>
+          <li>รณรงค์ลดขยะ คัดแยกขยะ และลด Single-use plastic ในโรงเรียน</li>
+          <li>สนับสนุนการนำเทคโนโลยีและ Digital Tools มาใช้ในกิจกรรมสภา</li>
+          <li>พัฒนาพื้นที่สีเขียวและสวนโรงเรียนให้น่าอยู่และน่าเรียนมากขึ้น</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="policy-footer-note">
+      สภานักเรียนโรงเรียนสารสาสน์วิเทศสมุทรสาคร ปีการศึกษา 2568<br/>
+      นโยบายทั้ง 5 ด้านนี้จะดำเนินการอย่างต่อเนื่องตลอดปีการศึกษา<br/>
+      <span style="color:rgba(255,255,255,0.2)">เสียงของเราคือการเปลี่ยนแปลง 💙</span>
+    </div>
   </div>
 </div>
 
@@ -2349,6 +2715,8 @@
 
     // Socials
     const socialBox = document.getElementById('modalSocials');
+    const fbSVG = `<svg style="width:18px;height:18px;flex-shrink:0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const igSVG = `<svg style="width:18px;height:18px;flex-shrink:0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>`;
     let html = '';
     if (m.facebook) {
       // Extract display name from facebook URL or use as-is if it's a name
@@ -2359,17 +2727,17 @@
         if (parts) fbDisplay = parts;
       } catch(e) { fbDisplay = m.facebook; }
       html += `<a class="social-link facebook" href="${m.facebook.startsWith('http') ? m.facebook : 'https://facebook.com/' + m.facebook}" target="_blank" rel="noopener">
-        <span class="social-icon fb">f</span> ${fbDisplay}
+        ${fbSVG} ${fbDisplay}
       </a>`;
     } else {
-      html += `<div class="social-link no-link"><span class="social-icon" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.3)">f</span> ยังไม่ได้ใส่ Facebook</div>`;
+      html += `<div class="social-link no-link">${fbSVG} ยังไม่ได้ใส่ Facebook</div>`;
     }
     if (m.instagram) {
       html += `<a class="social-link instagram" href="https://instagram.com/${m.instagram.replace('@','')}" target="_blank" rel="noopener">
-        <span class="social-icon ig">📷</span> @${m.instagram.replace('@','')}
+        ${igSVG} @${m.instagram.replace('@','')}
       </a>`;
     } else {
-      html += `<div class="social-link no-link"><span class="social-icon" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.3)">📷</span> ยังไม่ได้ใส่ Instagram</div>`;
+      html += `<div class="social-link no-link">${igSVG} ยังไม่ได้ใส่ Instagram</div>`;
     }
     socialBox.innerHTML = html;
 
