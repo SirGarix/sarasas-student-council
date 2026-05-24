@@ -2082,6 +2082,11 @@
     <h1>บอกเราได้เลย! 📣</h1>
     <div class="gold-line"></div>
     <p>อยากให้เราทำอะไรถ้าได้รับเลือก? มีนโยบายอะไรอยากเพิ่ม? เราฟังทุกเสียงของน้องๆ</p>
+    <div style="display:flex;align-items:center;justify-content:center;gap:0.6rem;margin-top:1rem;flex-wrap:wrap">
+      <span style="background:rgba(46,213,115,0.12);border:1px solid rgba(46,213,115,0.35);color:rgba(46,213,115,0.9);font-family:Kanit,sans-serif;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:20px;letter-spacing:0.5px">🛡️ ป้องกัน Spam</span>
+      <span style="background:rgba(41,128,185,0.12);border:1px solid rgba(41,128,185,0.35);color:rgba(100,180,255,0.9);font-family:Kanit,sans-serif;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:20px;letter-spacing:0.5px">🔒 Google Login Only</span>
+      <span style="background:rgba(155,89,182,0.12);border:1px solid rgba(155,89,182,0.35);color:rgba(200,150,255,0.9);font-family:Kanit,sans-serif;font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:20px;letter-spacing:0.5px">⏱️ จำกัด 3 ครั้ง/วัน</span>
+    </div>
   </div>
 
   <div class="comment-container">
@@ -2515,7 +2520,7 @@
       dept: 'วิทย์-คณิต',
       facebook: 'supattra.jirachaotmethakul',
       instagram: 'imyourdreax_',
-      photo: 'https://i.postimg.cc/rwNX73Fp/Screenshot-2026-05-23-212013.png',
+      photo: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/dream.webp',
       emoji: '👑'
     },
     vp1: {
@@ -2526,7 +2531,7 @@
       dept: 'ฝ่ายวิชาการ',
       facebook: '',
       instagram: '',
-      photo: 'https://i.postimg.cc/rp5cys97/526B4B51-3238-4AA0-93E9-FD6777E88E1F.jpg',
+      photo: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/baramet.webp',
       emoji: '⭐'
     },
     vp2: {
@@ -2537,7 +2542,7 @@
       dept: 'ฝ่ายกิจกรรม',
       facebook: '',
       instagram: '',
-      photo: 'https://i.postimg.cc/K8wBSq99/CFE2A23A-950C-4F3B-840B-9D64FE03B123.jpg',
+      photo: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/bow.webp',
       emoji: '🌟'
     },
     academic: {
@@ -2570,7 +2575,7 @@
       dept: 'ศิลป์-ภาษา',
       facebook: 'anupong.maneesodsaeng',
       instagram: 'anupongmaneesodsaeng',
-      photo: 'https://i.postimg.cc/85HF9bX6/Screenshot-2026-05-24-213743.png',
+      photo: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/jel.webp',
       emoji: '⚽'
     },
     env: {
@@ -2592,7 +2597,7 @@
       dept: 'ศิลป์-ภาษา',
       facebook: 'Poohchana.Janlren',
       instagram: 'junr_xn',
-      photo: 'https://i.postimg.cc/Xvh3JBZP/518412411-1809336153333751-6341811587900938413-n.jpg',
+      photo: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/mheepooh.webp',
       emoji: '💡'
     },
     community: {
@@ -3016,6 +3021,63 @@
     measurementId: "G-Z8YN9WD8C1"
   };
 
+  // ============================================================
+  // 🛡️ FIREBASE SECURITY RULES (ตั้งใน Firebase Console)
+  // ============================================================
+  // ไปที่: Firebase Console → Firestore Database → Rules
+  // แล้ว copy rules ด้านล่างนี้ไปใส่ให้ครบ
+  //
+  // rules_version = '2';
+  // service cloud.firestore {
+  //   match /databases/{database}/documents {
+  //
+  //     // COMMENTS — อ่านได้ทุกคน เขียนได้เฉพาะ login แล้ว
+  //     match /comments/{commentId} {
+  //       allow read: if true;
+  //       allow create: if request.auth != null
+  //         && request.resource.data.uid == request.auth.uid
+  //         && request.resource.data.text is string
+  //         && request.resource.data.text.size() >= 5
+  //         && request.resource.data.text.size() <= 1000;
+  //       allow update: if request.auth != null
+  //         && (resource.data.uid == request.auth.uid
+  //             || request.auth.token.email in ['fyhn.6bi@gmail.com']);
+  //       allow delete: if request.auth != null
+  //         && (resource.data.uid == request.auth.uid
+  //             || request.auth.token.email in ['fyhn.6bi@gmail.com']);
+  //
+  //       // REPLIES subcollection
+  //       match /replies/{replyId} {
+  //         allow read: if true;
+  //         allow create: if request.auth != null
+  //           && request.resource.data.uid == request.auth.uid
+  //           && request.resource.data.text is string
+  //           && request.resource.data.text.size() >= 1
+  //           && request.resource.data.text.size() <= 500;
+  //         allow delete: if request.auth != null
+  //           && (resource.data.uid == request.auth.uid
+  //               || request.auth.token.email in ['fyhn.6bi@gmail.com']);
+  //       }
+  //     }
+  //
+  //     // BANS — อ่านได้เฉพาะ doc ตัวเอง + admin เขียนได้เฉพาะ admin
+  //     match /bans/{userId} {
+  //       allow read: if request.auth != null
+  //         && (request.auth.uid == userId
+  //             || request.auth.token.email in ['fyhn.6bi@gmail.com']);
+  //       allow write: if request.auth != null
+  //         && request.auth.token.email in ['fyhn.6bi@gmail.com'];
+  //     }
+  //
+  //     // DAILY LIMITS — เขียน/อ่านได้เฉพาะ uid ตัวเอง
+  //     match /daily_limits/{docId} {
+  //       allow read, write: if request.auth != null
+  //         && docId.matches(request.auth.uid + '_.*');
+  //     }
+  //   }
+  // }
+  // ============================================================
+
   const ADMIN_EMAILS = ['fyhn.6bi@gmail.com'];
 
   const app = initializeApp(firebaseConfig);
@@ -3377,6 +3439,7 @@
       formBox.style.display = banned ? 'none' : 'block';
       if (!banned) {
         refreshButtonState();
+        setTimeout(initCharCounter, 100); // 🛡️ character counter
         const nameInput = document.getElementById('inputName');
         nameInput.value = currentUser.displayName || '';
         nameInput.readOnly = true;
@@ -3440,6 +3503,87 @@
 
   const DAILY_LIMIT = 3;
 
+  // ===== 🛡️ ANTI-SPAM / ANTI-DDOS SYSTEM =====
+  // Cooldown ระหว่าง submit (วินาที)
+  const SUBMIT_COOLDOWN_MS = 30000; // 30 วินาที
+  const REPLY_COOLDOWN_MS = 15000;  // 15 วินาที
+  const MAX_TEXT_LENGTH = 1000;      // ตัวอักษรสูงสุด
+  const MAX_REPLY_LENGTH = 500;
+  const MIN_TEXT_LENGTH = 5;         // สั้นเกินไป
+  // ป้องกัน rapid submit ซ้ำๆ ในหน่วยความจำ (ไม่พึ่ง localStorage)
+  let _lastSubmitTime = 0;
+  let _lastReplyTime = 0;
+  let _submitAttempts = 0;          // นับครั้งพยายาม submit ผิดปกติ
+  let _cooldownTimerInterval = null;
+
+  // Spam patterns — regex ป้องกันข้อความ spam/โฆษณา/XSS พื้นฐาน
+  const SPAM_PATTERNS = [
+    /<script[\s\S]*?>/i,
+    /javascript\s*:/i,
+    /on\w+\s*=/i,            // onerror= onclick= etc.
+    /data:\s*text\/html/i,
+    /(https?:\/\/[^\s]{60,})/i,   // URL ยาวผิดปกติ
+  ];
+
+  // คำที่ผิดกฎหมาย/รุนแรงชัดเจน (basic list)
+  const BLOCKED_WORDS = ['สคริปต์', 'javascript', '<script', 'alert(', 'document.cookie'];
+
+  function sanitizeText(text) {
+    // ลบ HTML tags ทั้งหมด
+    return text.replace(/<[^>]*>/g, '').trim();
+  }
+
+  function validateTextContent(text, maxLen) {
+    if (!text || text.trim().length < MIN_TEXT_LENGTH) {
+      return { ok: false, reason: `⚠️ ข้อความสั้นเกินไป (ขั้นต่ำ ${MIN_TEXT_LENGTH} ตัวอักษร)` };
+    }
+    if (text.length > maxLen) {
+      return { ok: false, reason: `⚠️ ข้อความยาวเกิน ${maxLen} ตัวอักษร (ปัจจุบัน ${text.length})` };
+    }
+    for (const p of SPAM_PATTERNS) {
+      if (p.test(text)) return { ok: false, reason: '🚫 ตรวจพบรูปแบบที่ไม่อนุญาต กรุณาตรวจสอบข้อความ' };
+    }
+    const lower = text.toLowerCase();
+    for (const w of BLOCKED_WORDS) {
+      if (lower.includes(w.toLowerCase())) return { ok: false, reason: '🚫 ตรวจพบเนื้อหาที่ไม่อนุญาต' };
+    }
+    // ตรวจซ้ำอักขระมากผิดปกติ (spam เช่น aaaaaaa...)
+    if (/(.)\1{29,}/.test(text)) {
+      return { ok: false, reason: '⚠️ ตรวจพบอักขระซ้ำกันมากผิดปกติ' };
+    }
+    return { ok: true };
+  }
+
+  function startCooldownTimer(remainingMs, btnEl, baseText) {
+    if (_cooldownTimerInterval) clearInterval(_cooldownTimerInterval);
+    const end = Date.now() + remainingMs;
+    const tick = () => {
+      const left = Math.ceil((end - Date.now()) / 1000);
+      if (left <= 0) {
+        clearInterval(_cooldownTimerInterval);
+        _cooldownTimerInterval = null;
+        if (btnEl) {
+          btnEl.disabled = false;
+          btnEl.style.opacity = '1';
+        }
+        refreshButtonState();
+        return;
+      }
+      if (btnEl) {
+        btnEl.disabled = true;
+        btnEl.style.opacity = '0.6';
+        btnEl.textContent = `⏳ รอ ${left} วิ...`;
+      }
+    };
+    tick();
+    _cooldownTimerInterval = setInterval(tick, 1000);
+  }
+
+  // Exponential backoff สำหรับ error ต่อเนื่อง
+  function getBackoffDelay(attempts) {
+    return Math.min(1000 * Math.pow(2, attempts), 30000);
+  }
+
   function getTodayKey() {
     const d = new Date();
     return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
@@ -3472,6 +3616,8 @@
   function updateSubmitButtonState(count) {
     const btn = document.querySelector('.btn-submit');
     if (!btn) return;
+    // ถ้ากำลัง cooldown อยู่ ไม่ override
+    if (_cooldownTimerInterval) return;
     const remaining = DAILY_LIMIT - count;
     if (remaining <= 0) {
       btn.disabled = true;
@@ -3494,6 +3640,28 @@
     updateSubmitButtonState(count);
   }
 
+  // ===== CHARACTER COUNTER =====
+  // เพิ่ม counter ให้ textarea
+  function initCharCounter() {
+    const ta = document.getElementById('inputText');
+    if (!ta || ta._counterAdded) return;
+    ta._counterAdded = true;
+    const counter = document.createElement('div');
+    counter.id = 'charCounter';
+    counter.style.cssText = 'font-size:0.72rem;color:rgba(255,255,255,0.35);text-align:right;margin-top:0.25rem;font-family:Kanit,sans-serif;transition:color 0.2s';
+    ta.parentNode.insertBefore(counter, ta.nextSibling);
+    const update = () => {
+      const len = ta.value.length;
+      const pct = len / MAX_TEXT_LENGTH;
+      counter.textContent = `${len} / ${MAX_TEXT_LENGTH}`;
+      if (pct >= 1) counter.style.color = '#e74c3c';
+      else if (pct >= 0.8) counter.style.color = '#f39c12';
+      else counter.style.color = 'rgba(255,255,255,0.35)';
+    };
+    ta.addEventListener('input', update);
+    update();
+  }
+
   window.submitComment = async function() {
     if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
 
@@ -3506,10 +3674,22 @@
       }
     }
 
+    // 🛡️ Cooldown check — ป้องกัน rapid fire
+    if (!isAdmin) {
+      const sinceLastSubmit = Date.now() - _lastSubmitTime;
+      if (sinceLastSubmit < SUBMIT_COOLDOWN_MS) {
+        const remaining = SUBMIT_COOLDOWN_MS - sinceLastSubmit;
+        const btn = document.querySelector('.btn-submit');
+        showToast(`⏳ กรุณารอ ${Math.ceil(remaining/1000)} วินาทีก่อนส่งอีกครั้ง`, '#e67e22');
+        startCooldownTimer(remaining, btn, '📨 ส่งความคิดเห็น');
+        return;
+      }
+    }
+
     // ตรวจสอบ limit จาก Firestore ก่อนส่ง (admin ไม่มีลิมิต)
     const todayCount = isAdmin ? 0 : await getUserTodayCount();
     if (!isAdmin && todayCount >= DAILY_LIMIT) {
-      alert('❌ วันนี้ส่งความคิดเห็นครบ 2 ครั้งแล้ว\nกลับมาใหม่พรุ่งนี้นะครับ 😊');
+      alert('❌ วันนี้ส่งความคิดเห็นครบ 3 ครั้งแล้ว\nกลับมาใหม่พรุ่งนี้นะครับ 😊');
       updateSubmitButtonState(todayCount);
       return;
     }
@@ -3529,26 +3709,35 @@
       showToast('⚠️ กรุณาเลือกระดับชั้นก่อนส่ง', '#c0392b');
       return;
     }
-    const text = document.getElementById('inputText').value.trim();
-    if (!text) {
+    const rawText = document.getElementById('inputText').value.trim();
+
+    // 🛡️ Validate + sanitize content
+    const cleanText = sanitizeText(rawText);
+    const validation = validateTextContent(cleanText, MAX_TEXT_LENGTH);
+    if (!validation.ok) {
+      showToast(validation.reason, '#c0392b');
       const ta = document.getElementById('inputText');
       ta.style.borderColor = '#c0392b'; ta.focus();
-      setTimeout(() => ta.style.borderColor = '', 1500); return;
+      setTimeout(() => ta.style.borderColor = '', 2000);
+      return;
     }
+
     const avatars = ['😊','🎓','📖','🌟','🏅','✨','🎒','💫','🌈','🦋','🍀','⚡','🎯','🔥','💡','🎵'];
     const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
     const btn = document.querySelector('.btn-submit');
     btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...';
+
+    // 🛡️ บันทึกเวลาก่อนส่ง (ป้องกัน double-click)
+    _lastSubmitTime = Date.now();
+
     try {
       await addDoc(commentsCol, {
         name, level, uid: currentUser.uid,
-        type: window._selectedType, text,
+        type: window._selectedType, text: cleanText,
         avatar: randomAvatar,
         isAnon: isAnon,
         isPrivate: isPrivate,
-        // photoURL: show real photo only if not anon
         photoURL: isAnon ? '' : (currentUser.photoURL || ''),
-        // real identity stored for admin only
         realName: currentUser.displayName || '',
         realEmail: currentUser.email || '',
         realPhotoURL: currentUser.photoURL || '',
@@ -3559,10 +3748,27 @@
       if (!isAdmin) await incrementUserTodayCount();
       document.getElementById('inputText').value = '';
       document.getElementById('inputLevel').value = '';
-      // privateCheck และ anonCheck ไม่ reset — ค้างตามที่ผู้ใช้ติ้กไว้จนกว่าจะติ้กออกเองหรือโหลดหน้าใหม่
       showToast();
-      await refreshButtonState();
-    } catch(e) { alert('เกิดข้อผิดพลาด กรุณาลองใหม่'); console.error(e); btn.disabled = false; }
+      _submitAttempts = 0; // reset เมื่อสำเร็จ
+      // 🛡️ เริ่ม cooldown หลัง submit สำเร็จ
+      if (!isAdmin) {
+        const newCount = todayCount + 1;
+        if (newCount < DAILY_LIMIT) {
+          startCooldownTimer(SUBMIT_COOLDOWN_MS, btn, '📨 ส่งความคิดเห็น');
+        } else {
+          updateSubmitButtonState(newCount);
+        }
+      } else {
+        await refreshButtonState();
+      }
+    } catch(e) {
+      _submitAttempts++;
+      const backoff = getBackoffDelay(_submitAttempts);
+      console.error(e);
+      showToast(`❌ เกิดข้อผิดพลาด กรุณารอ ${Math.ceil(backoff/1000)} วิแล้วลองใหม่`, '#c0392b');
+      // Exponential backoff
+      setTimeout(() => { btn.disabled = false; btn.style.opacity = '1'; refreshButtonState(); }, backoff);
+    }
   };
 
   window.toggleLike = async function(docId) {
@@ -3692,10 +3898,28 @@
       const ban = getBanForUser(currentUser);
       if (ban) { showBanWall(currentUser); return; }
     }
+    // 🛡️ Reply cooldown
+    if (!isAdmin) {
+      const sinceLastReply = Date.now() - _lastReplyTime;
+      if (sinceLastReply < REPLY_COOLDOWN_MS) {
+        const left = Math.ceil((REPLY_COOLDOWN_MS - sinceLastReply) / 1000);
+        showToast('⏳ รอ ' + left + ' วินาทีก่อนตอบกลับอีกครั้ง', '#e67e22');
+        return;
+      }
+    }
     const input = document.getElementById('reply-input-' + commentId);
     const sendBtn = document.getElementById('reply-btn-' + commentId);
     if (!input) return;
-    const text = input.value.trim();
+    const rawReplyText = input.value.trim();
+    // 🛡️ Validate reply content
+    const cleanReply = sanitizeText(rawReplyText);
+    const replyValidation = validateTextContent(cleanReply, MAX_REPLY_LENGTH);
+    if (!replyValidation.ok) {
+      showToast(replyValidation.reason, '#c0392b');
+      input.focus();
+      return;
+    }
+    const text = cleanReply;
     if (!text) { input.focus(); return; }
 
     sendBtn.disabled = true; sendBtn.textContent = '⏳';
@@ -3723,6 +3947,7 @@
       });
       input.value = '';
       input.style.height = 'auto';
+      if (!isAdmin) _lastReplyTime = Date.now(); // 🛡️ reset cooldown
     } catch(e) {
       alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
       console.error(e);
