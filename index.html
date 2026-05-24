@@ -2613,11 +2613,15 @@
       }
     }
 
+    // Cancel any in-flight animation timers before switching
+    if (window._switchTimer) { clearTimeout(window._switchTimer); window._switchTimer = null; }
+    if (window._switchTimer2) { clearTimeout(window._switchTimer2); window._switchTimer2 = null; }
+
     // Fade out current, then switch
     if (current && current !== target) {
       current.style.transition = 'opacity 0.18s ease';
       current.style.opacity = '0';
-      setTimeout(function() {
+      window._switchTimer = setTimeout(function() {
         current.classList.remove('active');
         current.style.opacity = '';
         current.style.transition = '';
@@ -2630,7 +2634,7 @@
         target.getBoundingClientRect();
         target.style.transition = 'opacity 0.22s ease';
         target.style.opacity = '1';
-        setTimeout(function() {
+        window._switchTimer2 = setTimeout(function() {
           target.style.opacity = '';
           target.style.transition = '';
         }, 230);
@@ -2669,19 +2673,28 @@
   });
   window.addEventListener('pageshow', function(e) {
     if (e.persisted) {
-      // Hard reset to lobby while body is still hidden
+      // Hard reset ALL pages — clear any stuck opacity/transition from animation
       document.querySelectorAll('.page').forEach(function(p) {
         p.classList.remove('active');
-        p.style.opacity = '';
-        p.style.transition = '';
+        p.style.cssText = ''; // wipe ALL inline styles, not just opacity/transition
       });
+      // Force lobby active and fully visible
       var lobby = document.getElementById('lobby');
-      if (lobby) { lobby.classList.add('active'); lobby.scrollTop = 0; }
+      if (lobby) {
+        lobby.classList.add('active');
+        lobby.style.cssText = '';   // ensure no leftover inline opacity
+        lobby.scrollTop = 0;
+      }
+      // Reset floating support button
       var btn = document.getElementById('floatingSupportBtn');
-      if (btn) btn.classList.remove('compact');
+      if (btn) { btn.classList.remove('compact'); btn.style.cssText = ''; }
+      // Reset history state
       history.replaceState({ page: 'lobby' }, '', '');
-      // Reveal body after reset is done
-      document.body.classList.remove('bfcache-restoring');
+      // Small rAF delay so DOM is fully painted before we reveal body
+      requestAnimationFrame(function() {
+        document.body.classList.remove('bfcache-restoring');
+        document.body.style.visibility = '';  // belt-and-suspenders clear
+      });
     }
   });
   (function() {
