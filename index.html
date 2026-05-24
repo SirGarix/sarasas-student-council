@@ -1992,6 +1992,8 @@
   let allBans = {}; // uid -> ban data
   let banWallInterval = null;
   let banWallCountdownInterval = null;
+  let _bansReady = false;
+  let _authReady = false;
 
   // ========== BAN WALL FUNCTIONS ==========
 
@@ -2128,10 +2130,12 @@
   function checkAndShowBanWall() {
     if (!currentUser || isAdmin) return;
     const ban = getBanForUser(currentUser);
+    // ซ่อน/แสดง form ตามสถานะแบน
+    const formBox = document.getElementById('formBox');
+    if (formBox) formBox.style.display = ban ? 'none' : 'block';
     if (ban) {
       showBanWall(currentUser);
     } else {
-      // ถ้า ban wall เปิดอยู่แต่ถูกปลดแบนแล้ว ให้ปิด
       if (document.getElementById('banWall').classList.contains('show')) {
         hideBanWall();
       }
@@ -2143,7 +2147,9 @@
     allBans = {};
     snap.docs.forEach(d => { allBans[d.id] = { id: d.id, ...d.data() }; });
     window._allBans = allBans;
-    checkAndShowBanWall(); // ตรวจสอบทันทีเมื่อข้อมูลแบนอัปเดต
+    _bansReady = true;
+    // ตรวจสอบทันที: ถ้า auth พร้อมแล้ว หรือจะรอ auth มาเรียก checkAndShowBanWall อีกที
+    if (_authReady) checkAndShowBanWall();
     if (allComments.length > 0) renderComments(allComments);
   });
 
@@ -2203,12 +2209,14 @@
   onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     isAdmin = user && ADMIN_EMAILS.includes(user.email);
+    _authReady = true;
     updateAuthUI();
     const adminTab = document.getElementById('adminOnlyTab');
     if (adminTab) adminTab.style.display = isAdmin ? '' : 'none';
     if (allComments.length > 0) renderComments(allComments);
-    // ตรวจสอบแบนทันทีเมื่อ login
-    checkAndShowBanWall();
+    // ตรวจสอบแบน — ถ้า bans โหลดแล้วตรวจได้เลย, ถ้ายังรอจะตรวจเมื่อ bans มา
+    if (_bansReady) checkAndShowBanWall();
+    // ถ้า bans ยังไม่มา _tryBanCheck จะทำงานเมื่อ onSnapshot fires
   });
 
   function updateAuthUI() {
