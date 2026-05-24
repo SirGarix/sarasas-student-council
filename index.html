@@ -1929,6 +1929,10 @@
       .comment-container { padding: 0 2rem 4rem; }
     }
   </style>
+
+  /* iOS Safari bfcache fix: hide body instantly when navigating back,
+     before JS has a chance to run, to avoid showing the wrong sub-page */
+  body.bfcache-restoring { visibility: hidden !important; }
 </head>
 <body>
 <div id="lobby" class="page active">
@@ -2655,11 +2659,18 @@
     _switchPage(page, false);
   });
 
-  // iOS Safari bfcache: page is restored from snapshot, not reloaded.
-  // Force-reset to lobby so all buttons are visible.
+  // iOS Safari bfcache fix:
+  // pagehide fires BEFORE the page is put into bfcache.
+  // We add a class that hides the body via CSS instantly,
+  // then pageshow fires when restored — we reset to lobby and show.
+  window.addEventListener('pagehide', function(e) {
+    if (e.persisted) {
+      document.body.classList.add('bfcache-restoring');
+    }
+  });
   window.addEventListener('pageshow', function(e) {
     if (e.persisted) {
-      // Hard reset: remove active from all pages, show lobby instantly (no fade)
+      // Hard reset to lobby while body is still hidden
       document.querySelectorAll('.page').forEach(function(p) {
         p.classList.remove('active');
         p.style.opacity = '';
@@ -2670,6 +2681,8 @@
       var btn = document.getElementById('floatingSupportBtn');
       if (btn) btn.classList.remove('compact');
       history.replaceState({ page: 'lobby' }, '', '');
+      // Reveal body after reset is done
+      document.body.classList.remove('bfcache-restoring');
     }
   });
   (function() {
