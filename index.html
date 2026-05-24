@@ -2288,7 +2288,7 @@
 <!-- Firebase module script -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
   // Expose Firestore helpers for reply system
@@ -2644,12 +2644,27 @@
 
   document.getElementById('commentsList').innerHTML = `<div class="empty-state"><div class="icon">⏳</div><p>กำลังโหลด...</p></div>`;
 
+  const replyCountCache = {};
+
+  async function preloadReplyCount(commentId) {
+    if (replyCountCache[commentId] !== undefined) return;
+    try {
+      const snap = await getDocs(collection(db, 'comments', commentId, 'replies'));
+      replyCountCache[commentId] = snap.size;
+      const chip = document.getElementById('reply-count-' + commentId);
+      if (chip) chip.textContent = snap.size;
+    } catch(e) {}
+  }
+
   const q = query(commentsCol, orderBy('createdAt', 'desc'));
   onSnapshot(q, (snapshot) => {
     allComments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     window._allComments = allComments;
     window._renderComments = renderComments;
     renderComments(allComments);
+    allComments.forEach(function(cm) {
+      if (!replyListeners[cm.id]) preloadReplyCount(cm.id);
+    });
   });
 
   const DAILY_LIMIT = 3;
@@ -2825,10 +2840,11 @@
     const rq = q2(repliesRef, ob('createdAt', 'asc'));
     replyListeners[commentId] = ons(rq, (snap) => {
       repliesCache[commentId] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      replyCountCache[commentId] = repliesCache[commentId].length;
       renderReplies(commentId);
-      // update count badge
-      const chip = document.getElementById('reply-count-' + commentId);
-      if (chip) chip.textContent = repliesCache[commentId].length;
+      document.querySelectorAll('#reply-count-' + commentId).forEach(function(el) {
+        el.textContent = repliesCache[commentId].length;
+      });
     });
   }
 
@@ -3099,7 +3115,7 @@
           </div>
           <div class="reply-section">
             <button class="reply-toggle-btn" onclick="toggleReplies('${c.id}', this)">
-              💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${c.id}">0</span>
+              💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${c.id}">${replyCountCache[c.id] || 0}</span>
             </button>
             <div class="replies-container" id="replies-${c.id}">
               <div id="replies-list-${c.id}"></div>
