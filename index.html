@@ -987,6 +987,7 @@
     .extend-confirm-btn { background: linear-gradient(135deg, #e67e22, #f39c12); }
     .extend-confirm-btn:hover { box-shadow: 0 6px 20px rgba(230,126,34,0.5); }
     .banned-comment-item { background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.2); }
+    .private-comment-item { background: rgba(255,215,0,0.04); border: 1px solid rgba(255,215,0,0.18); }
     .banned-badge { background: rgba(192,57,43,0.2); color: #ff8080; border: 1px solid rgba(192,57,43,0.35); font-size: 0.7rem; font-family: 'Kanit', sans-serif; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 20px; }
     .banned-time-badge { font-size: 0.72rem; color: rgba(255,200,100,0.9); background: rgba(255,165,0,0.12); border: 1px solid rgba(255,165,0,0.2); padding: 0.15rem 0.6rem; border-radius: 20px; font-family: 'Kanit', sans-serif; }
     .banned-reason { font-size: 0.78rem; color: rgba(255,255,255,0.45); font-style: italic; }
@@ -1364,7 +1365,12 @@
       <label class="anon-row" for="anonCheck">
         <input type="checkbox" id="anonCheck" onchange="toggleAnon(this.checked)" />
         <span class="anon-label">🕵️ โหมดไม่ระบุตัวตน</span>
-        <span class="anon-desc">ถ้าติ้กไว้ความคิดเห็นที่ออกไปจะเป็นแบบไม่เห็นโปรไฟล์และชื่อนะครับไม่มีใครรู้ว่าเป็นใคร</span>
+        <span class="anon-desc">ชื่อจะถูกซ่อน</span>
+      </label>
+      <label class="anon-row" for="privateCheck" style="border-color:rgba(255,215,0,0.2);background:rgba(255,215,0,0.04)">
+        <input type="checkbox" id="privateCheck" style="accent-color:#f1c40f" />
+        <span class="anon-label" style="color:rgba(255,215,0,0.9)">🔒 เฉพาะสภานักเรียนเห็น</span>
+        <span class="anon-desc">ถ้าติ้กไว้จะมีแค่พี่สภาเท่านั้นที่เห็นข้อความนี้ คนอื่นจะมองไม่เห็นเลย</span>
       </label>
       <div class="form-group" style="margin-bottom:1rem">
         <label class="form-label">ประเภท</label>
@@ -1988,7 +1994,6 @@
   const provider = new GoogleAuthProvider();
   const commentsCol = collection(db, 'comments');
   const bansCol = collection(db, 'bans');
-  const publicBansCol = collection(db, 'public_bans');
 
   let allBans = {}; // uid -> ban data (admin only)
   let banWallInterval = null;
@@ -1996,15 +2001,6 @@
   let _bansReady = false;
   let _authReady = false;
   let _userBanUnsub = null; // listener สำหรับ ban ของ user คนปัจจุบัน
-
-  // Public banned UIDs (ทุกคนอ่านได้ — ใช้ซ่อน comment ของคนโดนแบน)
-  window._publicBannedUids = new Set();
-  onSnapshot(publicBansCol, (snap) => {
-    window._publicBannedUids = new Set(snap.docs.map(d => d.id));
-    if (allComments.length > 0) renderComments(allComments);
-  }, (err) => {
-    console.warn('public_bans read error:', err);
-  });
 
   // ========== BAN WALL FUNCTIONS ==========
 
@@ -2163,14 +2159,6 @@
       wall.classList.remove('show');
       document.body.style.overflow = '';
       document.removeEventListener('keydown', blockKeyboard, true);
-      // Reset all green "lifted" state so next ban renders correctly
-      box.classList.remove('ban-wall-lifted');
-      const titleEl = document.getElementById('banWallTitle');
-      titleEl.textContent = '🚫 บัญชีถูกระงับ';
-      titleEl.classList.remove('ban-wall-lifted-title');
-      document.getElementById('banWallCountdownLabel').textContent = '';
-      document.getElementById('banWallCountdown').textContent = '';
-      document.getElementById('banWallCountdown').classList.remove('permanent');
     }, 2500);
   }
 
@@ -2220,8 +2208,6 @@
         bannedBy: currentUser ? currentUser.email : 'admin',
         realName: window._banTargetName || ''
       });
-      // Write to public_bans so all users can filter banned comments
-      await setDoc(doc(db, 'public_bans', uid), { uid });
       window.closeBanModal();
     } catch(e) { alert('เกิดข้อผิดพลาด: ' + e.message); console.error(e); }
   };
@@ -2229,11 +2215,7 @@
   window.unbanUser = async function(uid) {
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     if (!confirm('ปลดแบนผู้ใช้นี้?')) return;
-    try {
-      await deleteDoc(doc(db, 'bans', uid));
-      // Remove from public_bans so their comments show again
-      await deleteDoc(doc(db, 'public_bans', uid));
-    }
+    try { await deleteDoc(doc(db, 'bans', uid)); }
     catch(e) { alert('เกิดข้อผิดพลาด'); console.error(e); }
   };
 
@@ -2415,6 +2397,7 @@
     }
 
     const isAnon = document.getElementById('anonCheck').checked;
+    const isPrivate = document.getElementById('privateCheck').checked;
     const anonNum = currentUser.uid.split('').reduce((a, c) => (a * 31 + c.charCodeAt(0)) & 0xfffff, 0).toString().slice(0,6).padStart(6,'0');
     const displayName = isAnon ? `User${anonNum}` : (currentUser.displayName || 'นักเรียนนิรนาม');
     const name = displayName;
@@ -2435,6 +2418,7 @@
         type: window._selectedType, text,
         avatar: randomAvatar,
         isAnon: isAnon,
+        isPrivate: isPrivate,
         // photoURL: show real photo only if not anon
         photoURL: isAnon ? '' : (currentUser.photoURL || ''),
         // real identity stored for admin only
@@ -2447,6 +2431,7 @@
       if (!isAdmin) await incrementUserTodayCount();
       document.getElementById('inputText').value = '';
       document.getElementById('inputLevel').value = '';
+      document.getElementById('privateCheck').checked = false;
       showToast();
       await refreshButtonState();
     } catch(e) { alert('เกิดข้อผิดพลาด กรุณาลองใหม่'); console.error(e); btn.disabled = false; }
@@ -2518,11 +2503,13 @@
         }
       });
     } else if (filterType === 'ทั้งหมด') {
-      filtered = isAdmin ? comments : comments.filter(c => !window._publicBannedUids.has(c.uid));
+      filtered = isAdmin
+        ? comments
+        : comments.filter(c => !window._publicBannedUids.has(c.uid) && !c.isPrivate);
     } else {
       filtered = isAdmin
         ? comments.filter(c => c.type === filterType)
-        : comments.filter(c => c.type === filterType && !window._publicBannedUids.has(c.uid));
+        : comments.filter(c => c.type === filterType && !window._publicBannedUids.has(c.uid) && !c.isPrivate);
     }
 
     if (filterType !== '__banned__') {
@@ -2592,11 +2579,17 @@
           ${banData && banData.bannedAt ? `<span style="font-size:0.72rem;color:rgba(255,255,255,0.3)">แบนเมื่อ: ${new Date(banData.bannedAt).toLocaleDateString('th-TH')}</span>` : ''}
         </div>` : '';
 
+      const privateBadgeHtml = (isAdmin && c.isPrivate) ? `
+        <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem">
+          <span style="background:rgba(255,215,0,0.15);color:rgba(255,215,0,0.9);border:1px solid rgba(255,215,0,0.3);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 เฉพาะสภาเห็น</span>
+        </div>` : '';
+
       const nameDisplay = isBanView ? (c.realName || c.name) : c.name;
 
       return `
-        <div class="comment-item ${(userBanned || isBanView) ? 'banned-comment-item' : ''}">
+        <div class="comment-item ${(userBanned || isBanView) ? 'banned-comment-item' : ''}${(isAdmin && c.isPrivate) ? ' private-comment-item' : ''}">
           ${bannedBadgesHtml}
+          ${privateBadgeHtml}
           <div class="comment-header">
             <div class="comment-avatar">${avatarHtml}</div>
             <div class="comment-meta">
