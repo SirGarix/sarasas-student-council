@@ -2632,6 +2632,8 @@
     await signOut(auth);
   };
 
+  document.getElementById('commentsList').innerHTML = `<div class="empty-state"><div class="icon">⏳</div><p>กำลังโหลด...</p></div>`;
+
   const q = query(commentsCol, orderBy('createdAt', 'desc'));
   onSnapshot(q, (snapshot) => {
     allComments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -2677,7 +2679,7 @@
     const remaining = DAILY_LIMIT - count;
     if (remaining <= 0) {
       btn.disabled = true;
-      btn.textContent = '🚫 ครบ 2 ครั้งแล้ววันนี้';
+      btn.textContent = '🚫 ครบ 3 ครั้งแล้ววันนี้';
       btn.style.opacity = '0.5';
     } else {
       btn.disabled = false;
@@ -3073,7 +3075,6 @@
     }).join('');
   }
 
-  document.getElementById('commentsList').innerHTML = `<div class="empty-state"><div class="icon">⏳</div><p>กำลังโหลด...</p></div>`;
 </script>
 </body>
 </html>
