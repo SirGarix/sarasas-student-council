@@ -2364,19 +2364,8 @@
 </script>
 <script>
   const SEAL_IMAGE_URL = 'https://i.postimg.cc/02m2CkSh/swsk_promax.png';
-  function lockPageScroll() {
-    var active = document.querySelector('.page.active');
-    if (!active) return;
-    var sb = window.innerWidth - active.clientWidth;
-    if (sb > 0) active.style.paddingRight = sb + 'px';
-    active.style.overflowY = 'hidden';
-  }
-  function unlockPageScroll() {
-    var active = document.querySelector('.page.active');
-    if (!active) return;
-    active.style.overflowY = '';
-    active.style.paddingRight = '';
-  }
+  function lockPageScroll() {}
+  function unlockPageScroll() {}
   window.lockPageScroll = lockPageScroll;
   window.unlockPageScroll = unlockPageScroll;
   window.goTo = function(id) {
