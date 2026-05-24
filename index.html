@@ -333,6 +333,8 @@
       position: relative;
       overflow: hidden;
       cursor: pointer;
+      display: flex;
+      flex-direction: column;
     }
     .member-card::before {
       content: '';
@@ -398,6 +400,7 @@
       font-style: italic;
       border-top: 1px solid rgba(255,255,255,0.1);
       padding-top: 0.8rem;
+      margin-top: auto;
     }
     .member-card.president {
       background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(26,58,107,0.5), rgba(13,32,64,0.9));
