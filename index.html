@@ -2556,7 +2556,18 @@
   window.unbanUser = async function(uid) {
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     if (!confirm('ปลดแบนผู้ใช้นี้?')) return;
-    try { await deleteDoc(doc(db, 'bans', uid)); }
+    try {
+      await deleteDoc(doc(db, 'bans', uid));
+      // อัพเดต allBans ทันทีแล้ว re-render เพื่อให้รายชื่อแบนหายออกทันที
+      delete allBans[uid];
+      window._allBans = allBans;
+      window._publicBannedUids = new Set(
+        Object.entries(allBans)
+          .filter(([u, b]) => b && isActiveBan(b))
+          .map(([u]) => u)
+      );
+      if (allComments.length > 0) renderComments(allComments);
+    }
     catch(e) { alert('เกิดข้อผิดพลาด'); console.error(e); }
   };
 
@@ -2761,7 +2772,7 @@
     const isPrivate = document.getElementById('privateCheck').checked;
     const anonNum = currentUser.uid.split('').reduce((a, c) => (a * 31 + c.charCodeAt(0)) & 0xfffff, 0).toString().slice(0,6).padStart(6,'0');
     const displayName = isAnon ? `User${anonNum}` : (currentUser.displayName || 'นักเรียนนิรนาม');
-    const name = displayName;
+    const name = (!isAnon && isAdmin) ? displayName + ' (สภานักเรียน)' : displayName;
     const level = document.getElementById('inputLevel').value;
     const text = document.getElementById('inputText').value.trim();
     if (!text) {
@@ -2792,8 +2803,7 @@
       if (!isAdmin) await incrementUserTodayCount();
       document.getElementById('inputText').value = '';
       document.getElementById('inputLevel').value = '';
-      document.getElementById('privateCheck').checked = false;
-      // anonCheck ไม่ reset — ค้างตามที่ผู้ใช้ติ้กไว้จนกว่าจะติ้กออกเองหรือโหลดหน้าใหม่
+      // privateCheck และ anonCheck ไม่ reset — ค้างตามที่ผู้ใช้ติ้กไว้จนกว่าจะติ้กออกเองหรือโหลดหน้าใหม่
       showToast();
       await refreshButtonState();
     } catch(e) { alert('เกิดข้อผิดพลาด กรุณาลองใหม่'); console.error(e); btn.disabled = false; }
