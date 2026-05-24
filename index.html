@@ -1928,9 +1928,6 @@
       .members-grid { gap: 2rem; }
       .comment-container { padding: 0 2rem 4rem; }
     }
-  /* iOS Safari bfcache fix: hide body instantly when navigating back,
-     before JS has a chance to run, to avoid showing the wrong sub-page */
-  body.bfcache-restoring { visibility: hidden !important; }
   @keyframes pageEnter {
     from { opacity: 0; transform: translateY(18px) scale(0.98); }
     to   { opacity: 1; transform: translateY(0)    scale(1);    }
@@ -2689,8 +2686,8 @@
     _applyPage(id);
   })();
 
-  // pageshow: still reset to lobby when coming back from bfcache
-  // (hash will be '' or whatever it was — just force lobby for safety)
+  // iOS Safari bfcache: when user comes back, snap to lobby instantly
+  // No body hiding — avoids the blank/missing-buttons bug entirely
   window.addEventListener('pageshow', function(e) {
     if (e.persisted) {
       _resetAllPages();
@@ -2698,16 +2695,7 @@
       if (lobby) { lobby.classList.add('active'); lobby.scrollTop = 0; }
       var btn = document.getElementById('floatingSupportBtn');
       if (btn) { btn.classList.remove('compact'); btn.style.cssText = ''; }
-      // Clear hash without triggering hashchange
       history.replaceState(null, '', location.pathname);
-      document.body.classList.remove('bfcache-restoring');
-      document.body.style.visibility = '';
-    }
-  });
-
-  window.addEventListener('pagehide', function(e) {
-    if (e.persisted) {
-      document.body.classList.add('bfcache-restoring');
     }
   });
   (function() {
