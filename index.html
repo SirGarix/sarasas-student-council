@@ -1932,10 +1932,15 @@
      before JS has a chance to run, to avoid showing the wrong sub-page */
   body.bfcache-restoring { visibility: hidden !important; }
   @keyframes pageEnter {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
   }
-  .page-entering { animation: pageEnter 0.22s ease forwards; }
+  @keyframes pageLeave {
+    from { opacity: 1; transform: translateY(0)     scale(1);    }
+    to   { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  }
+  .page-entering { animation: pageEnter 0.32s cubic-bezier(0.22,1,0.36,1) both; }
+  .page-leaving  { animation: pageLeave 0.18s cubic-bezier(0.4,0,1,1) both; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -2610,26 +2615,45 @@
     var target = document.getElementById(id);
     if (!target) id = 'lobby', target = document.getElementById('lobby');
 
-    // Clear all pages instantly (no setTimeout = no stuck opacity ever)
-    document.querySelectorAll('.page').forEach(function(p) {
-      p.classList.remove('active', 'page-entering');
-      p.style.cssText = '';
-    });
-
-    // Fade in via CSS animation (animationend cleans up — no timer needed)
-    target.classList.add('active', 'page-entering');
-    target.scrollTop = 0;
-    var onEnd = function() {
-      target.classList.remove('page-entering');
-      target.removeEventListener('animationend', onEnd);
-    };
-    target.addEventListener('animationend', onEnd);
+    var current = document.querySelector('.page.active');
 
     var btn = document.getElementById('floatingSupportBtn');
     if (btn) {
       if (id === 'lobby') btn.classList.remove('compact');
       else btn.classList.add('compact');
     }
+
+    // If same page or no current, just show target immediately
+    if (!current || current === target) {
+      document.querySelectorAll('.page').forEach(function(p) {
+        p.classList.remove('active', 'page-entering', 'page-leaving');
+        p.style.cssText = '';
+      });
+      target.classList.add('active', 'page-entering');
+      target.scrollTop = 0;
+      var onEnd = function() { target.classList.remove('page-entering'); target.removeEventListener('animationend', onEnd); };
+      target.addEventListener('animationend', onEnd);
+      return;
+    }
+
+    // Animate OUT current page
+    current.classList.remove('page-entering');
+    current.classList.add('page-leaving');
+
+    var doEnter = function() {
+      current.removeEventListener('animationend', doEnter);
+      // Hide current, clear all
+      document.querySelectorAll('.page').forEach(function(p) {
+        p.classList.remove('active', 'page-entering', 'page-leaving');
+        p.style.cssText = '';
+      });
+      // Animate IN new page
+      target.classList.add('active', 'page-entering');
+      target.scrollTop = 0;
+      var onEnd2 = function() { target.classList.remove('page-entering'); target.removeEventListener('animationend', onEnd2); };
+      target.addEventListener('animationend', onEnd2);
+    };
+    current.addEventListener('animationend', doEnter);
   }
 
   window.goTo = function(id) {
