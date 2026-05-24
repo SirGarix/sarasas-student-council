@@ -795,6 +795,185 @@
       font-family: 'Sarabun', sans-serif; transition: all 0.2s;
     }
     .btn-logout:hover { border-color: rgba(255,255,255,0.4); color: rgba(255,255,255,0.8); }
+
+    /* UID badge */
+    .user-uid-badge {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.32);
+      font-family: 'Sarabun', monospace;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+
+    /* Support button */
+    .btn-support {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.55);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px; font-size: 0.78rem; cursor: pointer;
+      font-family: 'Kanit', sans-serif; transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-support:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.35); color: rgba(255,255,255,0.85); }
+
+    /* Support Modal */
+    .support-overlay {
+      position: fixed; inset: 0;
+      background: rgba(5,10,25,0.88);
+      backdrop-filter: blur(10px);
+      z-index: 700;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .support-overlay.open { opacity: 1; pointer-events: all; }
+
+    .support-card {
+      background: linear-gradient(160deg, #0d1f3c 0%, #091526 60%, #0f2244 100%);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 22px;
+      max-width: 400px; width: 100%;
+      position: relative;
+      overflow: hidden;
+      transform: scale(0.88) translateY(24px);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .support-overlay.open .support-card { transform: scale(1) translateY(0); }
+
+    /* Top gradient bar like council card */
+    .support-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, rgba(41,128,185,0.8), rgba(255,255,255,0.95), rgba(41,128,185,0.8));
+    }
+    /* Watermark */
+    .support-card::after {
+      content: '🏛️';
+      position: absolute; bottom: -24px; right: -8px;
+      font-size: 9rem; opacity: 0.045;
+      pointer-events: none;
+    }
+
+    .support-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.65); width: 34px; height: 34px; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: all 0.2s; z-index: 5;
+    }
+    .support-close:hover { background: rgba(255,255,255,0.14); transform: rotate(90deg); }
+
+    .support-body { padding: 2rem 2rem 1.8rem; position: relative; z-index: 2; }
+
+    .support-seal {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, #1a3a6b, #2563b0);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 1rem;
+      border: 2px solid rgba(255,255,255,0.25);
+      box-shadow: 0 0 24px rgba(41,128,185,0.35);
+    }
+
+    .support-title {
+      font-family: 'Kanit', sans-serif;
+      font-size: 1.2rem; font-weight: 800;
+      text-align: center; color: var(--white);
+      margin-bottom: 0.3rem;
+    }
+    .support-subtitle {
+      font-size: 0.82rem;
+      text-align: center;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 1.4rem;
+      font-family: 'Sarabun', sans-serif;
+    }
+
+    .support-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      margin-bottom: 1.4rem;
+    }
+
+    .support-channel-label {
+      font-family: 'Kanit', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 2px; color: rgba(255,255,255,0.38);
+      text-transform: uppercase; margin-bottom: 0.8rem;
+      text-align: center;
+    }
+
+    .support-channels { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.5rem; }
+
+    .support-channel-link {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.7rem 1rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-family: 'Kanit', sans-serif; font-size: 0.9rem; font-weight: 600;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .support-channel-link.ig {
+      background: rgba(225,48,108,0.1);
+      color: #ffadc7;
+      border-color: rgba(225,48,108,0.2);
+    }
+    .support-channel-link.ig:hover { background: rgba(225,48,108,0.2); border-color: rgba(225,48,108,0.4); transform: translateX(4px); }
+    .support-channel-link.fb {
+      background: rgba(24,119,242,0.1);
+      color: #90c3ff;
+      border-color: rgba(24,119,242,0.2);
+    }
+    .support-channel-link.fb:hover { background: rgba(24,119,242,0.2); border-color: rgba(24,119,242,0.4); transform: translateX(4px); }
+    .support-channel-link.no-social {
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.28);
+      border-color: rgba(255,255,255,0.07);
+      cursor: default; font-style: italic; font-size: 0.82rem;
+    }
+
+    .support-channel-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .support-channel-icon.ig-icon {
+      background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+    }
+    .support-channel-icon.fb-icon { background: #1877f2; color: white; font-weight: 900; }
+
+    .support-note {
+      font-size: 0.75rem; text-align: center;
+      color: rgba(255,255,255,0.28); font-family: 'Sarabun', sans-serif;
+      line-height: 1.6;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding-top: 1rem;
+    }
+
+    /* Floating support button (lobby+members areas) */
+    .floating-support {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 90;
+      background: linear-gradient(135deg, rgba(26,58,107,0.9), rgba(37,99,176,0.85));
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.9);
+      padding: 0.6rem 1.1rem;
+      border-radius: 50px; font-family: 'Kanit', sans-serif;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(26,58,107,0.5);
+      display: flex; align-items: center; gap: 0.4rem;
+      transition: all 0.2s; backdrop-filter: blur(8px);
+      animation: fadeUp 0.8s forwards 1.2s; opacity: 0;
+    }
+    .floating-support:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(37,99,176,0.55); border-color: rgba(255,255,255,0.4); }
     .delete-btn {
       background: none; border: none; font-size: 1rem;
       cursor: pointer; opacity: 0.35; transition: opacity 0.2s;
@@ -1655,6 +1834,32 @@
 
 <div class="toast" id="toast">✅ ส่งความคิดเห็นแล้ว ขอบคุณมากนะ!</div>
 
+<!-- Floating support button -->
+<button class="floating-support" onclick="openSupportModal()" id="floatingSupportBtn">
+  🆘 มีปัญหาใช้เว็บ? คลิกที่นี้
+</button>
+
+<!-- Support Modal -->
+<div class="support-overlay" id="supportModal" onclick="closeSupportOutside(event)">
+  <div class="support-card">
+    <button class="support-close" onclick="closeSupportModal()">✕</button>
+    <div class="support-body">
+      <div class="support-seal">🏛️</div>
+      <div class="support-title">ติดต่อ Admin</div>
+      <div class="support-subtitle">มีปัญหาใช้เว็บไม่เป็น / ใช้ไม่ได้? พี่พร้อมช่วยเสมอ 🙋</div>
+      <div class="support-divider"></div>
+      <div class="support-channel-label">ช่องทางการติดต่อ</div>
+      <div class="support-channels" id="supportChannels">
+        <!-- Injected by JS -->
+      </div>
+      <div class="support-note">
+        โปรดติดต่อ Admin สภานักเรียน สารสาสน์วิเทศสมุทรสาคร<br/>
+        ทีมงานจะตอบกลับโดยเร็วที่สุด 💙
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Ban Modal -->
 <div class="ban-overlay" id="banModal" onclick="closeBanOutside(event)">
   <div class="ban-box" id="banBox">
@@ -2327,6 +2532,64 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3000);
   }
+
+  // ===== SUPPORT MODAL CONFIG =====
+  // แก้ไขช่องทางติดต่อ Admin ตรงนี้ได้เลย
+  const SUPPORT_CONTACTS = {
+    instagram: 'admin_instagram_here',   // ← ใส่ชื่อ IG ของ Admin
+    facebook:  'admin_facebook_here',    // ← ใส่ชื่อ Facebook ของ Admin
+  };
+
+  function renderSupportChannels() {
+    const box = document.getElementById('supportChannels');
+    if (!box) return;
+    let html = '';
+    if (SUPPORT_CONTACTS.instagram && SUPPORT_CONTACTS.instagram !== 'admin_instagram_here') {
+      const ig = SUPPORT_CONTACTS.instagram.replace('@','');
+      html += `<a class="support-channel-link ig" href="https://instagram.com/${ig}" target="_blank" rel="noopener">
+        <span class="support-channel-icon ig-icon">📷</span>
+        <div>
+          <div style="font-size:0.72rem;color:rgba(255,180,200,0.6);font-family:Sarabun,sans-serif;font-weight:400">Instagram</div>
+          <div>@${ig}</div>
+        </div>
+      </a>`;
+    } else {
+      html += `<div class="support-channel-link no-social">
+        <span class="support-channel-icon" style="background:rgba(255,255,255,0.06)">📷</span>
+        ยังไม่ได้ใส่ Instagram Admin
+      </div>`;
+    }
+    if (SUPPORT_CONTACTS.facebook && SUPPORT_CONTACTS.facebook !== 'admin_facebook_here') {
+      const fb = SUPPORT_CONTACTS.facebook;
+      const fbUrl = fb.startsWith('http') ? fb : 'https://facebook.com/' + fb;
+      html += `<a class="support-channel-link fb" href="${fbUrl}" target="_blank" rel="noopener">
+        <span class="support-channel-icon fb-icon">f</span>
+        <div>
+          <div style="font-size:0.72rem;color:rgba(144,195,255,0.6);font-family:Sarabun,sans-serif;font-weight:400">Facebook</div>
+          <div>${fb}</div>
+        </div>
+      </a>`;
+    } else {
+      html += `<div class="support-channel-link no-social">
+        <span class="support-channel-icon" style="background:rgba(255,255,255,0.06)">f</span>
+        ยังไม่ได้ใส่ Facebook Admin
+      </div>`;
+    }
+    box.innerHTML = html;
+  }
+
+  window.openSupportModal = function() {
+    renderSupportChannels();
+    document.getElementById('supportModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeSupportModal = function() {
+    document.getElementById('supportModal').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  window.closeSupportOutside = function(e) {
+    if (e.target === document.getElementById('supportModal')) window.closeSupportModal();
+  };
 </script>
 
 <!-- Firebase module script -->
@@ -2695,11 +2958,15 @@
       const ban = getBanForUser(currentUser);
       const banned = !isAdmin && ban;
       loginArea.innerHTML = `
-        <div class="user-info">
+        <div class="user-info" style="flex-wrap:wrap;gap:0.5rem 0.8rem;">
           <img src="${currentUser.photoURL || ''}" class="user-photo" onerror="this.style.display='none'" />
-          <span class="user-name">👤 ${currentUser.displayName || currentUser.email}</span>
+          <div style="display:flex;flex-direction:column;gap:0.1rem;flex:1;min-width:0;">
+            <span class="user-name" style="line-height:1.2;">👤 ${currentUser.displayName || currentUser.email}</span>
+            <span class="user-uid-badge" title="User UID">UserUID:${currentUser.uid}</span>
+          </div>
           ${isAdmin ? '<span class="admin-badge">🛡️ Admin</span>' : ''}
           ${banned ? '<span style="background:rgba(192,57,43,0.3);color:#ff8080;font-size:0.72rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.2rem 0.6rem;border-radius:10px;border:1px solid rgba(192,57,43,0.4)">🚫 ถูกระงับ</span>' : ''}
+          <button class="btn-support" onclick="openSupportModal()">🆘 มีปัญหา?</button>
           <button class="btn-logout" onclick="window.logoutUser()">ออกจากระบบ</button>
         </div>
       `;
