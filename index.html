@@ -1203,6 +1203,91 @@
     }
     .ban-wall-lifted-title { color: #55efc4; }
 
+    /* ===== REPLY SYSTEM ===== */
+    .reply-section {
+      margin-top: 0.8rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 0.8rem;
+    }
+    .reply-toggle-btn {
+      background: none; border: none;
+      color: rgba(255,255,255,0.4);
+      font-family: 'Sarabun', sans-serif;
+      font-size: 0.8rem; cursor: pointer;
+      padding: 0.2rem 0; transition: color 0.2s;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .reply-toggle-btn:hover { color: rgba(255,255,255,0.8); }
+    .reply-toggle-btn .reply-count-chip {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 0.05rem 0.45rem; border-radius: 10px;
+      font-size: 0.72rem; color: rgba(255,255,255,0.65);
+    }
+    .replies-container { display: none; margin-top: 0.8rem; }
+    .replies-container.open { display: block; }
+    .reply-item {
+      display: flex; gap: 0.6rem;
+      margin-bottom: 0.7rem;
+      padding: 0.7rem 0.9rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      animation: slideIn 0.3s ease;
+    }
+    .reply-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--royal), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; flex-shrink: 0;
+      overflow: hidden; border: 1.5px solid rgba(255,255,255,0.12);
+    }
+    .reply-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+    .reply-body { flex: 1; }
+    .reply-author-row {
+      display: flex; align-items: center; gap: 0.4rem;
+      margin-bottom: 0.25rem; flex-wrap: wrap;
+    }
+    .reply-author-name { font-size: 0.82rem; font-weight: 700; }
+    .reply-time { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
+    .reply-text { font-size: 0.88rem; color: rgba(255,255,255,0.8); line-height: 1.6; }
+    .reply-delete-btn {
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,0.2); font-size: 0.85rem;
+      padding: 0.1rem 0.3rem; border-radius: 4px;
+      transition: all 0.2s; margin-left: auto; flex-shrink: 0;
+      align-self: flex-start;
+    }
+    .reply-delete-btn:hover { color: #ff6b6b; background: rgba(255,50,50,0.1); }
+    .reply-input-row {
+      display: flex; gap: 0.5rem; align-items: flex-end;
+      margin-top: 0.6rem;
+    }
+    .reply-input {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 0.55rem 0.9rem;
+      color: var(--white); font-family: 'Sarabun', sans-serif;
+      font-size: 0.88rem; resize: none; outline: none;
+      transition: border 0.2s; min-height: 38px; max-height: 120px;
+    }
+    .reply-input:focus { border-color: rgba(255,255,255,0.3); }
+    .reply-input::placeholder { color: rgba(255,255,255,0.25); }
+    .reply-send-btn {
+      background: linear-gradient(135deg, #1a3a6b, #2563b0);
+      color: white; border: none; border-radius: 10px;
+      padding: 0.55rem 1rem; font-family: 'Kanit', sans-serif;
+      font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+    }
+    .reply-send-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,99,176,0.5); }
+    .reply-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .reply-login-hint {
+      font-size: 0.78rem; color: rgba(255,255,255,0.3);
+      font-family: 'Sarabun', sans-serif; margin-top: 0.5rem;
+    }
+
     /* Mobile responsive */
     @media (max-width: 720px) {
       .members-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1rem; }
@@ -2206,6 +2291,9 @@
   import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
+  // Expose Firestore helpers for reply system
+  window._fbImports = { collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc };
+
   const firebaseConfig = {
     apiKey: "AIzaSyBbTMEyc4-3_sn-i47Xm5xTvw52r36SWkM",
     authDomain: "sarasas-student-council.firebaseapp.com",
@@ -2552,7 +2640,7 @@
     renderComments(allComments);
   });
 
-  const DAILY_LIMIT = 2;
+  const DAILY_LIMIT = 3;
 
   function getTodayKey() {
     const d = new Date();
@@ -2708,6 +2796,126 @@
     await deleteDoc(doc(db, 'comments', docId));
   };
 
+  // ===== REPLY SYSTEM =====
+  // Cache replies per comment: { [commentId]: [{id, ...}] }
+  const repliesCache = {};
+  const replyListeners = {}; // commentId -> unsubscribe
+
+  function subscribeReplies(commentId) {
+    if (replyListeners[commentId]) return; // already listening
+    const { collection: col, query: q2, orderBy: ob, onSnapshot: ons } = window._fbImports;
+    const repliesRef = col(db, 'comments', commentId, 'replies');
+    const rq = q2(repliesRef, ob('createdAt', 'asc'));
+    replyListeners[commentId] = ons(rq, (snap) => {
+      repliesCache[commentId] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderReplies(commentId);
+      // update count badge
+      const chip = document.getElementById('reply-count-' + commentId);
+      if (chip) chip.textContent = repliesCache[commentId].length;
+    });
+  }
+
+  function renderReplies(commentId) {
+    const list = document.getElementById('replies-list-' + commentId);
+    if (!list) return;
+    const replies = repliesCache[commentId] || [];
+    if (replies.length === 0) {
+      list.innerHTML = '';
+      return;
+    }
+    const myUid = currentUser ? currentUser.uid : null;
+    list.innerHTML = replies.map(r => {
+      const avatarHtml = (r.photoURL && !r.isAnon)
+        ? `<img src="${r.photoURL}" alt="" onerror="this.style.display='none'" />`
+        : `<span style="font-size:0.75rem">${r.avatar || '😊'}</span>`;
+      const canDelete = isAdmin || (myUid && myUid === r.uid);
+      return `
+        <div class="reply-item">
+          <div class="reply-avatar">${avatarHtml}</div>
+          <div class="reply-body">
+            <div class="reply-author-row">
+              <span class="reply-author-name">${r.name || 'ไม่ระบุ'}</span>
+              <span class="reply-time">${r.time || ''}</span>
+              ${canDelete ? `<button class="reply-delete-btn" onclick="deleteReply('${commentId}','${r.id}')" title="ลบ">🗑️</button>` : ''}
+            </div>
+            <div class="reply-text">${(r.text || '').replace(/\n/g,'<br/>')}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.toggleReplies = function(commentId, btn) {
+    const container = document.getElementById('replies-' + commentId);
+    if (!container) return;
+    const isOpen = container.classList.contains('open');
+    if (isOpen) {
+      container.classList.remove('open');
+      btn.innerHTML = `💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${commentId}">${repliesCache[commentId] ? repliesCache[commentId].length : 0}</span>`;
+    } else {
+      container.classList.add('open');
+      btn.innerHTML = `💬 ซ่อน <span class="reply-count-chip" id="reply-count-${commentId}">${repliesCache[commentId] ? repliesCache[commentId].length : 0}</span>`;
+      subscribeReplies(commentId);
+    }
+  };
+
+  window.handleReplyKey = function(e, commentId) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitReply(commentId);
+    }
+  };
+
+  window.submitReply = async function(commentId) {
+    if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
+    // ตรวจแบน
+    if (!isAdmin) {
+      const ban = getBanForUser(currentUser);
+      if (ban) { showBanWall(currentUser); return; }
+    }
+    const input = document.getElementById('reply-input-' + commentId);
+    const sendBtn = document.getElementById('reply-btn-' + commentId);
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) { input.focus(); return; }
+
+    sendBtn.disabled = true; sendBtn.textContent = '⏳';
+
+    const isAnon = false; // replies ใช้ชื่อจริงเสมอ (อาจแก้ได้)
+    const avatars = ['😊','🎓','📖','🌟','🏅','✨','🎒','💫','🌈','🦋'];
+    const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+
+    try {
+      const { collection: col, addDoc: add } = window._fbImports;
+      const repliesRef = col(db, 'comments', commentId, 'replies');
+      await add(repliesRef, {
+        uid: currentUser.uid,
+        name: currentUser.displayName || 'นักเรียน',
+        photoURL: currentUser.photoURL || '',
+        avatar: randomAvatar,
+        isAnon: false,
+        text,
+        time: new Date().toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit', day:'numeric', month:'short' }),
+        createdAt: Date.now()
+      });
+      input.value = '';
+      input.style.height = 'auto';
+    } catch(e) {
+      alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
+      console.error(e);
+    }
+    sendBtn.disabled = false; sendBtn.textContent = 'ส่ง';
+  };
+
+  window.deleteReply = async function(commentId, replyId) {
+    if (!currentUser) return;
+    if (!confirm('ลบการตอบกลับนี้?')) return;
+    try {
+      const { doc: d, deleteDoc: del } = window._fbImports;
+      await del(d(db, 'comments', commentId, 'replies', replyId));
+    } catch(e) { alert('ลบไม่สำเร็จ'); console.error(e); }
+  };
+
   function renderComments(comments) {
     const list = document.getElementById('commentsList');
     const filterType = window._filterType || 'ทั้งหมด';
@@ -2843,6 +3051,22 @@
             <button class="like-btn ${hasLiked ? 'liked' : ''}" onclick="toggleLike('${c.id}')">
               👍 ${c.likes > 0 ? c.likes : ''} เห็นด้วย${hasLiked ? ' ✓' : ''}
             </button>
+          </div>
+          <div class="reply-section">
+            <button class="reply-toggle-btn" onclick="toggleReplies('${c.id}', this)">
+              💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${c.id}">0</span>
+            </button>
+            <div class="replies-container" id="replies-${c.id}">
+              <div id="replies-list-${c.id}"></div>
+              ${currentUser ? `
+                <div class="reply-input-row">
+                  <textarea class="reply-input" id="reply-input-${c.id}" placeholder="พิมพ์ตอบกลับ..." rows="1"
+                    onkeydown="handleReplyKey(event,'${c.id}')"
+                    oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+                  <button class="reply-send-btn" id="reply-btn-${c.id}" onclick="submitReply('${c.id}')">ส่ง</button>
+                </div>
+              ` : `<div class="reply-login-hint">🔑 เข้าสู่ระบบเพื่อตอบกลับ</div>`}
+            </div>
           </div>` : ''}
         </div>
       `;
