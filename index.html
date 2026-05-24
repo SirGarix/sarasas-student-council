@@ -3237,14 +3237,18 @@
   let isAdmin = false;
   let allComments = [];
 
+  async function checkIsAdmin(user) {
+    if (!user) return false;
+    const byUid = await getDoc(doc(db, 'admins', user.uid));
+    if (byUid.exists()) return true;
+    const adminsSnap = await getDocs(collection(db, 'admins'));
+    const adminEmails = adminsSnap.docs.map(d => (d.data().email || '').toLowerCase().trim());
+    return adminEmails.includes((user.email || '').toLowerCase().trim());
+  }
+
   onAuthStateChanged(auth, async (user) => {
     currentUser = user;
-    if (user) {
-      const tokenResult = await user.getIdTokenResult();
-      isAdmin = tokenResult.claims.role === 'admin';
-    } else {
-      isAdmin = false;
-    }
+    isAdmin = await checkIsAdmin(user);
     _authReady = true;
 
     if (isAdmin) {
