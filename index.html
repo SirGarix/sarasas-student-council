@@ -995,6 +995,107 @@
     .dropdown-item.success { color: #55efc4; }
     .dropdown-item.success:hover { background: rgba(39,174,96,0.12); }
 
+    /* ===== BAN WALL POPUP (ปิดไม่ได้) ===== */
+    #banWall {
+      position: fixed; inset: 0; z-index: 99999;
+      background: rgba(0,0,0,0.97);
+      backdrop-filter: blur(16px);
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 1rem;
+      flex-direction: column;
+    }
+    #banWall.show { display: flex; }
+    .ban-wall-box {
+      background: linear-gradient(135deg, #1a0505 0%, #2d0a0a 50%, #1a0505 100%);
+      border: 2px solid rgba(192,57,43,0.7);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      max-width: 460px; width: 100%;
+      text-align: center;
+      box-shadow: 0 0 80px rgba(192,57,43,0.4), 0 30px 80px rgba(0,0,0,0.9), inset 0 0 40px rgba(192,57,43,0.05);
+      position: relative; overflow: hidden;
+      animation: banWallIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes banWallIn {
+      from { opacity: 0; transform: scale(0.8) translateY(30px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .ban-wall-box::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #c0392b, #ff6b6b, #c0392b);
+      animation: banBarPulse 2s ease-in-out infinite;
+    }
+    @keyframes banBarPulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.5; }
+    }
+    .ban-wall-icon {
+      font-size: 4rem; margin-bottom: 1rem;
+      animation: banIconShake 0.5s ease-in-out;
+    }
+    @keyframes banIconShake {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-10deg); }
+      40% { transform: rotate(10deg); }
+      60% { transform: rotate(-8deg); }
+      80% { transform: rotate(8deg); }
+    }
+    .ban-wall-title {
+      font-family: 'Kanit', sans-serif; font-size: 1.5rem; font-weight: 900;
+      color: #ff6b6b; margin-bottom: 0.4rem;
+    }
+    .ban-wall-subtitle {
+      font-size: 0.85rem; color: rgba(255,255,255,0.45); margin-bottom: 1.5rem;
+      font-family: 'Sarabun', sans-serif;
+    }
+    .ban-wall-card {
+      background: rgba(0,0,0,0.35); border: 1px solid rgba(192,57,43,0.25);
+      border-radius: 14px; padding: 1.2rem; margin-bottom: 1.5rem;
+    }
+    .ban-wall-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.85rem;
+    }
+    .ban-wall-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .ban-wall-row-label { color: rgba(255,255,255,0.45); font-family: 'Kanit', sans-serif; }
+    .ban-wall-row-value { color: rgba(255,255,255,0.9); font-weight: 600; font-family: 'Kanit', sans-serif; text-align: right; max-width: 60%; word-break: break-all; }
+    .ban-wall-countdown-label {
+      font-family: 'Kanit', sans-serif; font-size: 0.8rem;
+      color: rgba(255,165,0,0.8); margin-bottom: 0.4rem;
+    }
+    .ban-wall-countdown {
+      font-family: 'Kanit', sans-serif; font-size: 2.2rem; font-weight: 900;
+      color: #ffd700; letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255,215,0,0.5);
+      margin-bottom: 0.2rem;
+    }
+    .ban-wall-countdown.permanent {
+      font-size: 1.5rem; color: #ff6b6b;
+      text-shadow: 0 0 20px rgba(255,107,107,0.5);
+    }
+    .ban-wall-progress {
+      width: 100%; height: 6px; background: rgba(255,255,255,0.08);
+      border-radius: 3px; overflow: hidden; margin-top: 0.8rem;
+    }
+    .ban-wall-progress-bar {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #c0392b, #ff6b6b);
+      transition: width 1s linear;
+    }
+    .ban-wall-note {
+      font-size: 0.78rem; color: rgba(255,255,255,0.3);
+      font-family: 'Sarabun', sans-serif; margin-top: 1rem; line-height: 1.5;
+    }
+    .ban-wall-lifted {
+      background: linear-gradient(135deg, #05320a 0%, #0a4a10 50%, #05320a 100%);
+      border-color: rgba(39,174,96,0.6);
+    }
+    .ban-wall-lifted::before {
+      background: linear-gradient(90deg, #27ae60, #55efc4, #27ae60);
+    }
+    .ban-wall-lifted-title { color: #55efc4; }
+
     /* Mobile responsive */
     @media (max-width: 720px) {
       .members-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1rem; }
@@ -1381,6 +1482,40 @@
   </div>
 </div>
 
+<!-- ===== BAN WALL POPUP (ปิดไม่ได้) ===== -->
+<div id="banWall">
+  <div class="ban-wall-box" id="banWallBox">
+    <div class="ban-wall-icon">🚫</div>
+    <div class="ban-wall-title" id="banWallTitle">บัญชีถูกระงับการใช้งาน</div>
+    <div class="ban-wall-subtitle">คุณไม่สามารถใช้งานเว็บไซต์นี้ได้ในขณะนี้</div>
+
+    <div class="ban-wall-card">
+      <div class="ban-wall-row">
+        <span class="ban-wall-row-label">📅 เวลาที่โดนแบน</span>
+        <span class="ban-wall-row-value" id="banWallBannedAt">-</span>
+      </div>
+      <div class="ban-wall-row">
+        <span class="ban-wall-row-label">📝 สาเหตุ</span>
+        <span class="ban-wall-row-value" id="banWallReason">-</span>
+      </div>
+      <div class="ban-wall-row">
+        <span class="ban-wall-row-label">⏰ หมดอายุ</span>
+        <span class="ban-wall-row-value" id="banWallExpiry">-</span>
+      </div>
+    </div>
+
+    <div class="ban-wall-countdown-label" id="banWallCountdownLabel">⏳ เวลาที่เหลือก่อนปลดแบน</div>
+    <div class="ban-wall-countdown" id="banWallCountdown">00:00:00:00</div>
+    <div class="ban-wall-progress" id="banWallProgressWrap">
+      <div class="ban-wall-progress-bar" id="banWallProgress" style="width:100%"></div>
+    </div>
+
+    <div class="ban-wall-note" id="banWallNote">
+      หากคิดว่าเกิดข้อผิดพลาด กรุณาติดต่อสภานักเรียน<br/>Popup นี้จะปิดอัตโนมัติเมื่อหมดเวลาแบน
+    </div>
+  </div>
+</div>
+
 <!-- Admin Reveal Modal -->
 <div class="reveal-overlay" id="revealModal" onclick="closeRevealOutside(event)">
   <div class="reveal-box">
@@ -1755,7 +1890,11 @@
     window._banTargetUid = uid;
     window._banTargetName = name;
     window._banDurationDays = 1;
-    document.getElementById('banTargetInfo').innerHTML = `<strong>👤 ${name}</strong>`;
+    // หา email จาก comments
+    const targetComment = allComments.find(c => c.uid === uid);
+    window._banTargetEmail = targetComment ? (targetComment.realEmail || '') : '';
+    const emailDisplay = window._banTargetEmail ? `<br/><span style="font-size:0.78rem;color:rgba(255,200,100,0.8)">📧 ${window._banTargetEmail}</span>` : '';
+    document.getElementById('banTargetInfo').innerHTML = `<strong>👤 ${name}</strong>${emailDisplay}`;
     document.getElementById('banReasonInput').value = '';
     document.querySelectorAll('#banModal .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
     document.getElementById('banModal').classList.add('open');
@@ -1847,20 +1986,35 @@
   const bansCol = collection(db, 'bans');
 
   let allBans = {}; // uid -> ban data
+  let banWallInterval = null;
+  let banWallCountdownInterval = null;
 
-  // Listen to bans - key by uid
-  onSnapshot(bansCol, (snap) => {
-    allBans = {};
-    snap.docs.forEach(d => { allBans[d.id] = { id: d.id, ...d.data() }; });
-    window._allBans = allBans;
-    if (allComments.length > 0) renderComments(allComments);
-  });
+  // ========== BAN WALL FUNCTIONS ==========
+
+  function getBanForUser(user) {
+    if (!user) return null;
+    // ตรวจสอบด้วย UID ก่อน
+    const byUid = allBans[user.uid];
+    if (byUid && isActiveBan(byUid)) return byUid;
+    // ตรวจสอบด้วย Email (normalize lowercase)
+    const email = (user.email || '').toLowerCase().trim();
+    const byEmail = Object.values(allBans).find(b =>
+      b.email && b.email.toLowerCase().trim() === email && isActiveBan(b)
+    );
+    if (byEmail) return byEmail;
+    return null;
+  }
+
+  function isActiveBan(ban) {
+    if (!ban) return false;
+    if (ban.until === -1) return true;
+    return ban.until > Date.now();
+  }
 
   function isBanned(uid) {
     const ban = allBans[uid];
     if (!ban) return false;
-    if (ban.until === -1) return true;
-    return ban.until > Date.now();
+    return isActiveBan(ban);
   }
 
   function getBanTimeLeft(uid) {
@@ -1875,15 +2029,137 @@
     return `เหลือ ${hours} ชม.`;
   }
 
+  function formatCountdown(ms) {
+    if (ms <= 0) return '00:00:00:00';
+    const days = Math.floor(ms / 86400000);
+    const hours = Math.floor((ms % 86400000) / 3600000);
+    const mins = Math.floor((ms % 3600000) / 60000);
+    const secs = Math.floor((ms % 60000) / 1000);
+    return `${String(days).padStart(2,'0')}:${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  }
+
+  function showBanWall(user) {
+    const ban = getBanForUser(user);
+    if (!ban) return;
+
+    const wall = document.getElementById('banWall');
+    const box = document.getElementById('banWallBox');
+    const isPermanent = ban.until === -1;
+
+    // Fill info
+    document.getElementById('banWallBannedAt').textContent =
+      ban.bannedAt ? new Date(ban.bannedAt).toLocaleString('th-TH') : '-';
+    document.getElementById('banWallReason').textContent =
+      (ban.reason && ban.reason !== 'ไม่ระบุ') ? ban.reason : 'ไม่ระบุสาเหตุ';
+    document.getElementById('banWallExpiry').textContent =
+      isPermanent ? '♾️ ถาวร' : new Date(ban.until).toLocaleString('th-TH');
+
+    const countdownEl = document.getElementById('banWallCountdown');
+    const labelEl = document.getElementById('banWallCountdownLabel');
+    const progressWrap = document.getElementById('banWallProgressWrap');
+    const progressBar = document.getElementById('banWallProgress');
+    const noteEl = document.getElementById('banWallNote');
+
+    if (isPermanent) {
+      countdownEl.textContent = '♾️ ถาวร';
+      countdownEl.classList.add('permanent');
+      labelEl.textContent = '🚫 การระงับนี้เป็นแบบถาวร';
+      progressWrap.style.display = 'none';
+      noteEl.innerHTML = 'หากคิดว่าเกิดข้อผิดพลาด กรุณาติดต่อสภานักเรียนโดยตรง';
+    } else {
+      countdownEl.classList.remove('permanent');
+      progressWrap.style.display = '';
+      noteEl.innerHTML = 'หากคิดว่าเกิดข้อผิดพลาด กรุณาติดต่อสภานักเรียน<br/>Popup นี้จะปิดอัตโนมัติเมื่อหมดเวลาแบน';
+      const totalMs = ban.until - (ban.bannedAt || (ban.until - 86400000));
+      const tick = () => {
+        const remaining = ban.until - Date.now();
+        if (remaining <= 0) {
+          hideBanWall();
+          return;
+        }
+        countdownEl.textContent = formatCountdown(remaining);
+        const pct = Math.max(0, Math.min(100, (remaining / totalMs) * 100));
+        progressBar.style.width = pct + '%';
+      };
+      tick();
+      if (banWallCountdownInterval) clearInterval(banWallCountdownInterval);
+      banWallCountdownInterval = setInterval(tick, 1000);
+    }
+
+    // Block scrolling and interaction with page
+    document.body.style.overflow = 'hidden';
+    wall.classList.add('show');
+
+    // Extra: block keyboard interaction (Escape etc.)
+    document.addEventListener('keydown', blockKeyboard, true);
+  }
+
+  function hideBanWall() {
+    if (banWallCountdownInterval) {
+      clearInterval(banWallCountdownInterval);
+      banWallCountdownInterval = null;
+    }
+    const wall = document.getElementById('banWall');
+    const box = document.getElementById('banWallBox');
+    box.classList.add('ban-wall-lifted');
+    document.getElementById('banWallTitle').textContent = '✅ การระงับสิ้นสุดแล้ว';
+    document.getElementById('banWallTitle').classList.add('ban-wall-lifted-title');
+    document.getElementById('banWallCountdownLabel').textContent = 'บัญชีของคุณได้รับการปลดแบนแล้ว';
+    document.getElementById('banWallCountdown').textContent = 'ปลดแบนแล้ว';
+    setTimeout(() => {
+      wall.classList.remove('show');
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', blockKeyboard, true);
+    }, 2500);
+  }
+
+  function blockKeyboard(e) {
+    // ให้ Admin bypass ด้วย Ctrl+Shift+F12 ถ้าจำเป็น
+    if (e.ctrlKey && e.shiftKey && e.key === 'F12') return;
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  // ตรวจสอบและแสดง ban wall เมื่อ bans เปลี่ยน (real-time)
+  function checkAndShowBanWall() {
+    if (!currentUser || isAdmin) return;
+    const ban = getBanForUser(currentUser);
+    if (ban) {
+      showBanWall(currentUser);
+    } else {
+      // ถ้า ban wall เปิดอยู่แต่ถูกปลดแบนแล้ว ให้ปิด
+      if (document.getElementById('banWall').classList.contains('show')) {
+        hideBanWall();
+      }
+    }
+  }
+
+  // Listen to bans - key by uid, real-time
+  onSnapshot(bansCol, (snap) => {
+    allBans = {};
+    snap.docs.forEach(d => { allBans[d.id] = { id: d.id, ...d.data() }; });
+    window._allBans = allBans;
+    checkAndShowBanWall(); // ตรวจสอบทันทีเมื่อข้อมูลแบนอัปเดต
+    if (allComments.length > 0) renderComments(allComments);
+  });
+
+  // ========== BAN ACTIONS ==========
+
   window.confirmBan = async function() {
     const uid = window._banTargetUid;
     const days = window._banDurationDays;
     const reason = document.getElementById('banReasonInput').value.trim();
     if (!uid) { alert('ไม่พบข้อมูลผู้ใช้'); return; }
     const until = days === -1 ? -1 : Date.now() + days * 86400000;
+
+    // หา email จาก comments หรือ ban target info
+    const targetComment = allComments.find(c => c.uid === uid);
+    const targetEmail = targetComment ? (targetComment.realEmail || '') : (window._banTargetEmail || '');
+
     try {
       await setDoc(doc(db, 'bans', uid), {
         uid,
+        email: targetEmail.toLowerCase().trim(), // เก็บ email ด้วย
         reason: reason || 'ไม่ระบุ',
         until,
         bannedAt: Date.now(),
@@ -1920,33 +2196,40 @@
   let isAdmin = false;
   let allComments = [];
 
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     isAdmin = user && ADMIN_EMAILS.includes(user.email);
     updateAuthUI();
-    // Show/hide admin-only tab
     const adminTab = document.getElementById('adminOnlyTab');
     if (adminTab) adminTab.style.display = isAdmin ? '' : 'none';
     if (allComments.length > 0) renderComments(allComments);
+    // ตรวจสอบแบนทันทีเมื่อ login
+    checkAndShowBanWall();
   });
 
   function updateAuthUI() {
     const loginArea = document.getElementById('loginArea');
     const formBox = document.getElementById('formBox');
     if (currentUser) {
+      // ซ่อน form ถ้าโดนแบน
+      const ban = getBanForUser(currentUser);
+      const banned = !isAdmin && ban;
       loginArea.innerHTML = `
         <div class="user-info">
           <img src="${currentUser.photoURL || ''}" class="user-photo" onerror="this.style.display='none'" />
           <span class="user-name">👤 ${currentUser.displayName || currentUser.email}</span>
           ${isAdmin ? '<span class="admin-badge">🛡️ Admin</span>' : ''}
+          ${banned ? '<span style="background:rgba(192,57,43,0.3);color:#ff8080;font-size:0.72rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.2rem 0.6rem;border-radius:10px;border:1px solid rgba(192,57,43,0.4)">🚫 ถูกระงับ</span>' : ''}
           <button class="btn-logout" onclick="window.logoutUser()">ออกจากระบบ</button>
         </div>
       `;
-      formBox.style.display = 'block';
-      refreshButtonState();
-      const nameInput = document.getElementById('inputName');
-      nameInput.value = currentUser.displayName || '';
-      nameInput.readOnly = true;
+      formBox.style.display = banned ? 'none' : 'block';
+      if (!banned) {
+        refreshButtonState();
+        const nameInput = document.getElementById('inputName');
+        nameInput.value = currentUser.displayName || '';
+        nameInput.readOnly = true;
+      }
     } else {
       loginArea.innerHTML = `
         <div class="login-prompt">
@@ -1962,10 +2245,18 @@
   }
 
   window.loginWithGoogle = async function() {
-    try { await signInWithPopup(auth, provider); }
-    catch(e) { if (e.code !== 'auth/popup-closed-by-user') alert('เข้าสู่ระบบไม่สำเร็จ'); }
+    try {
+      await signInWithPopup(auth, provider);
+      // ตรวจสอบแบนหลัง login ทันที (onAuthStateChanged จะจัดการ)
+    } catch(e) { if (e.code !== 'auth/popup-closed-by-user') alert('เข้าสู่ระบบไม่สำเร็จ'); }
   };
-  window.logoutUser = async function() { await signOut(auth); };
+  window.logoutUser = async function() {
+    if (banWallCountdownInterval) clearInterval(banWallCountdownInterval);
+    document.getElementById('banWall').classList.remove('show');
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', blockKeyboard, true);
+    await signOut(auth);
+  };
 
   const q = query(commentsCol, orderBy('createdAt', 'desc'));
   onSnapshot(q, (snapshot) => {
@@ -2034,12 +2325,13 @@
   window.submitComment = async function() {
     if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
 
-    // ตรวจสอบแบน (ใช้ uid เป็น key)
-    if (!isAdmin && isBanned(currentUser.uid)) {
-      const timeLeft = getBanTimeLeft(currentUser.uid);
-      const ban = allBans[currentUser.uid];
-      alert(`❌ บัญชีของคุณถูกระงับการคอมเม้น\n${ban && ban.reason && ban.reason !== 'ไม่ระบุ' ? 'สาเหตุ: ' + ban.reason : ''}\n${timeLeft ? timeLeft : ''}`);
-      return;
+    // ตรวจสอบแบน (UID และ Email) — block ทุกทาง
+    if (!isAdmin) {
+      const ban = getBanForUser(currentUser);
+      if (ban) {
+        showBanWall(currentUser);
+        return;
+      }
     }
 
     // ตรวจสอบ limit จาก Firestore ก่อนส่ง (admin ไม่มีลิมิต)
