@@ -2370,6 +2370,11 @@
         delete allBans[user.uid];
       }
       window._allBans = allBans;
+      window._publicBannedUids = new Set(
+        Object.entries(allBans)
+          .filter(([uid, b]) => b && isActiveBan(b))
+          .map(([uid]) => uid)
+      );
       _bansReady = true;
       checkAndShowBanWall();
       if (allComments.length > 0) renderComments(allComments);
@@ -2386,6 +2391,11 @@
       allBans = {};
       snap.docs.forEach(d => { allBans[d.id] = { id: d.id, ...d.data() }; });
       window._allBans = allBans;
+      window._publicBannedUids = new Set(
+        Object.entries(allBans)
+          .filter(([uid, b]) => b && isActiveBan(b))
+          .map(([uid]) => uid)
+      );
       _bansReady = true;
       if (_authReady) checkAndShowBanWall();
       if (allComments.length > 0) renderComments(allComments);
@@ -2922,6 +2932,15 @@
     const list = document.getElementById('commentsList');
     const filterType = window._filterType || 'ทั้งหมด';
     const myUid = currentUser ? currentUser.uid : null;
+    // ถ้า _publicBannedUids ยังไม่ถูก set ให้สร้างจาก allBans (หรือ Set ว่างถ้ายังไม่มีข้อมูล)
+    if (!window._publicBannedUids) {
+      window._publicBannedUids = new Set(
+        Object.entries(allBans)
+          .filter(([uid, b]) => b && isActiveBan(b))
+          .map(([uid]) => uid)
+      );
+    }
+    const publicBannedUids = window._publicBannedUids;
     let filtered;
     if (filterType === '__banned__' && isAdmin) {
       // รวม allBans จาก listener ทุกตัว
@@ -2951,11 +2970,11 @@
     } else if (filterType === 'ทั้งหมด') {
       filtered = isAdmin
         ? comments
-        : comments.filter(c => !window._publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
+        : comments.filter(c => !publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
     } else {
       filtered = isAdmin
         ? comments.filter(c => c.type === filterType)
-        : comments.filter(c => c.type === filterType && !window._publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
+        : comments.filter(c => c.type === filterType && !publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
     }
 
     if (filterType !== '__banned__' && filterType !== '__council__') {
