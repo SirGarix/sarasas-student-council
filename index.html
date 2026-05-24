@@ -1471,13 +1471,21 @@
       <label class="anon-row" for="anonCheck">
         <input type="checkbox" id="anonCheck" onchange="toggleAnon(this.checked)" />
         <span class="anon-label">🕵️ โหมดไม่ระบุตัวตน</span>
-        <span class="anon-desc">ถ้าติ้กอันนี้คอมเม้นที่ออกไปชื่อกับโปรไฟล์จะถูกซ่อนแต่ทุกคนเห็นคอมเม้นได้</span>
+        <span class="anon-desc">ซ่อนชื่อจากทุกคน (ยกเว้นพี่สภา)</span>
       </label>
+      <div id="comboBadge" style="display:none;margin:-0.3rem 0 0.4rem;padding:0.45rem 1rem;border-radius:0 0 10px 10px;background:linear-gradient(90deg,rgba(74,127,212,0.15),rgba(255,215,0,0.12));border:1px solid rgba(255,255,255,0.1);border-top:none;font-size:0.78rem;color:rgba(255,255,255,0.6);font-family:'Kanit',sans-serif;display:flex;align-items:center;gap:0.4rem">
+        <span style="font-size:0.9rem">✨</span>
+        <span>ติ้กทั้งคู่ได้เลย — ซ่อนชื่อ <span style="color:#74b9ff">+</span> ส่งตรงถึงสภาเท่านั้น</span>
+      </div>
       <label class="anon-row" for="privateCheck" style="border-color:rgba(255,215,0,0.2);background:rgba(255,215,0,0.04)">
-        <input type="checkbox" id="privateCheck" style="accent-color:#f1c40f" />
+        <input type="checkbox" id="privateCheck" style="accent-color:#f1c40f" onchange="updateComboBadge()" />
         <span class="anon-label" style="color:rgba(255,215,0,0.9)">🔒 เฉพาะสภานักเรียนเห็น</span>
-        <span class="anon-desc">ถ้าติ้กไว้จะมีแค่พี่สภาเท่านั้นที่เห็นข้อความนี้ คนอื่นจะมองไม่เห็นเลย</span>
+        <span class="anon-desc">ส่งตรงถึงพี่สภา คนอื่นมองไม่เห็น</span>
       </label>
+      <div id="comboActiveHint" style="display:none;margin:-0.3rem 0 0.8rem;padding:0.5rem 1rem;border-radius:0 0 10px 10px;background:linear-gradient(90deg,rgba(74,127,212,0.18),rgba(255,215,0,0.14));border:1px solid rgba(255,215,0,0.2);border-top:none;font-size:0.8rem;color:rgba(255,220,80,0.9);font-family:'Kanit',sans-serif;display:flex;align-items:center;gap:0.5rem">
+        <span>🕵️🔒</span>
+        <span><strong>โหมดผสม:</strong> ซ่อนชื่อ + เฉพาะสภาเห็น — ข้อความนี้จะถึงพี่สภาโดยที่ทุกคนไม่รู้ว่าเป็นคุณ</span>
+      </div>
       <div class="form-group" style="margin-bottom:1rem">
         <label class="form-label">ประเภท</label>
         <div class="type-tags" id="typeTags">
@@ -2083,7 +2091,28 @@
       nameInput.style.opacity = '0.6';
       nameInput.placeholder = '';
     }
+    updateComboBadge();
   };
+
+  window.updateComboBadge = function() {
+    const anonOn = document.getElementById('anonCheck')?.checked;
+    const privateOn = document.getElementById('privateCheck')?.checked;
+    const comboBadge = document.getElementById('comboBadge');
+    const comboActive = document.getElementById('comboActiveHint');
+    if (!comboBadge || !comboActive) return;
+    if (anonOn && privateOn) {
+      comboBadge.style.display = 'none';
+      comboActive.style.display = 'flex';
+    } else if (!anonOn && !privateOn) {
+      comboBadge.style.display = 'flex';
+      comboActive.style.display = 'none';
+    } else {
+      comboBadge.style.display = 'flex';
+      comboActive.style.display = 'none';
+    }
+  };
+  // แสดง combo badge ตั้งแต่ตอนโหลด
+  document.addEventListener('DOMContentLoaded', updateComboBadge);
 
   // 3-dot menu toggle
   window.toggleCommentMenu = function(id, e) {
