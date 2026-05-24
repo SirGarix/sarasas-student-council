@@ -2288,7 +2288,7 @@
 <!-- Firebase module script -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
   // Expose Firestore helpers for reply system
@@ -2644,12 +2644,29 @@
 
   document.getElementById('commentsList').innerHTML = `<div class="empty-state"><div class="icon">⏳</div><p>กำลังโหลด...</p></div>`;
 
+  // ── Reply count cache: โหลดจำนวน reply ทันที ไม่ต้องรอกดปุ่ม ──────────
+  const replyCountCache = {};
+
+  async function preloadReplyCount(commentId) {
+    if (replyCountCache[commentId] !== undefined) return; // มีแล้วข้ามได้
+    try {
+      const snap = await getDocs(collection(db, 'comments', commentId, 'replies'));
+      replyCountCache[commentId] = snap.size;
+      const chip = document.getElementById('reply-count-' + commentId);
+      if (chip) chip.textContent = snap.size;
+    } catch(e) { /* ignore */ }
+  }
+
   const q = query(commentsCol, orderBy('createdAt', 'desc'));
   onSnapshot(q, (snapshot) => {
     allComments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     window._allComments = allComments;
     window._renderComments = renderComments;
     renderComments(allComments);
+    // โหลด reply count ทุก comment ที่ยังไม่มี real-time listener
+    allComments.forEach(c => {
+      if (!replyListeners[c.id]) preloadReplyCount(c.id);
+    });
   });
 
   const DAILY_LIMIT = 3;
@@ -2825,10 +2842,12 @@
     const rq = q2(repliesRef, ob('createdAt', 'asc'));
     replyListeners[commentId] = ons(rq, (snap) => {
       repliesCache[commentId] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      replyCountCache[commentId] = repliesCache[commentId].length;
       renderReplies(commentId);
-      // update count badge
-      const chip = document.getElementById('reply-count-' + commentId);
-      if (chip) chip.textContent = repliesCache[commentId].length;
+      // อัพเดต chip ทุก element (กันกรณี DOM ถูก re-render)
+      document.querySelectorAll('#reply-count-' + commentId).forEach(el => {
+        el.textContent = repliesCache[commentId].length;
+      });
     });
   }
 
@@ -2898,7 +2917,10 @@
 
     sendBtn.disabled = true; sendBtn.textContent = '⏳';
 
-    const isAnon = false; // replies ใช้ชื่อจริงเสมอ (อาจแก้ได้)
+    // อ่านสถานะ anon จาก checkbox เดียวกับ comment หลัก
+    const isAnon = !!(document.getElementById('anonCheck') && document.getElementById('anonCheck').checked);
+    const anonNum = currentUser.uid.split('').reduce((a,ch) => (a*31 + ch.charCodeAt(0)) & 0xfffff, 0)
+                      .toString().slice(0,6).padStart(6,'0');
     const avatars = ['😊','🎓','📖','🌟','🏅','✨','🎒','💫','🌈','🦋'];
     const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
 
@@ -2907,10 +2929,10 @@
       const repliesRef = col(db, 'comments', commentId, 'replies');
       await add(repliesRef, {
         uid: currentUser.uid,
-        name: currentUser.displayName || 'นักเรียน',
-        photoURL: currentUser.photoURL || '',
+        name: isAnon ? `User${anonNum}` : (currentUser.displayName || 'นักเรียน'),
+        photoURL: isAnon ? '' : (currentUser.photoURL || ''),
         avatar: randomAvatar,
-        isAnon: false,
+        isAnon: isAnon,
         text,
         time: new Date().toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit', day:'numeric', month:'short' }),
         createdAt: Date.now()
@@ -3095,7 +3117,7 @@
           </div>
           <div class="reply-section">
             <button class="reply-toggle-btn" onclick="toggleReplies('${c.id}', this)">
-              💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${c.id}">0</span>
+              💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${c.id}">${replyCountCache[c.id] || 0}</span>
             </button>
             <div class="replies-container" id="replies-${c.id}">
               <div id="replies-list-${c.id}"></div>
