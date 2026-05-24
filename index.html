@@ -21,25 +21,34 @@
       --crimson-mid: #1a3a6b;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
     body {
       font-family: 'Sarabun', sans-serif;
       background: var(--dark);
       color: var(--white);
-      overflow-x: hidden;
     }
-    .page { display: none; min-height: 100vh; }
+    .page {
+      display: none;
+      position: fixed;
+      inset: 0;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      transform: translateZ(0);
+      will-change: transform;
+    }
     .page.active { display: block; }
     #lobby.active { display: flex; }
     #lobby {
       background: linear-gradient(135deg, #0a1628 0%, #1a2f5a 50%, #0d2040 100%);
-      min-height: 100vh;
-      display: flex;
+      min-height: 100%;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      position: relative;
-      overflow: hidden;
     }
     #lobby::before {
       content: '';
@@ -134,10 +143,11 @@
       font-family: 'Kanit', sans-serif;
       font-size: 1rem; font-weight: 600;
       cursor: pointer; border: none;
-      transition: all 0.3s;
+      transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       display: flex; align-items: center; gap: 0.6rem;
       text-decoration: none;
       position: relative; overflow: hidden;
+      will-change: transform;
     }
     .btn-lobby::before {
       content: '';
@@ -193,10 +203,11 @@
       border-radius: 50px;
       text-decoration: none;
       font-family: 'Kanit', sans-serif;
-      transition: all 0.3s;
+      transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s;
       border: 1.5px solid transparent;
       position: relative;
       overflow: hidden;
+      will-change: transform;
     }
     .social-link::before {
       content: '';
@@ -329,12 +340,13 @@
       border-radius: 20px;
       padding: 1.8rem 1.5rem 1.2rem;
       text-align: center;
-      transition: all 0.3s;
+      transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.25s;
       position: relative;
       overflow: hidden;
       cursor: pointer;
       display: flex;
       flex-direction: column;
+      will-change: transform;
     }
     .member-card::before {
       content: '';
@@ -691,9 +703,11 @@
       background: linear-gradient(135deg, #1a3a6b, #2563b0);
       color: var(--white); border: none; border-radius: 12px;
       font-family: 'Kanit', sans-serif; font-size: 1rem;
-      font-weight: 700; cursor: pointer; transition: all 0.3s;
+      font-weight: 700; cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s;
       margin-top: 0.5rem;
       box-shadow: 0 4px 20px rgba(26,58,107,0.5);
+      will-change: transform;
     }
     .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,99,176,0.55); }
     .comments-list-title {
@@ -710,11 +724,12 @@
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.07);
       border-radius: 16px; padding: 1.2rem 1.5rem;
-      margin-bottom: 1rem; transition: border 0.2s;
-      animation: slideIn 0.4s ease;
+      margin-bottom: 1rem; transition: border-color 0.2s;
+      animation: slideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+      contain: layout style;
     }
     @keyframes slideIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
     .comment-item:hover { border-color: rgba(255,255,255,0.15); }
@@ -2319,11 +2334,11 @@
     document.getElementById('privacyModalSub').textContent = c.sub;
     document.getElementById('privacyBody').innerHTML = c.html;
     document.getElementById('privacyModal').classList.add('open');
-    document.body.style.overflow = 'hidden';
+    lockPageScroll();
   };
   window.closePrivacyModal = function() {
     document.getElementById('privacyModal').classList.remove('open');
-    document.body.style.overflow = '';
+    unlockPageScroll();
   };
   window.closePrivacyOutside = function(e) {
     if (e.target === document.getElementById('privacyModal')) window.closePrivacyModal();
@@ -2331,19 +2346,53 @@
 </script>
 <script>
   const SEAL_IMAGE_URL = 'https://i.postimg.cc/02m2CkSh/swsk_promax.png';
+  function lockPageScroll() {
+    var active = document.querySelector('.page.active');
+    if (active) active.style.overflow = 'hidden';
+  }
+  function unlockPageScroll() {
+    var active = document.querySelector('.page.active');
+    if (active) active.style.overflow = '';
+  }
+  window.lockPageScroll = lockPageScroll;
+  window.unlockPageScroll = unlockPageScroll;
   window.goTo = function(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    var current = document.querySelector('.page.active');
     var target = document.getElementById(id);
-    if (!target) return;
-    target.classList.add('active');
+    if (!target || (current && current.id === id)) return;
+
+    // Fade out current, then switch
+    if (current && current !== target) {
+      current.style.transition = 'opacity 0.18s ease';
+      current.style.opacity = '0';
+      setTimeout(function() {
+        current.classList.remove('active');
+        current.style.opacity = '';
+        current.style.transition = '';
+        current.scrollTop = 0;
+
+        target.style.opacity = '0';
+        target.classList.add('active');
+        target.scrollTop = 0;
+        // Force reflow then fade in
+        target.getBoundingClientRect();
+        target.style.transition = 'opacity 0.22s ease';
+        target.style.opacity = '1';
+        setTimeout(function() {
+          target.style.opacity = '';
+          target.style.transition = '';
+        }, 230);
+      }, 180);
+    } else {
+      target.classList.add('active');
+      target.scrollTop = 0;
+    }
+
     var btn = document.getElementById('floatingSupportBtn');
     if (btn) {
       if (id === 'lobby') { btn.classList.remove('compact'); }
       else { btn.classList.add('compact'); }
     }
-    setTimeout(function() {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 10);
   };
   (function() {
     if (SEAL_IMAGE_URL) {
@@ -2580,11 +2629,11 @@
     }
     socialBox.innerHTML = html;
     document.getElementById('profileModal').classList.add('open');
-    document.body.style.overflow = 'hidden';
+    lockPageScroll();
   }
   function closeProfile() {
     document.getElementById('profileModal').classList.remove('open');
-    document.body.style.overflow = '';
+    unlockPageScroll();
     currentMemberId = null;
   }
   function closeModalOutside(e) {
@@ -2782,11 +2831,11 @@
   window.openSupportModal = function() {
     renderSupportChannels();
     document.getElementById('supportModal').classList.add('open');
-    document.body.style.overflow = 'hidden';
+    lockPageScroll();
   };
   window.closeSupportModal = function() {
     document.getElementById('supportModal').classList.remove('open');
-    document.body.style.overflow = '';
+    unlockPageScroll();
   };
   window.closeSupportOutside = function(e) {
     if (e.target === document.getElementById('supportModal')) window.closeSupportModal();
@@ -2942,7 +2991,7 @@
       if (banWallCountdownInterval) clearInterval(banWallCountdownInterval);
       banWallCountdownInterval = setInterval(tick, 1000);
     }
-    document.body.style.overflow = 'hidden';
+    window.lockPageScroll();
     wall.classList.add('show');
     document.addEventListener('keydown', blockKeyboard, true);
   }
@@ -2960,7 +3009,7 @@
     document.getElementById('banWallCountdown').textContent = 'ปลดแบนแล้ว';
     setTimeout(() => {
       wall.classList.remove('show');
-      document.body.style.overflow = '';
+      window.unlockPageScroll();
       document.removeEventListener('keydown', blockKeyboard, true);
     }, 2500);
   }
@@ -3147,7 +3196,7 @@
     if (_userBanUnsub) { _userBanUnsub(); _userBanUnsub = null; }
     if (banWallCountdownInterval) clearInterval(banWallCountdownInterval);
     document.getElementById('banWall').classList.remove('show');
-    document.body.style.overflow = '';
+    window.unlockPageScroll();
     document.removeEventListener('keydown', blockKeyboard, true);
     allBans = {};
     _bansReady = false;
