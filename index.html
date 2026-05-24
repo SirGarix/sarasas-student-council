@@ -2066,7 +2066,8 @@
       if (_authReady) checkAndShowBanWall();
       if (allComments.length > 0) renderComments(allComments);
     }, (err) => {
-      console.warn('bans collection error:', err);
+      // Security Rules ยังไม่อนุญาต — fallback: ดึงจาก window._allBans ที่ user ban listener อาจเพิ่มไว้
+      console.warn('bans collection error (check Firestore Rules):', err);
       _bansReady = true;
     });
   }
@@ -2471,8 +2472,12 @@
     const filterType = window._filterType || 'ทั้งหมด';
     let filtered;
     if (filterType === '__banned__' && isAdmin) {
-      // Admin Only: show unique banned users — match by uid
-      const bannedUids = Object.keys(allBans).filter(uid => isBanned(uid));
+      // รวม allBans จาก listener ทุกตัว
+      const bans = window._allBans || allBans;
+      const bannedUids = Object.keys(bans).filter(uid => {
+        const b = bans[uid];
+        return b && (b.until === -1 || b.until > Date.now());
+      });
       const seen = new Set();
       filtered = [];
       for (const c of comments) {
@@ -2484,8 +2489,8 @@
       // Include banned users with no comments at all
       bannedUids.forEach(uid => {
         if (!seen.has(uid)) {
-          const ban = allBans[uid];
-          filtered.push({ id: '__ban__' + uid, uid, realEmail: ban.realEmail || '', name: ban.realName || uid, text: '', avatar: '🚫', isBanOnly: true });
+          const ban = bans[uid];
+          filtered.push({ id: '__ban__' + uid, uid, realEmail: ban.email || ban.realEmail || '', name: ban.realName || uid, text: '', avatar: '🚫', isBanOnly: true });
         }
       });
     } else if (filterType === 'ทั้งหมด') {
@@ -2512,9 +2517,10 @@
     list.innerHTML = filtered.map(c => {
       const likedBy = c.likedBy || [];
       const hasLiked = myUid && likedBy.includes(myUid);
-      const cEmail = c.realEmail || '';
-      const userBanned = isAdmin && isBanned(c.uid);
-      const banData = allBans[c.uid];
+      const cEmail = c.realEmail || c.email || '';
+      const _bans = window._allBans || allBans;
+      const banData = _bans[c.uid];
+      const userBanned = isAdmin && banData && (banData.until === -1 || banData.until > Date.now());
       const timeLeft = getBanTimeLeft(c.uid);
       const isBanView = filterType === '__banned__';
 
