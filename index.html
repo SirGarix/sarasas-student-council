@@ -2607,19 +2607,37 @@
   function unlockPageScroll() {}
   window.lockPageScroll = lockPageScroll;
   window.unlockPageScroll = unlockPageScroll;
-  // --- Hash-based navigation (reliable on iOS Safari, no bfcache issues) ---
-  function _resetAllPages() {
+  // --- Navigation ---
+  var _leaveTimer = null;
+  var _enterTimer = null;
+  var _currentPage = 'lobby';
+
+  function _hardShowLobby() {
+    // Cancel any in-flight animations
+    if (_leaveTimer) { clearTimeout(_leaveTimer); _leaveTimer = null; }
+    if (_enterTimer) { clearTimeout(_enterTimer); _enterTimer = null; }
     document.querySelectorAll('.page').forEach(function(p) {
       p.classList.remove('active', 'page-entering', 'page-leaving');
       p.style.cssText = '';
     });
+    var lobby = document.getElementById('lobby');
+    if (lobby) { lobby.classList.add('active'); lobby.scrollTop = 0; }
+    var btn = document.getElementById('floatingSupportBtn');
+    if (btn) { btn.classList.remove('compact'); btn.style.cssText = ''; }
+    _currentPage = 'lobby';
   }
 
   function _applyPage(id) {
     var target = document.getElementById(id);
-    if (!target) id = 'lobby', target = document.getElementById('lobby');
+    if (!target) { id = 'lobby'; target = document.getElementById('lobby'); }
+    if (_currentPage === id) return;
+
+    // Cancel any in-flight timers
+    if (_leaveTimer) { clearTimeout(_leaveTimer); _leaveTimer = null; }
+    if (_enterTimer) { clearTimeout(_enterTimer); _enterTimer = null; }
 
     var current = document.querySelector('.page.active');
+    _currentPage = id;
 
     var btn = document.getElementById('floatingSupportBtn');
     if (btn) {
@@ -2627,75 +2645,61 @@
       else btn.classList.add('compact');
     }
 
-    // Helper: show target with enter animation, clean up after
     function enterTarget() {
-      _resetAllPages();
+      document.querySelectorAll('.page').forEach(function(p) {
+        p.classList.remove('active', 'page-entering', 'page-leaving');
+        p.style.cssText = '';
+      });
       target.classList.add('active', 'page-entering');
       target.scrollTop = 0;
-      var t = setTimeout(function() {
+      _enterTimer = setTimeout(function() {
         target.classList.remove('page-entering');
-      }, 400); // fallback — longer than animation duration
-      var onEnd = function() {
-        clearTimeout(t);
-        target.classList.remove('page-entering');
-        target.removeEventListener('animationend', onEnd);
-      };
-      target.addEventListener('animationend', onEnd);
+        _enterTimer = null;
+      }, 400);
     }
 
-    // No current page or same page — skip leave animation
     if (!current || current === target) {
       enterTarget();
       return;
     }
 
-    // Animate OUT current page; use BOTH animationend + timer fallback
+    // Animate out current, then animate in target
+    document.querySelectorAll('.page').forEach(function(p) {
+      if (p !== current) { p.classList.remove('active', 'page-entering', 'page-leaving'); p.style.cssText = ''; }
+    });
     current.classList.remove('page-entering');
     current.classList.add('page-leaving');
 
-    var done = false;
-    var doEnter = function() {
-      if (done) return;
-      done = true;
-      current.removeEventListener('animationend', doEnter);
-      clearTimeout(leaveTimer);
+    _leaveTimer = setTimeout(function() {
+      _leaveTimer = null;
       enterTarget();
-    };
-    var leaveTimer = setTimeout(doEnter, 250); // fallback if animationend never fires (bfcache, etc.)
-    current.addEventListener('animationend', doEnter);
+    }, 200);
   }
 
   window.goTo = function(id) {
-    // Use hash — iOS Safari handles hash changes via bfcache correctly
     if (id === 'lobby') {
-      location.hash = '';          // clear hash → back button goes to lobby naturally
+      try { history.pushState({ page: 'lobby' }, '', location.pathname); } catch(e) {}
+      _applyPage('lobby');
     } else {
-      location.hash = id;
+      try { history.pushState({ page: id }, '', '#' + id); } catch(e) {}
+      _applyPage(id);
     }
   };
 
-  // hashchange fires on back/forward AND goTo — single source of truth
-  window.addEventListener('hashchange', function() {
-    var id = location.hash.replace('#', '') || 'lobby';
+  window.addEventListener('popstate', function(e) {
+    var id = (e.state && e.state.page) ? e.state.page : 'lobby';
     _applyPage(id);
   });
 
-  // On first load, apply whatever hash is in the URL (or lobby)
-  (function() {
-    var id = location.hash.replace('#', '') || 'lobby';
-    _applyPage(id);
-  })();
+  // Initial state
+  try { history.replaceState({ page: 'lobby' }, '', location.pathname); } catch(e) {}
+  _applyPage('lobby');
 
-  // iOS Safari bfcache: when user comes back, snap to lobby instantly
-  // No body hiding — avoids the blank/missing-buttons bug entirely
+  // iOS Safari bfcache — snap back to lobby, no hiding
   window.addEventListener('pageshow', function(e) {
     if (e.persisted) {
-      _resetAllPages();
-      var lobby = document.getElementById('lobby');
-      if (lobby) { lobby.classList.add('active'); lobby.scrollTop = 0; }
-      var btn = document.getElementById('floatingSupportBtn');
-      if (btn) { btn.classList.remove('compact'); btn.style.cssText = ''; }
-      history.replaceState(null, '', location.pathname);
+      _hardShowLobby();
+      try { history.replaceState({ page: 'lobby' }, '', location.pathname); } catch(e) {}
     }
   });
   (function() {
