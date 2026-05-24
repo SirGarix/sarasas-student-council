@@ -2600,101 +2600,70 @@
   function unlockPageScroll() {}
   window.lockPageScroll = lockPageScroll;
   window.unlockPageScroll = unlockPageScroll;
-  function _switchPage(id, pushState) {
-    var current = document.querySelector('.page.active');
+  // --- Hash-based navigation (reliable on iOS Safari, no bfcache issues) ---
+  function _applyPage(id) {
     var target = document.getElementById(id);
-    if (!target || (current && current.id === id)) return;
+    if (!target) id = 'lobby', target = document.getElementById('lobby');
 
-    if (pushState) {
-      if (id === 'lobby') {
-        history.replaceState({ page: 'lobby' }, '', '');
-      } else {
-        history.pushState({ page: id }, '', '');
-      }
-    }
+    // Instantly clear ALL inline styles from every page (no stuck opacity)
+    document.querySelectorAll('.page').forEach(function(p) {
+      p.classList.remove('active');
+      p.style.cssText = '';
+    });
 
-    // Cancel any in-flight animation timers before switching
-    if (window._switchTimer) { clearTimeout(window._switchTimer); window._switchTimer = null; }
-    if (window._switchTimer2) { clearTimeout(window._switchTimer2); window._switchTimer2 = null; }
-
-    // Fade out current, then switch
-    if (current && current !== target) {
-      current.style.transition = 'opacity 0.18s ease';
-      current.style.opacity = '0';
-      window._switchTimer = setTimeout(function() {
-        current.classList.remove('active');
-        current.style.opacity = '';
-        current.style.transition = '';
-        current.scrollTop = 0;
-
-        target.style.opacity = '0';
-        target.classList.add('active');
-        target.scrollTop = 0;
-        // Force reflow then fade in
-        target.getBoundingClientRect();
-        target.style.transition = 'opacity 0.22s ease';
-        target.style.opacity = '1';
-        window._switchTimer2 = setTimeout(function() {
-          target.style.opacity = '';
-          target.style.transition = '';
-        }, 230);
-      }, 180);
-    } else {
-      target.classList.add('active');
-      target.scrollTop = 0;
-    }
+    target.classList.add('active');
+    target.scrollTop = 0;
 
     var btn = document.getElementById('floatingSupportBtn');
     if (btn) {
-      if (id === 'lobby') { btn.classList.remove('compact'); }
-      else { btn.classList.add('compact'); }
+      if (id === 'lobby') btn.classList.remove('compact');
+      else btn.classList.add('compact');
     }
   }
 
-  window.goTo = function(id) { _switchPage(id, true); };
+  window.goTo = function(id) {
+    // Use hash — iOS Safari handles hash changes via bfcache correctly
+    if (id === 'lobby') {
+      location.hash = '';          // clear hash → back button goes to lobby naturally
+    } else {
+      location.hash = id;
+    }
+  };
 
-  // Set initial history state so back button works
-  history.replaceState({ page: 'lobby' }, '', '');
-
-  // Handle browser back/forward button on mobile
-  window.addEventListener('popstate', function(e) {
-    var page = (e.state && e.state.page) ? e.state.page : 'lobby';
-    _switchPage(page, false);
+  // hashchange fires on back/forward AND goTo — single source of truth
+  window.addEventListener('hashchange', function() {
+    var id = location.hash.replace('#', '') || 'lobby';
+    _applyPage(id);
   });
 
-  // iOS Safari bfcache fix:
-  // pagehide fires BEFORE the page is put into bfcache.
-  // We add a class that hides the body via CSS instantly,
-  // then pageshow fires when restored — we reset to lobby and show.
+  // On first load, apply whatever hash is in the URL (or lobby)
+  (function() {
+    var id = location.hash.replace('#', '') || 'lobby';
+    _applyPage(id);
+  })();
+
+  // pageshow: still reset to lobby when coming back from bfcache
+  // (hash will be '' or whatever it was — just force lobby for safety)
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted) {
+      document.querySelectorAll('.page').forEach(function(p) {
+        p.classList.remove('active');
+        p.style.cssText = '';
+      });
+      var lobby = document.getElementById('lobby');
+      if (lobby) { lobby.classList.add('active'); lobby.scrollTop = 0; }
+      var btn = document.getElementById('floatingSupportBtn');
+      if (btn) { btn.classList.remove('compact'); btn.style.cssText = ''; }
+      // Clear hash without triggering hashchange
+      history.replaceState(null, '', location.pathname);
+      document.body.classList.remove('bfcache-restoring');
+      document.body.style.visibility = '';
+    }
+  });
+
   window.addEventListener('pagehide', function(e) {
     if (e.persisted) {
       document.body.classList.add('bfcache-restoring');
-    }
-  });
-  window.addEventListener('pageshow', function(e) {
-    if (e.persisted) {
-      // Hard reset ALL pages — clear any stuck opacity/transition from animation
-      document.querySelectorAll('.page').forEach(function(p) {
-        p.classList.remove('active');
-        p.style.cssText = ''; // wipe ALL inline styles, not just opacity/transition
-      });
-      // Force lobby active and fully visible
-      var lobby = document.getElementById('lobby');
-      if (lobby) {
-        lobby.classList.add('active');
-        lobby.style.cssText = '';   // ensure no leftover inline opacity
-        lobby.scrollTop = 0;
-      }
-      // Reset floating support button
-      var btn = document.getElementById('floatingSupportBtn');
-      if (btn) { btn.classList.remove('compact'); btn.style.cssText = ''; }
-      // Reset history state
-      history.replaceState({ page: 'lobby' }, '', '');
-      // Small rAF delay so DOM is fully painted before we reveal body
-      requestAnimationFrame(function() {
-        document.body.classList.remove('bfcache-restoring');
-        document.body.style.visibility = '';  // belt-and-suspenders clear
-      });
     }
   });
   (function() {
