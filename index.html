@@ -2611,6 +2611,13 @@
   window.lockPageScroll = lockPageScroll;
   window.unlockPageScroll = unlockPageScroll;
   // --- Hash-based navigation (reliable on iOS Safari, no bfcache issues) ---
+  function _resetAllPages() {
+    document.querySelectorAll('.page').forEach(function(p) {
+      p.classList.remove('active', 'page-entering', 'page-leaving');
+      p.style.cssText = '';
+    });
+  }
+
   function _applyPage(id) {
     var target = document.getElementById(id);
     if (!target) id = 'lobby', target = document.getElementById('lobby');
@@ -2623,36 +2630,41 @@
       else btn.classList.add('compact');
     }
 
-    // If same page or no current, just show target immediately
-    if (!current || current === target) {
-      document.querySelectorAll('.page').forEach(function(p) {
-        p.classList.remove('active', 'page-entering', 'page-leaving');
-        p.style.cssText = '';
-      });
+    // Helper: show target with enter animation, clean up after
+    function enterTarget() {
+      _resetAllPages();
       target.classList.add('active', 'page-entering');
       target.scrollTop = 0;
-      var onEnd = function() { target.classList.remove('page-entering'); target.removeEventListener('animationend', onEnd); };
+      var t = setTimeout(function() {
+        target.classList.remove('page-entering');
+      }, 400); // fallback — longer than animation duration
+      var onEnd = function() {
+        clearTimeout(t);
+        target.classList.remove('page-entering');
+        target.removeEventListener('animationend', onEnd);
+      };
       target.addEventListener('animationend', onEnd);
+    }
+
+    // No current page or same page — skip leave animation
+    if (!current || current === target) {
+      enterTarget();
       return;
     }
 
-    // Animate OUT current page
+    // Animate OUT current page; use BOTH animationend + timer fallback
     current.classList.remove('page-entering');
     current.classList.add('page-leaving');
 
+    var done = false;
     var doEnter = function() {
+      if (done) return;
+      done = true;
       current.removeEventListener('animationend', doEnter);
-      // Hide current, clear all
-      document.querySelectorAll('.page').forEach(function(p) {
-        p.classList.remove('active', 'page-entering', 'page-leaving');
-        p.style.cssText = '';
-      });
-      // Animate IN new page
-      target.classList.add('active', 'page-entering');
-      target.scrollTop = 0;
-      var onEnd2 = function() { target.classList.remove('page-entering'); target.removeEventListener('animationend', onEnd2); };
-      target.addEventListener('animationend', onEnd2);
+      clearTimeout(leaveTimer);
+      enterTarget();
     };
+    var leaveTimer = setTimeout(doEnter, 250); // fallback if animationend never fires (bfcache, etc.)
     current.addEventListener('animationend', doEnter);
   }
 
@@ -2681,10 +2693,7 @@
   // (hash will be '' or whatever it was — just force lobby for safety)
   window.addEventListener('pageshow', function(e) {
     if (e.persisted) {
-      document.querySelectorAll('.page').forEach(function(p) {
-        p.classList.remove('active');
-        p.style.cssText = '';
-      });
+      _resetAllPages();
       var lobby = document.getElementById('lobby');
       if (lobby) { lobby.classList.add('active'); lobby.scrollTop = 0; }
       var btn = document.getElementById('floatingSupportBtn');
