@@ -2536,8 +2536,8 @@
   // ===== SUPPORT MODAL CONFIG =====
   // แก้ไขช่องทางติดต่อ Admin ตรงนี้ได้เลย
   const SUPPORT_CONTACTS = {
-    instagram: 'admin_instagram_here',   // ← ใส่ชื่อ IG ของ Admin
-    facebook:  'admin_facebook_here',    // ← ใส่ชื่อ Facebook ของ Admin
+    instagram: 'junr_xn',   // ← ใส่ชื่อ IG ของ Admin
+    facebook:  'gghghij.igfggh',    // ← ใส่ชื่อ Facebook ของ Admin
   };
 
   function renderSupportChannels() {
@@ -2962,11 +2962,10 @@
           <img src="${currentUser.photoURL || ''}" class="user-photo" onerror="this.style.display='none'" />
           <div style="display:flex;flex-direction:column;gap:0.1rem;flex:1;min-width:0;">
             <span class="user-name" style="line-height:1.2;">👤 ${currentUser.displayName || currentUser.email}</span>
-            <span class="user-uid-badge" title="User UID">UserUID:${currentUser.uid}</span>
+            <span class="user-uid-badge" title="UserUID:${currentUser.uid}">UserUID:${currentUser.uid.slice(0,8)}...${currentUser.uid.slice(-4)}</span>
           </div>
           ${isAdmin ? '<span class="admin-badge">🛡️ Admin</span>' : ''}
           ${banned ? '<span style="background:rgba(192,57,43,0.3);color:#ff8080;font-size:0.72rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.2rem 0.6rem;border-radius:10px;border:1px solid rgba(192,57,43,0.4)">🚫 ถูกระงับ</span>' : ''}
-          <button class="btn-support" onclick="openSupportModal()">🆘 มีปัญหา?</button>
           <button class="btn-logout" onclick="window.logoutUser()">ออกจากระบบ</button>
         </div>
       `;
