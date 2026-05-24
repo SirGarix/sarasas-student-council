@@ -21,14 +21,21 @@
       --crimson-mid: #1a3a6b;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
+    html, body {
       font-family: 'Sarabun', sans-serif;
       background: var(--dark);
       color: var(--white);
-      overflow-x: hidden;
+      overflow: hidden;
+      height: 100%;
     }
-    .page { display: none; min-height: 100vh; }
+    .page {
+      display: none;
+      position: fixed;
+      inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
     .page.active { display: block; }
     #lobby.active { display: flex; }
     #lobby {
@@ -2332,19 +2339,21 @@
 <script>
   const SEAL_IMAGE_URL = 'https://i.postimg.cc/02m2CkSh/swsk_promax.png';
   window.goTo = function(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(function(p) {
+      p.classList.remove('active');
+      p.scrollTop = 0;
+    });
     var target = document.getElementById(id);
     if (!target) return;
     target.classList.add('active');
+    target.scrollTop = 0;
     var btn = document.getElementById('floatingSupportBtn');
     if (btn) {
       if (id === 'lobby') { btn.classList.remove('compact'); }
       else { btn.classList.add('compact'); }
     }
-    setTimeout(function() {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 10);
   };
+
   (function() {
     if (SEAL_IMAGE_URL) {
       const img = document.getElementById('sealImg');
