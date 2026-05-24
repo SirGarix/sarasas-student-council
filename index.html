@@ -760,6 +760,12 @@
       color: var(--white);
       border: 1px solid rgba(255,255,255,0.25); border-color: transparent; font-weight: 700;
     }
+    .grade-filter-tab.active {
+      background: rgba(255,255,255,0.15) !important;
+      color: var(--white) !important;
+      border-color: rgba(255,255,255,0.4) !important;
+      font-weight: 700;
+    }
 
     /* Auth UI */
     .login-prompt {
@@ -1727,7 +1733,7 @@
           <input class="form-input" id="inputName" type="text" readonly style="opacity:0.6;cursor:not-allowed;" />
         </div>
         <div class="form-group">
-          <label class="form-label">ระดับชั้น</label>
+          <label class="form-label">ระดับชั้น <span style="color:#ff7675;font-size:0.85rem">*</span></label>
           <select class="form-select" id="inputLevel">
             <option value="">-- เลือกระดับชั้น --</option>
             <option>ป.1</option><option>ป.2</option><option>ป.3</option>
@@ -1771,6 +1777,25 @@
       <button class="filter-tab" onclick="setFilter('ขอสิ่งอำนวยความสะดวก', this)">🙏 ขอสิ่งอำนวยความสะดวก</button>
       <button class="filter-tab admin-only-tab" id="adminOnlyTab" style="display:none;background:rgba(192,57,43,0.15);border-color:rgba(192,57,43,0.35);color:#ff8080" onclick="setFilter('__banned__', this)">🛡️ Admin Only</button>
       <button class="filter-tab" id="councilOnlyTab" style="display:none;background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.25);color:rgba(255,215,0,0.85)" onclick="setFilter('__council__', this)">🔒 เฉพาะสภา</button>
+    </div>
+    <!-- Grade filter row -->
+    <div style="margin-bottom:1.5rem">
+      <div style="font-family:Kanit,sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.38);text-transform:uppercase;margin-bottom:0.6rem">🎓 แสดงเฉพาะระดับชั้น</div>
+      <div class="filter-tabs" id="gradeFilterTabs" style="margin-bottom:0">
+        <button class="filter-tab grade-filter-tab active" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);color:var(--white);font-weight:700" onclick="setGradeFilter('', this)">🌐 ทุกชั้น</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.1', this)">ป.1</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.2', this)">ป.2</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.3', this)">ป.3</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.4', this)">ป.4</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.5', this)">ป.5</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.6', this)">ป.6</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(155,89,182,0.35);color:#a29bfe" onclick="setGradeFilter('ม.1', this)">ม.1</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(155,89,182,0.35);color:#a29bfe" onclick="setGradeFilter('ม.2', this)">ม.2</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(155,89,182,0.35);color:#a29bfe" onclick="setGradeFilter('ม.3', this)">ม.3</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(155,89,182,0.35);color:#a29bfe" onclick="setGradeFilter('ม.4', this)">ม.4</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(155,89,182,0.35);color:#a29bfe" onclick="setGradeFilter('ม.5', this)">ม.5</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(155,89,182,0.35);color:#a29bfe" onclick="setGradeFilter('ม.6', this)">ม.6</button>
+      </div>
     </div>
 
     <div class="comments-list-title">
@@ -2520,17 +2545,26 @@
   });
 
   window._filterType = 'ทั้งหมด';
+  window._gradeFilter = '';
   window.setFilter = function(type, el) {
     window._filterType = type;
-    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('#filterTabs .filter-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    if (window._allComments) window._renderComments(window._allComments);
+  };
+  window.setGradeFilter = function(grade, el) {
+    window._gradeFilter = grade;
+    document.querySelectorAll('.grade-filter-tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
     if (window._allComments) window._renderComments(window._allComments);
   };
 
-  function showToast() {
+  function showToast(msg, color) {
     const t = document.getElementById('toast');
+    if (msg) t.textContent = msg; else t.textContent = '✅ ส่งความคิดเห็นสำเร็จ!';
+    if (color) t.style.background = 'linear-gradient(135deg, ' + color + ', ' + color + 'cc)'; else t.style.background = '';
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
+    setTimeout(() => { t.classList.remove('show'); t.style.background = ''; }, 3000);
   }
 
   // ===== SUPPORT MODAL CONFIG =====
@@ -3115,6 +3149,15 @@
     const displayName = isAnon ? `User${anonNum}` : (currentUser.displayName || 'นักเรียนนิรนาม');
     const name = displayName;  // ชื่อสะอาด — tag สภานักเรียนแสดงใน render เท่านั้น
     const level = document.getElementById('inputLevel').value;
+    if (!level) {
+      const sel = document.getElementById('inputLevel');
+      sel.style.borderColor = '#c0392b';
+      sel.style.boxShadow = '0 0 0 3px rgba(192,57,43,0.25)';
+      sel.focus();
+      setTimeout(() => { sel.style.borderColor = ''; sel.style.boxShadow = ''; }, 2000);
+      showToast('⚠️ กรุณาเลือกระดับชั้นก่อนส่ง', '#c0392b');
+      return;
+    }
     const text = document.getElementById('inputText').value.trim();
     if (!text) {
       const ta = document.getElementById('inputText');
@@ -3372,6 +3415,12 @@
       filtered = isAdmin
         ? comments.filter(c => c.type === filterType)
         : comments.filter(c => c.type === filterType && !publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
+    }
+
+    // Apply grade filter
+    const gradeFilter = window._gradeFilter || '';
+    if (gradeFilter) {
+      filtered = filtered.filter(c => c.level === gradeFilter);
     }
 
     if (filterType !== '__banned__' && filterType !== '__council__') {
