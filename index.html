@@ -2529,13 +2529,26 @@
     try {
       await setDoc(doc(db, 'bans', uid), {
         uid,
-        email: targetEmail.toLowerCase().trim(), // เก็บ email ด้วย
+        email: targetEmail.toLowerCase().trim(),
         reason: reason || 'ไม่ระบุ',
         until,
         bannedAt: Date.now(),
         bannedBy: currentUser ? currentUser.email : 'admin',
         realName: window._banTargetName || ''
       });
+
+      // ลบคอมเม้นทั้งหมดของคนโดนแบน (รวม subcollection replies)
+      const userComments = allComments.filter(c => c.uid === uid);
+      for (const c of userComments) {
+        try {
+          const repliesSnap = await getDocs(collection(db, 'comments', c.id, 'replies'));
+          for (const rd of repliesSnap.docs) {
+            await deleteDoc(doc(db, 'comments', c.id, 'replies', rd.id));
+          }
+          await deleteDoc(doc(db, 'comments', c.id));
+        } catch(e2) { console.error('ลบ comment ไม่สำเร็จ:', c.id, e2); }
+      }
+
       window.closeBanModal();
     } catch(e) { alert('เกิดข้อผิดพลาด: ' + e.message); console.error(e); }
   };
@@ -2662,8 +2675,9 @@
     window._allComments = allComments;
     window._renderComments = renderComments;
     renderComments(allComments);
+    // subscribe replies แบบ real-time ทันทีทุก comment (ไม่ต้องกดเปิดก่อน)
     allComments.forEach(function(cm) {
-      if (!replyListeners[cm.id]) preloadReplyCount(cm.id);
+      if (!replyListeners[cm.id]) subscribeReplies(cm.id);
     });
   });
 
@@ -2779,8 +2793,7 @@
       document.getElementById('inputText').value = '';
       document.getElementById('inputLevel').value = '';
       document.getElementById('privateCheck').checked = false;
-      document.getElementById('anonCheck').checked = false;
-      toggleAnon(false);
+      // anonCheck ไม่ reset — ค้างตามที่ผู้ใช้ติ้กไว้จนกว่าจะติ้กออกเองหรือโหลดหน้าใหม่
       showToast();
       await refreshButtonState();
     } catch(e) { alert('เกิดข้อผิดพลาด กรุณาลองใหม่'); console.error(e); btn.disabled = false; }
@@ -2824,7 +2837,14 @@
     const comment = allComments.find(c => c.id === docId);
     if (!isAdmin && (!comment || comment.uid !== currentUser.uid)) return;
     if (!confirm('ลบความคิดเห็นนี้?')) return;
-    try { await deleteDoc(doc(db, 'comments', docId)); }
+    try {
+      // ลบ replies ทั้งหมดใน subcollection ก่อน แล้วค่อยลบ comment หลัก
+      const repliesSnap = await getDocs(collection(db, 'comments', docId, 'replies'));
+      for (const rd of repliesSnap.docs) {
+        await deleteDoc(doc(db, 'comments', docId, 'replies', rd.id));
+      }
+      await deleteDoc(doc(db, 'comments', docId));
+    }
     catch(e) { alert('ลบไม่สำเร็จ'); console.error(e); }
   };
 
