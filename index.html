@@ -1928,6 +1928,24 @@
       .members-grid { gap: 2rem; }
       .comment-container { padding: 0 2rem 4rem; }
     }
+  /* Reset lobby animations when returning to lobby */
+  #lobby .lobby-school,
+  #lobby .lobby-title,
+  #lobby .lobby-sub,
+  #lobby .lobby-buttons,
+  #lobby .lobby-social,
+  #lobby .lobby-stats,
+  #lobby .announcement-banner,
+  #lobby .floating-support {
+    animation-play-state: running;
+  }
+  #lobby.lobby-reset .lobby-school { animation: none; opacity: 1; }
+  #lobby.lobby-reset .lobby-title  { animation: none; opacity: 1; }
+  #lobby.lobby-reset .lobby-sub    { animation: none; opacity: 1; }
+  #lobby.lobby-reset .lobby-buttons { animation: none; opacity: 1; }
+  #lobby.lobby-reset .lobby-social  { animation: none; opacity: 1; }
+  #lobby.lobby-reset .lobby-stats   { animation: none; opacity: 1; }
+  #lobby.lobby-reset .announcement-banner { animation: none; opacity: 1; }
   @keyframes pageEnter {
     from { opacity: 0; transform: translateY(18px) scale(0.98); }
     to   { opacity: 1; transform: translateY(0)    scale(1);    }
@@ -1936,8 +1954,8 @@
     from { opacity: 1; transform: translateY(0)     scale(1);    }
     to   { opacity: 0; transform: translateY(-10px) scale(0.98); }
   }
-  .page-entering { animation: pageEnter 0.32s cubic-bezier(0.22,1,0.36,1) forwards; }
-  .page-leaving  { animation: pageLeave 0.18s cubic-bezier(0.4,0,1,1) forwards; pointer-events: none; }
+  .page-entering { animation: pageEnter 0.32s cubic-bezier(0.22,1,0.36,1) both; }
+  .page-leaving  { animation: pageLeave 0.18s cubic-bezier(0.4,0,1,1) both; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -2622,23 +2640,28 @@
 
     _clearTimers();
 
-    // Hide all pages, clear all styles and animation classes
+    // Wipe all pages instantly
     document.querySelectorAll('.page').forEach(function(p) {
-      p.classList.remove('active', 'page-entering', 'page-leaving');
+      p.classList.remove('active', 'page-entering', 'page-leaving', 'lobby-reset');
       p.style.cssText = '';
     });
 
-    // Make target visible first (so display:flex kicks in for lobby)
-    // then add animation class — prevents 'both' backwards-fill from hiding it
     target.classList.add('active');
     target.scrollTop = 0;
 
-    // Force reflow so browser registers 'active' before animation starts
+    // KEY FIX: lobby elements have CSS "opacity:0; animation: fadeUp ... forwards"
+    // which only runs once on page load. On return visits the animation won't re-run
+    // but the forwards fill keeps opacity:0 — buttons invisible!
+    // Add lobby-reset class to instantly set all lobby elements to opacity:1
+    if (id === 'lobby') {
+      target.classList.add('lobby-reset');
+    }
+
+    // Force reflow so browser sees 'active' before animation class
     void target.offsetHeight;
 
-    // Now add animation — since element is already visible, 'from' state won't flash
+    // Fade in the page
     target.classList.add('page-entering');
-
     _enterTimer = setTimeout(function() {
       target.classList.remove('page-entering');
       _enterTimer = null;
