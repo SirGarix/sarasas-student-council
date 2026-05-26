@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>หาเสียงสภานักเรียน | สารสาสน์วิเทศสมุทรสาคร</title>
+  <title>เบอร์ 3 SARASAS PROMAX | หาเสียงสภานักเรียน สารสาสน์วิเทศสมุทรสาคร</title>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&family=Kanit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -1936,6 +1936,85 @@
   #lobby.lobby-reset .lobby-social  { animation: none !important; opacity: 1 !important; }
   #lobby.lobby-reset .lobby-stats   { animation: none !important; opacity: 1 !important; }
   #lobby.lobby-reset .floating-support { animation: none !important; opacity: 1 !important; }
+  #lobby.lobby-reset .number-badge-wrap { animation: none !important; opacity: 1 !important; }
+  #lobby.lobby-reset .vote-call-banner { animation: none !important; opacity: 1 !important; }
+
+  /* === NUMBER 3 BADGE === */
+  .number-badge-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s forwards 0.1s;
+  }
+  .number-badge-line {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,200,60,0.7));
+    border-radius: 2px;
+  }
+  .number-badge-line.right {
+    background: linear-gradient(270deg, transparent, rgba(255,200,60,0.7));
+  }
+  .number-badge {
+    position: relative;
+    width: 90px; height: 90px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,200,60,0.22), rgba(255,150,30,0.15));
+    border: 3px solid rgba(255,200,60,0.65);
+    box-shadow: 0 0 28px rgba(255,200,60,0.3), 0 0 60px rgba(255,180,40,0.15), inset 0 0 18px rgba(255,220,80,0.08);
+    animation: badgePulse 2.8s ease-in-out infinite;
+  }
+  .number-badge-num {
+    font-family: 'Kanit', sans-serif;
+    font-size: 2.6rem; font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, #ffe680, #ffc520);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    filter: drop-shadow(0 0 8px rgba(255,200,60,0.5));
+  }
+  .number-badge-label {
+    font-family: 'Kanit', sans-serif;
+    font-size: 0.52rem; font-weight: 700;
+    letter-spacing: 1.5px;
+    color: rgba(255,210,80,0.75);
+    text-transform: uppercase;
+    margin-top: -2px;
+  }
+  @keyframes badgePulse {
+    0%, 100% { box-shadow: 0 0 28px rgba(255,200,60,0.3), 0 0 60px rgba(255,180,40,0.15), inset 0 0 18px rgba(255,220,80,0.08); }
+    50% { box-shadow: 0 0 40px rgba(255,200,60,0.55), 0 0 80px rgba(255,180,40,0.3), inset 0 0 24px rgba(255,220,80,0.12); }
+  }
+
+  /* === VOTE CALL BANNER === */
+  .vote-call-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: linear-gradient(135deg, rgba(255,200,60,0.14), rgba(255,150,30,0.09));
+    border: 1.5px solid rgba(255,200,60,0.4);
+    border-radius: 50px;
+    padding: 0.65rem 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s forwards 0.9s;
+    cursor: default;
+    transition: box-shadow 0.3s;
+  }
+  .vote-call-banner:hover {
+    box-shadow: 0 0 24px rgba(255,200,60,0.25);
+  }
+  .vote-call-text {
+    font-family: 'Kanit', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    background: linear-gradient(135deg, #ffe680, #ffc520);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    letter-spacing: 0.5px;
+  }
+  .vote-call-icon { font-size: 1.1rem; }
   </style>
 </head>
 <body>
@@ -1944,16 +2023,36 @@
   <div class="lobby-decor decor1"></div>
   <div class="lobby-decor decor2"></div>
   <div class="lobby-decor decor3"></div>
+  <div class="number-badge-wrap">
+    <div class="number-badge-line"></div>
+    <div class="number-badge">
+      <div class="number-badge-num">3</div>
+      <div class="number-badge-label">เบอร์สาม</div>
+    </div>
+    <div class="number-badge-line right"></div>
+  </div>
   <div class="lobby-seal" id="lobbySeal">
     <img id="sealImg" src="" alt="" style="display:none" onerror="this.style.display='none';document.getElementById('sealEmoji').style.display='block'" />
     <span class="seal-emoji" id="sealEmoji">🗳️</span>
   </div>
   <div class="lobby-school">โรงเรียนสารสาสน์วิเทศสมุทรสาคร</div>
   <h1 class="lobby-title">SARASAS PROMAX</h1>
-  <p class="lobby-sub">🗳️ สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569 · ร่วมผลักดันการเปลี่ยนแปลงไปด้วยกัน</p>  <div class="lobby-stats">
-    <div class="stat-item">
-      <div class="stat-num">15</div>
-      <div class="stat-label">ผู้สมัคร</div>
+  <p class="lobby-sub">🗳️ สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569 · ร่วมผลักดันการเปลี่ยนแปลงไปด้วยกัน</p>
+  <div class="vote-call-banner">
+    <span class="vote-call-icon">🖊️</span>
+    <span class="vote-call-text">วันเลือกตั้ง — กาช่องเบอร์ 3 ให้พวกเราด้วยนะ!</span>
+    <span class="vote-call-icon">✨</span>
+  </div>
+  <div class="announcement-banner">
+    <span class="announcement-icon">🗳️</span>
+    <div class="announcement-text">
+      <strong>เบอร์ 3 SARASAS PROMAX:</strong> วันเลือกตั้งสภานักเรียน ปีการศึกษา 2569 — อย่าลืมกาเบอร์ 3 ให้เรานะ!
+    </div>
+  </div>
+  <div class="lobby-stats">
+    <div class="stat-item" style="border-color:rgba(255,200,60,0.45);background:rgba(255,200,60,0.08)">
+      <div class="stat-num" style="background:linear-gradient(135deg,#ffe680,#ffc520);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">3</div>
+      <div class="stat-label" style="color:rgba(255,210,80,0.7)">เบอร์ของเรา</div>
     </div>
     <div class="stat-item">
       <div class="stat-num">5</div>
@@ -2010,7 +2109,7 @@
     <span class="policy-hero-icon">📢</span>
     <h1>นโยบาย 5 ด้านของเรา</h1>
     <div class="policy-gold-line"></div>
-    <p>ทีม SARASAS PROMAX สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569<br/>ถ้าได้รับความไว้วางใจ เราสัญญาว่าจะทำสิ่งเหล่านี้ให้เป็นจริง</p>
+    <p>ทีม SARASAS PROMAX <strong>เบอร์ 3</strong> สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569<br/>ถ้าได้รับความไว้วางใจ เราสัญญาว่าจะทำสิ่งเหล่านี้ให้เป็นจริง</p>
   </div>
   <div class="policy-container">
     <div class="policy-card" style="--policy-color:linear-gradient(180deg,#ffd060,#ffaa20);--policy-bg:rgba(255,200,60,0.12);--policy-border:rgba(255,200,60,0.4);--policy-text-color:rgba(255,200,60,0.95);--policy-badge-bg:rgba(255,200,60,0.12);--policy-badge-color:rgba(255,200,60,0.9);--policy-badge-border:rgba(255,200,60,0.3)">
@@ -2079,9 +2178,9 @@
       </div>
     </div>
     <div class="policy-footer-note">
-      ทีม SARASAS PROMAX สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569<br/>
+      ทีม SARASAS PROMAX <strong style="color:rgba(255,220,80,0.9)">เบอร์ 3</strong> สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569<br/>
       นโยบายทั้ง 5 ด้านนี้คือสิ่งที่เราตั้งใจจะทำเพื่อทุกคนอย่างจริงจัง<br/>
-      <span style="color:rgba(255,255,255,0.2)">เลือกเราเพื่อเสียงของทุกคน 💙</span>
+      <span style="color:rgba(255,220,80,0.7)">🖊️ กาเบอร์ 3 เพื่อเสียงของทุกคน 💙</span>
     </div>
   </div>
 </div>
@@ -2097,7 +2196,36 @@
     <h1>ทีมผู้สมัครสภานักเรียน</h1>
     <div class="gold-line"></div>
     <p>โรงเรียนสารสาสน์วิเทศสมุทรสาคร · สมัครเลือกตั้ง ปีการศึกษา 2569</p>
-  </div>  <div class="section-label">
+  </div>
+  <div class="achievement-strip">
+    <div class="ach-item">
+      <div class="ach-num">15</div>
+      <div class="ach-label">ผู้สมัครทั้งหมด</div>
+    </div>
+    <div class="ach-item">
+      <div class="ach-num">2</div>
+      <div class="ach-label">ระดับชั้น</div>
+    </div>
+    <div class="ach-item">
+      <div class="ach-num">7</div>
+      <div class="ach-label">ฝ่ายงาน</div>
+    </div>
+    <div class="ach-item">
+      <div class="ach-num">5</div>
+      <div class="ach-label">นโยบาย</div>
+    </div>
+  </div>
+  <div class="highlight-section">
+    <div class="highlight-card">
+      <div class="highlight-badge">⭐</div>
+      <div class="highlight-content">
+        <div class="highlight-label">กิจกรรมเด่นประจำเดือน</div>
+        <div class="highlight-title">หาเสียงสภานักเรียน ปีการศึกษา 2569</div>
+        <div class="highlight-desc">ทีม SARASAS PROMAX พร้อมนำเสนอนโยบาย 5 ด้าน เพื่อพัฒนาโรงเรียนให้ดียิ่งขึ้น ร่วมแสดงความคิดเห็นและติดตามเราได้ที่ช่องทางโซเชียลมีเดีย</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-label">
     <div class="section-label-line"></div>
     <div class="section-label-text">🎓 ผู้สมัคร ชั้น มอปลาย</div>
     <div class="section-label-line right"></div>
@@ -2247,7 +2375,33 @@
     <h1>บอกเราได้เลย! 📣</h1>
     <div class="gold-line"></div>
     <p>อยากให้เราทำอะไรถ้าได้รับเลือก? มีนโยบายอะไรอยากเพิ่ม? เราฟังทุกเสียงของน้องๆ</p>
-  </div>  <div class="comment-container">
+  </div>
+  <div class="latest-news-section">
+    <div class="section-header">
+      <div class="section-title-main">🔔 ข่าวล่าสุด</div>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-card-tag"><span class="category-badge cat-announce">#ประกาศ</span></div>
+        <div class="news-card-title">เปิดรับความคิดเห็นจากนักเรียนทุกชั้น</div>
+        <div class="news-card-desc">ทีมเราต้องการฟังเสียงจากน้องๆ ทุกระดับชั้น ตั้งแต่ ป.1 ถึง ม.6</div>
+        <div class="news-card-date">📅 พ.ค. 2569</div>
+      </div>
+      <div class="news-card">
+        <div class="news-card-tag"><span class="category-badge cat-activity">#กิจกรรม</span></div>
+        <div class="news-card-title">นโยบาย 5 ด้านพร้อมแล้ว</div>
+        <div class="news-card-desc">ทีม SARASAS PROMAX เผยนโยบายครบทั้ง 5 ด้าน ทั้งวิชาการ กิจกรรม สุขภาวะ ชุมชน และสิ่งแวดล้อม</div>
+        <div class="news-card-date">📅 เม.ย. 2569</div>
+      </div>
+      <div class="news-card">
+        <div class="news-card-tag"><span class="category-badge cat-news">#ข่าว</span></div>
+        <div class="news-card-title">ทีมผู้สมัครพร้อมแล้ว!</div>
+        <div class="news-card-desc">ผู้สมัครจาก ม.ปลาย และ ม.ต้น พร้อมหน้าแล้วรวม 15 คน ทีมครบ พร้อมลุย!</div>
+        <div class="news-card-date">📅 เม.ย. 2569</div>
+      </div>
+    </div>
+  </div>
+  <div class="comment-container">
     <div id="loginArea" style="margin-bottom:1.5rem">
       <div class="login-prompt">
         <p>กรุณาเข้าสู่ระบบเพื่อแสดงความคิดเห็น</p>
@@ -2493,7 +2647,7 @@
   <div class="privacy-box">
     <div class="privacy-header">
       <h2 id="privacyModalTitle">🔐 นโยบายความเป็นส่วนตัว</h2>
-      <p id="privacyModalSub">ทีมหาเสียง SARASAS PROMAX · ปีการศึกษา 2569</p>
+      <p id="privacyModalSub">ทีมหาเสียง SARASAS PROMAX เบอร์ 3 · ปีการศึกษา 2569</p>
     </div>
     <button class="privacy-close" onclick="closePrivacyModal()">✕</button>
     <div class="privacy-body" id="privacyBody">
@@ -2504,7 +2658,7 @@
   const PRIVACY_CONTENT = {
     privacy: {
       title: '🔐 นโยบายความเป็นส่วนตัว',
-      sub: 'ทีมหาเสียง SARASAS PROMAX · ปีการศึกษา 2569',
+      sub: 'ทีมหาเสียง SARASAS PROMAX เบอร์ 3 · ปีการศึกษา 2569',
       html: `
         <div class="privacy-section">
           <div class="privacy-section-title">📌 ข้อมูลที่เก็บรวบรวม</div>
@@ -2529,7 +2683,7 @@
     },
     terms: {
       title: '📋 ข้อกำหนดการใช้งาน',
-      sub: 'ทีมหาเสียง SARASAS PROMAX · ปีการศึกษา 2569',
+      sub: 'ทีมหาเสียง SARASAS PROMAX เบอร์ 3 · ปีการศึกษา 2569',
       html: `
         <div class="privacy-section">
           <div class="privacy-section-title">✅ สิ่งที่ทำได้</div>
