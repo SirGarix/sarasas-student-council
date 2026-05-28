@@ -7,18 +7,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&family=Kanit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --navy: #0a1628;
-      --royal: #1a3a6b;
-      --accent: #2980b9;
+      --navy: #1a0000;
+      --royal: #6b0000;
+      --accent: #cc1111;
       --gold: rgba(255,255,255,0.82);
       --gold-light: #ffffff;
-      --gold-pale: #e8edf8;
-      --dark: #0a1628;
-      --dark-mid: #0d1f3c;
+      --gold-pale: #fff0f0;
+      --dark: #1a0000;
+      --dark-mid: #2d0000;
       --white: #ffffff;
-      --cream: #f0f4ff;
-      --crimson-light: #4a7fd4;
-      --crimson-mid: #1a3a6b;
+      --cream: #fff5f5;
+      --crimson-light: #e03030;
+      --crimson-mid: #8b0000;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
@@ -45,15 +45,11 @@
     .page.active { display: block; }
     #lobby.active { display: flex; }
     #lobby {
-      background: linear-gradient(135deg, #0a1628 0%, #1a2f5a 50%, #0d2040 100%);
+      background: linear-gradient(135deg, #1a0000 0%, #4a0000 50%, #2d0000 100%);
       min-height: 100%;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1.5rem;
-    }
-    @media (max-height: 750px) {
-      #lobby { justify-content: flex-start; padding-top: 2.5rem; }
     }
     #lobby::before {
       content: '';
@@ -81,13 +77,11 @@
     }
     .lobby-seal {
       width: 130px; height: 130px;
-      min-width: 130px; min-height: 130px;
-      flex-shrink: 0;
       border-radius: 50%;
-      background: linear-gradient(135deg, #1a3a6b, #2563b0);
+      background: linear-gradient(135deg, #6b0000, #cc1111);
       display: flex; align-items: center; justify-content: center;
       font-size: 3.2rem;
-      box-shadow: 0 0 50px rgba(255,255,255,0.2), 0 0 100px rgba(41,128,185,0.3), inset 0 0 20px rgba(255,255,255,0.05);
+      box-shadow: 0 0 50px rgba(255,255,255,0.2), 0 0 100px rgba(204,17,17,0.3), inset 0 0 20px rgba(255,255,255,0.05);
       margin-bottom: 1.5rem;
       animation: float 4s ease-in-out infinite;
       border: 3px solid rgba(255,255,255,0.25);
@@ -124,7 +118,7 @@
       margin-bottom: 0.5rem;
       opacity: 0;
       animation: fadeUp 0.8s forwards 0.5s;
-      background: linear-gradient(135deg, #ffffff 30%, rgba(74,141,232,0.9) 100%);
+      background: linear-gradient(135deg, #ffffff 30%, rgba(232,74,74,0.9) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -168,7 +162,7 @@
     .btn-lobby:hover::before { transform: translateX(0); }
     .btn-primary {
       background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(220,230,255,0.9));
-      color: #0a1628;
+      color: var(--navy);
       box-shadow: 0 4px 24px rgba(255,255,255,0.2);
     }
     .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(255,255,255,0.35); }
@@ -267,7 +261,7 @@
       font-weight: 400;
     }
     .top-nav {
-      background: rgba(10,22,40,0.97);
+      background: rgba(30,0,0,0.97);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255,255,255,0.08);
       padding: 0.8rem 2rem;
@@ -288,13 +282,13 @@
       font-weight: 700; color: var(--white);
     }
     #members {
-      background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 100%);
+      background: linear-gradient(180deg, #1a0000 0%, #2d0000 100%);
       min-height: 100vh;
     }
     .members-hero {
       text-align: center; padding: 3rem 1rem 2rem;
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: linear-gradient(180deg, rgba(26,58,107,0.4) 0%, transparent 100%);
+      background: linear-gradient(180deg, rgba(107,0,0,0.4) 0%, transparent 100%);
     }
     .members-hero h1 {
       font-family: 'Kanit', sans-serif;
@@ -344,7 +338,7 @@
       background: rgba(255,255,255,0.04);
     }
     .member-card {
-      background: linear-gradient(135deg, rgba(26,58,107,0.4), rgba(13,32,64,0.85));
+      background: linear-gradient(135deg, rgba(107,0,0,0.4), rgba(45,0,0,0.85));
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 20px;
       padding: 1.8rem 1.5rem 1.2rem;
@@ -368,7 +362,7 @@
     .member-card:hover {
       transform: translateY(-8px);
       border-color: rgba(255,255,255,0.25);
-      box-shadow: 0 16px 50px rgba(41,128,185,0.25), 0 0 30px rgba(255,255,255,0.06);
+      box-shadow: 0 16px 50px rgba(204,17,17,0.25), 0 0 30px rgba(255,255,255,0.06);
     }
     .card-click-hint {
       display: block;
@@ -426,7 +420,7 @@
       margin-top: auto;
     }
     .member-card.president {
-      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(26,58,107,0.5), rgba(13,32,64,0.9));
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(107,0,0,0.5), rgba(45,0,0,0.9));
       border-color: rgba(255,255,255,0.3);
     }
     .member-card.president .member-avatar {
@@ -450,7 +444,7 @@
       opacity: 1; pointer-events: all;
     }
     .modal-box {
-      background: linear-gradient(135deg, #0d1f3c 0%, #0a1628 60%, #0f2244 100%);
+      background: linear-gradient(135deg, #2d0000 0%, #1a0000 60%, #3d0000 100%);
       border: 1px solid rgba(255,255,255,0.35);
       border-radius: 24px;
       max-width: 620px; width: 100%;
@@ -470,7 +464,7 @@
       content: '';
       position: absolute; top: 0; left: 0; right: 0;
       height: 4px;
-      background: linear-gradient(90deg, rgba(41,128,185,0.8), rgba(255,255,255,0.9), rgba(41,128,185,0.8));
+      background: linear-gradient(90deg, rgba(204,17,17,0.8), rgba(255,255,255,0.9), rgba(204,17,17,0.8));
     }
     .modal-box::after {
       content: '🏛️';
@@ -650,13 +644,13 @@
       border-radius: 50px;
     }
     #comments {
-      background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 100%);
+      background: linear-gradient(180deg, var(--navy) 0%, var(--dark-mid) 100%);
       min-height: 100vh;
     }
     .comments-hero {
       text-align: center; padding: 3rem 1rem 2rem;
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: linear-gradient(180deg, rgba(26,58,107,0.35) 0%, transparent 100%);
+      background: linear-gradient(180deg, rgba(107,0,0,0.35) 0%, transparent 100%);
     }
     .comments-hero h1 {
       font-family: 'Kanit', sans-serif;
@@ -669,7 +663,7 @@
       padding: 0 1.5rem 4rem;
     }
     .comment-form-box {
-      background: linear-gradient(135deg, rgba(26,58,107,0.35), rgba(13,32,64,0.6));
+      background: linear-gradient(135deg, rgba(107,0,0,0.35), rgba(45,0,0,0.6));
       border: 1px solid rgba(255,255,255,0.2);
       border-radius: 20px; padding: 2rem;
       margin-bottom: 2.5rem;
@@ -714,13 +708,13 @@
     }
     .btn-submit {
       width: 100%; padding: 0.9rem;
-      background: linear-gradient(135deg, #1a3a6b, #2563b0);
+      background: linear-gradient(135deg, var(--royal), #cc1111);
       color: var(--white); border: none; border-radius: 12px;
       font-family: 'Kanit', sans-serif; font-size: 1rem;
       font-weight: 700; cursor: pointer;
       transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s;
       margin-top: 0.5rem;
-      box-shadow: 0 4px 20px rgba(26,58,107,0.5);
+      box-shadow: 0 4px 20px rgba(107,0,0,0.5);
       will-change: transform;
     }
     .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,99,176,0.55); }
@@ -730,7 +724,7 @@
       margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
     }
     .comment-count-badge {
-      background: rgba(255,255,255,0.9); color: #0a1628;
+      background: rgba(255,255,255,0.9); color: var(--navy);
       font-size: 0.75rem; font-weight: 700;
       padding: 0.15rem 0.5rem; border-radius: 10px;
     }
@@ -776,7 +770,7 @@
       font-size: 0.72rem; padding: 0.2rem 0.6rem;
       border-radius: 10px; font-weight: 600;
     }
-    .pill-ความคิดเห็น { background: rgba(41,128,185,0.2); color: #74b9ff; border: 1px solid rgba(41,128,185,0.3); }
+    .pill-ความคิดเห็น { background: rgba(204,17,17,0.2); color: #ff8080; border: 1px solid rgba(204,17,17,0.3); }
     .pill-ข้อเสนอแนะ { background: rgba(39,174,96,0.2); color: #55efc4; border: 1px solid rgba(39,174,96,0.3); }
     .pill-ร้องเรียน { background: rgba(192,57,43,0.2); color: #ff7675; border: 1px solid rgba(192,57,43,0.3); }
     .pill-ขอสิ่งอำนวยความสะดวก { background: rgba(142,68,173,0.2); color: #a29bfe; border: 1px solid rgba(142,68,173,0.3); }
@@ -795,11 +789,11 @@
     .empty-state p { font-size: 0.9rem; }
     .toast {
       position: fixed; bottom: 2rem; right: 2rem;
-      background: linear-gradient(135deg, #1a3a6b, #2563b0);
+      background: linear-gradient(135deg, var(--royal), #cc1111);
       color: var(--white);
       padding: 0.8rem 1.5rem; border-radius: 12px;
       font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 0.9rem;
-      box-shadow: 0 4px 20px rgba(26,58,107,0.5);
+      box-shadow: 0 4px 20px rgba(107,0,0,0.5);
       transform: translateY(100px); opacity: 0;
       transition: all 0.4s; z-index: 999;
     }
@@ -825,7 +819,7 @@
       font-weight: 700;
     }
     .login-prompt {
-      background: linear-gradient(135deg, rgba(26,58,107,0.3), rgba(13,32,64,0.5));
+      background: linear-gradient(135deg, rgba(107,0,0,0.3), rgba(45,0,0,0.5));
       border: 1px solid rgba(255,255,255,0.2);
       border-radius: 16px; padding: 1.5rem 2rem; text-align: center;
     }
@@ -840,13 +834,13 @@
     .btn-google-login:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
     .user-info {
       display: flex; align-items: center; gap: 0.8rem;
-      background: rgba(26,58,107,0.3); border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(107,0,0,0.3); border: 1px solid rgba(255,255,255,0.12);
       border-radius: 50px; padding: 0.5rem 1.2rem; flex-wrap: wrap;
     }
     .user-photo { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gold); }
     .user-name { font-size: 0.9rem; color: rgba(255,255,255,0.85); flex: 1; }
     .admin-badge {
-      background: linear-gradient(135deg, #1a3a6b, #2563b0);
+      background: linear-gradient(135deg, var(--royal), #cc1111);
       color: white; font-size: 0.72rem; font-weight: 700;
       padding: 0.2rem 0.6rem; border-radius: 10px; font-family: 'Kanit', sans-serif;
     }
@@ -890,7 +884,7 @@
     }
     .support-overlay.open { opacity: 1; pointer-events: all; }
     .support-card {
-      background: linear-gradient(160deg, #0d1f3c 0%, #091526 60%, #0f2244 100%);
+      background: linear-gradient(160deg, var(--dark-mid) 0%, #1a0000 60%, #3d0000 100%);
       border: 1px solid rgba(255,255,255,0.22);
       border-radius: 22px;
       max-width: 400px; width: 100%;
@@ -907,7 +901,7 @@
       content: '';
       position: absolute; top: 0; left: 0; right: 0;
       height: 4px;
-      background: linear-gradient(90deg, rgba(41,128,185,0.8), rgba(255,255,255,0.95), rgba(41,128,185,0.8));
+      background: linear-gradient(90deg, rgba(204,17,17,0.8), rgba(255,255,255,0.95), rgba(204,17,17,0.8));
     }
     .support-card::after {
       content: '🏛️';
@@ -926,12 +920,12 @@
     .support-body { padding: 2rem 2rem 1.8rem; position: relative; z-index: 2; }
     .support-seal {
       width: 64px; height: 64px; border-radius: 50%;
-      background: linear-gradient(135deg, #1a3a6b, #2563b0);
+      background: linear-gradient(135deg, var(--royal), #cc1111);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.8rem;
       margin: 0 auto 1rem;
       border: 2px solid rgba(255,255,255,0.25);
-      box-shadow: 0 0 24px rgba(41,128,185,0.35);
+      box-shadow: 0 0 24px rgba(204,17,17,0.35);
     }
     .support-title {
       font-family: 'Kanit', sans-serif;
@@ -975,11 +969,11 @@
     }
     .support-channel-link.ig:hover { background: rgba(225,48,108,0.2); border-color: rgba(225,48,108,0.4); transform: translateX(4px); }
     .support-channel-link.fb {
-      background: rgba(24,119,242,0.1);
+      background: rgba(204,17,17,0.1);
       color: #90c3ff;
-      border-color: rgba(24,119,242,0.2);
+      border-color: rgba(204,17,17,0.2);
     }
-    .support-channel-link.fb:hover { background: rgba(24,119,242,0.2); border-color: rgba(24,119,242,0.4); transform: translateX(4px); }
+    .support-channel-link.fb:hover { background: rgba(204,17,17,0.2); border-color: rgba(204,17,17,0.4); transform: translateX(4px); }
     .support-channel-link.no-social {
       background: rgba(255,255,255,0.03);
       color: rgba(255,255,255,0.28);
@@ -1004,13 +998,13 @@
     }
     .floating-support {
       position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 90;
-      background: linear-gradient(135deg, rgba(26,58,107,0.9), rgba(37,99,176,0.85));
+      background: linear-gradient(135deg, rgba(107,0,0,0.9), rgba(37,99,176,0.85));
       border: 1px solid rgba(255,255,255,0.2);
       color: rgba(255,255,255,0.9);
       padding: 0.6rem 1.1rem;
       border-radius: 50px; font-family: 'Kanit', sans-serif;
       font-size: 0.82rem; font-weight: 600; cursor: pointer;
-      box-shadow: 0 4px 20px rgba(26,58,107,0.5);
+      box-shadow: 0 4px 20px rgba(107,0,0,0.5);
       display: flex; align-items: center; gap: 0.4rem;
       transition: all 0.3s; backdrop-filter: blur(8px);
       animation: fadeUp 0.8s forwards 1.2s; opacity: 0;
@@ -1035,7 +1029,7 @@
       border-radius: 10px; cursor: pointer;
       user-select: none;
     }
-    .anon-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: #4a7fd4; }
+    .anon-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: #cc1111; }
     .anon-label { font-size: 0.85rem; color: rgba(255,255,255,0.75); font-family: 'Kanit', sans-serif; }
     .anon-desc { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-left: auto; }
     .photo-url-input {
@@ -1055,7 +1049,7 @@
     .comment-menu-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.9); }
     .comment-dropdown {
       position: absolute; right: 0; top: 110%;
-      background: #0d1f3c; border: 1px solid rgba(255,255,255,0.18);
+      background: var(--dark-mid); border: 1px solid rgba(255,255,255,0.18);
       border-radius: 10px; min-width: 160px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.5);
       z-index: 200; overflow: hidden;
@@ -1079,7 +1073,7 @@
     }
     .reveal-overlay.open { opacity: 1; pointer-events: all; }
     .reveal-box {
-      background: linear-gradient(135deg, #0d1f3c, #0a1628);
+      background: linear-gradient(135deg, var(--dark-mid), var(--navy));
       border: 1px solid rgba(255,255,255,0.3);
       border-radius: 20px; padding: 2rem;
       max-width: 380px; width: 100%;
@@ -1133,7 +1127,7 @@
     }
     .ban-overlay.open { opacity: 1; pointer-events: all; }
     .ban-box {
-      background: linear-gradient(135deg, #0d1f3c, #0a1628);
+      background: linear-gradient(135deg, var(--dark-mid), var(--navy));
       border: 1px solid rgba(255,100,100,0.35);
       border-radius: 20px; padding: 2rem;
       max-width: 400px; width: 100%;
@@ -1209,7 +1203,7 @@
     .reduce-box { border-color: rgba(39,174,96,0.35); }
     .reduce-box::before { background: linear-gradient(90deg, #27ae60, #55efc4, #27ae60); }
     .reduce-title { color: #55efc4 !important; }
-    .reduce-confirm-btn { background: linear-gradient(135deg, #27ae60, #55efc4); color: #0a1628; }
+    .reduce-confirm-btn { background: linear-gradient(135deg, #27ae60, #55efc4); color: var(--navy); }
     .reduce-confirm-btn:hover { box-shadow: 0 6px 20px rgba(39,174,96,0.5); }
     .banned-comment-item { background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.2); }
     .private-comment-item { background: rgba(255,215,0,0.04); border: 1px solid rgba(255,215,0,0.18); }
@@ -1228,7 +1222,7 @@
     }
     .privacy-overlay.open { opacity: 1; pointer-events: all; }
     .privacy-box {
-      background: linear-gradient(135deg, #0d1f3c 0%, #0a1628 60%, #0f2244 100%);
+      background: linear-gradient(135deg, #2d0000 0%, #1a0000 60%, #3d0000 100%);
       border: 1px solid rgba(255,255,255,0.25);
       border-radius: 24px;
       max-width: 660px; width: 100%;
@@ -1244,7 +1238,7 @@
     .privacy-overlay.open .privacy-box { transform: scale(1) translateY(0); opacity: 1; }
     .privacy-box::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-      background: linear-gradient(90deg, #1a3a6b, rgba(255,255,255,0.85), #1a3a6b);
+      background: linear-gradient(90deg, var(--royal), rgba(255,255,255,0.85), var(--royal));
     }
     .privacy-header {
       padding: 1.8rem 2rem 1rem;
@@ -1292,8 +1286,8 @@
     .privacy-rule-icon { flex-shrink: 0; font-size: 1rem; margin-top: 0.05rem; }
     .privacy-badge-anon {
       display: inline-block;
-      background: rgba(74,127,212,0.18); color: #74b9ff;
-      border: 1px solid rgba(74,127,212,0.3);
+      background: rgba(204,17,17,0.18); color: #ff8080;
+      border: 1px solid rgba(204,17,17,0.3);
       font-size: 0.72rem; font-family: 'Kanit',sans-serif; font-weight: 700;
       padding: 0.15rem 0.6rem; border-radius: 20px; margin-right: 0.3rem;
     }
@@ -1494,7 +1488,7 @@
     .reply-input:focus { border-color: rgba(255,255,255,0.3); }
     .reply-input::placeholder { color: rgba(255,255,255,0.25); }
     .reply-send-btn {
-      background: linear-gradient(135deg, #1a3a6b, #2563b0);
+      background: linear-gradient(135deg, var(--royal), #cc1111);
       color: white; border: none; border-radius: 10px;
       padding: 0.55rem 1rem; font-family: 'Kanit', sans-serif;
       font-size: 0.82rem; font-weight: 700; cursor: pointer;
@@ -1507,13 +1501,13 @@
       font-family: 'Sarabun', sans-serif; margin-top: 0.5rem;
     }
     #policy {
-      background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 60%, #0a1628 100%);
+      background: linear-gradient(180deg, var(--navy) 0%, var(--dark-mid) 60%, var(--navy) 100%);
       min-height: 100vh;
     }
     .policy-hero {
       text-align: center;
       padding: 3.5rem 1.5rem 2.5rem;
-      background: linear-gradient(180deg, rgba(26,58,107,0.5) 0%, transparent 100%);
+      background: linear-gradient(180deg, rgba(107,0,0,0.5) 0%, transparent 100%);
       border-bottom: 1px solid rgba(255,255,255,0.07);
       position: relative;
       overflow: hidden;
@@ -1652,8 +1646,8 @@
       .top-nav { padding: 0.7rem 1rem; }
     }
     @media (max-width: 600px) {
-      #lobby { padding: 2rem 1.2rem; }
-      .lobby-seal { width: 100px; height: 100px; min-width: 100px; min-height: 100px; flex-shrink: 0; font-size: 2.4rem; margin-bottom: 1rem; }
+      #lobby { padding: 2rem 1.2rem; justify-content: center; }
+      .lobby-seal { width: 100px; height: 100px; font-size: 2.4rem; margin-bottom: 1rem; }
       .lobby-school { font-size: 0.72rem; letter-spacing: 2px; text-align: center; }
       .lobby-title { font-size: clamp(1.7rem, 9vw, 2.4rem); margin-bottom: 0.4rem; }
       .lobby-sub { font-size: 0.85rem; padding: 0 0.5rem; margin-bottom: 2rem; }
@@ -1732,7 +1726,7 @@
     .lobby-content-wrap {
       position: relative; z-index: 2;
       display: flex; flex-direction: column; align-items: center;
-      width: 100%; padding: 0;
+      width: 100%; padding: 2rem 1.5rem;
     }
 
     /* Stats section on lobby */
@@ -1751,7 +1745,7 @@
     }
     .stat-num {
       font-family: 'Kanit', sans-serif; font-size: 1.5rem; font-weight: 900;
-      background: linear-gradient(135deg, #ffffff, rgba(74,141,232,0.9));
+      background: linear-gradient(135deg, #ffffff, rgba(232,74,74,0.9));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
     }
@@ -1764,9 +1758,9 @@
     .announcement-banner {
       background: linear-gradient(135deg, rgba(255,200,60,0.12), rgba(255,160,30,0.08));
       border: 1px solid rgba(255,200,60,0.3);
-      border-radius: 14px; padding: 0.75rem 1.2rem;
-      display: flex; align-items: center; gap: 0.8rem;
-      margin-bottom: 2rem; max-width: 540px; width: 100%;
+      border-radius: 14px; padding: 0.75rem 1.4rem;
+      display: inline-block;
+      margin-bottom: 2rem; max-width: 540px;
       opacity: 0; animation: fadeUp 0.8s forwards 0.55s;
     }
     .announcement-icon { font-size: 1.2rem; flex-shrink: 0; }
@@ -1793,7 +1787,7 @@
       font-family: 'Kanit', sans-serif; font-size: 0.7rem; font-weight: 700;
       letter-spacing: 0.3px;
     }
-    .cat-news { background: rgba(52,152,219,0.18); color: #74b9ff; border: 1px solid rgba(52,152,219,0.3); }
+    .cat-news { background: rgba(204,17,17,0.18); color: #ff8080; border: 1px solid rgba(204,17,17,0.3); }
     .cat-activity { background: rgba(39,174,96,0.18); color: #55efc4; border: 1px solid rgba(39,174,96,0.3); }
     .cat-announce { background: rgba(255,200,60,0.15); color: rgba(255,215,100,0.95); border: 1px solid rgba(255,200,60,0.3); }
 
@@ -1841,7 +1835,7 @@
 
     /* Achievement stats on members page */
     .achievement-strip {
-      background: rgba(26,58,107,0.25);
+      background: rgba(107,0,0,0.25);
       border-top: 1px solid rgba(255,255,255,0.06);
       border-bottom: 1px solid rgba(255,255,255,0.06);
       padding: 1.2rem 2rem;
@@ -1852,7 +1846,7 @@
     .ach-item { text-align: center; }
     .ach-num {
       font-family: 'Kanit', sans-serif; font-size: 1.8rem; font-weight: 900;
-      background: linear-gradient(135deg, #ffffff 30%, rgba(74,141,232,0.9));
+      background: linear-gradient(135deg, #ffffff 30%, rgba(232,74,74,0.9));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
       line-height: 1.1;
     }
@@ -1935,13 +1929,14 @@
       .comment-container { padding: 0 2rem 4rem; }
     }
   /* lobby-reset: force opacity:1 on lobby elements when returning */
-  #lobby.lobby-reset .lobby-school  { animation: none !important; opacity: 1 !important; }
-  #lobby.lobby-reset .lobby-title   { animation: none !important; opacity: 1 !important; }
-  #lobby.lobby-reset .lobby-sub     { animation: none !important; opacity: 1 !important; }
-  #lobby.lobby-reset .lobby-buttons { animation: none !important; opacity: 1 !important; }
-  #lobby.lobby-reset .lobby-social  { animation: none !important; opacity: 1 !important; }
-  #lobby.lobby-reset .lobby-stats   { animation: none !important; opacity: 1 !important; }
-  #lobby.lobby-reset .floating-support { animation: none !important; opacity: 1 !important; }
+  #lobby.lobby-reset .lobby-school        { animation: none !important; opacity: 1 !important; }
+  #lobby.lobby-reset .lobby-title         { animation: none !important; opacity: 1 !important; }
+  #lobby.lobby-reset .lobby-sub           { animation: none !important; opacity: 1 !important; }
+  #lobby.lobby-reset .lobby-buttons       { animation: none !important; opacity: 1 !important; }
+  #lobby.lobby-reset .lobby-social        { animation: none !important; opacity: 1 !important; }
+  #lobby.lobby-reset .lobby-stats         { animation: none !important; opacity: 1 !important; }
+  #lobby.lobby-reset .announcement-banner { animation: none !important; opacity: 1 !important; }
+  #lobby.lobby-reset .floating-support    { animation: none !important; opacity: 1 !important; }
   </style>
 </head>
 <body>
@@ -1956,27 +1951,8 @@
   </div>
   <div class="lobby-school">โรงเรียนสารสาสน์วิเทศสมุทรสาคร</div>
   <h1 class="lobby-title">SARASAS PROMAX</h1>
-  <p class="lobby-sub">🗳️ สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569 · ร่วมผลักดันการเปลี่ยนแปลงไปด้วยกัน</p>
-  <div class="announcement-banner">
-    <span class="announcement-icon">📣</span>
-    <div class="announcement-text">
-      <strong>ประกาศสำคัญ:</strong> วันเลือกตั้งสภานักเรียน ปีการศึกษา 2569 — ร่วมใช้สิทธิ์ของคุณ!
-    </div>
-  </div>
-  <div class="lobby-stats">
-    <div class="stat-item">
-      <div class="stat-num">15</div>
-      <div class="stat-label">ผู้สมัคร</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">5</div>
-      <div class="stat-label">นโยบาย</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">2569</div>
-      <div class="stat-label">ปีการศึกษา</div>
-    </div>
-  </div>
+  <p class="lobby-sub">เลือกตั้งสภานักเรียน ปีการศึกษา 2569 · ร่วมผลักดันการเปลี่ยนแปลงไปด้วยกัน</p>
+
   <div class="lobby-social">
     <a href="https://www.instagram.com/" target="_blank" class="social-link social-ig">
       <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2001,13 +1977,13 @@
   </div>
   <div class="lobby-buttons">
     <button class="btn-lobby btn-primary" onclick="goTo('members')">
-      👥 ทีมผู้สมัครของเรา
+      ทีมผู้สมัครของเรา
     </button>
     <button class="btn-lobby btn-primary" onclick="goTo('comments')">
-      💬 ร่วมแสดงความคิดเห็น
+      ร่วมแสดงความคิดเห็น
     </button>
     <button class="btn-lobby btn-primary" onclick="goTo('policy')">
-      📜 นโยบายหาเสียง
+      นโยบายหาเสียง
     </button>
   </div>
 </div>
@@ -2016,7 +1992,7 @@
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
     <div class="nav-breadcrumb"><span>หน้าหลัก</span> › <strong>นโยบาย</strong></div>
     <div class="nav-right-actions">
-      <button class="nav-action-btn" onclick="goTo('members')">👥 ทีมเรา</button>
+      <button class="nav-action-btn" onclick="goTo('members')">ทีมเรา</button>
     </div>
   </nav>
   <div class="policy-hero">
@@ -2039,7 +2015,7 @@
         </ul>
       </div>
     </div>
-    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#74b9ff,#0984e3);--policy-bg:rgba(116,185,255,0.12);--policy-border:rgba(116,185,255,0.4);--policy-text-color:rgba(116,185,255,0.95);--policy-badge-bg:rgba(116,185,255,0.12);--policy-badge-color:rgba(116,185,255,0.9);--policy-badge-border:rgba(116,185,255,0.3)">
+    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#ff8080,#cc1111);--policy-bg:rgba(204,17,17,0.12);--policy-border:rgba(204,17,17,0.4);--policy-text-color:rgba(204,17,17,0.95);--policy-badge-bg:rgba(204,17,17,0.12);--policy-badge-color:rgba(204,17,17,0.9);--policy-badge-border:rgba(204,17,17,0.3)">
       <div class="policy-number">2</div>
       <span class="policy-emoji">🎨</span>
       <div class="policy-title">นโยบายด้านกิจกรรมและความคิดสร้างสรรค์ <span class="policy-title-accent">Activities</span></div>
@@ -2103,7 +2079,7 @@
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
     <div class="nav-breadcrumb"><span>หน้าหลัก</span> › <strong>ทีมผู้สมัคร</strong></div>
     <div class="nav-right-actions">
-      <button class="nav-action-btn" onclick="goTo('policy')">📜 นโยบาย</button>
+      <button class="nav-action-btn" onclick="goTo('policy')">นโยบาย</button>
     </div>
   </nav>
   <div class="members-hero">
@@ -2127,16 +2103,6 @@
     <div class="ach-item">
       <div class="ach-num">5</div>
       <div class="ach-label">นโยบาย</div>
-    </div>
-  </div>
-  <div class="highlight-section">
-    <div class="highlight-card">
-      <div class="highlight-badge">⭐</div>
-      <div class="highlight-content">
-        <div class="highlight-label">กิจกรรมเด่นประจำเดือน</div>
-        <div class="highlight-title">หาเสียงสภานักเรียน ปีการศึกษา 2569</div>
-        <div class="highlight-desc">ทีม SARASAS PROMAX พร้อมนำเสนอนโยบาย 5 ด้าน เพื่อพัฒนาโรงเรียนให้ดียิ่งขึ้น ร่วมแสดงความคิดเห็นและติดตามเราได้ที่ช่องทางโซเชียลมีเดีย</div>
-      </div>
     </div>
   </div>
   <div class="section-label">
@@ -2282,11 +2248,11 @@
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
     <div class="nav-breadcrumb"><span>หน้าหลัก</span> › <strong>ความคิดเห็น</strong></div>
     <div class="nav-right-actions">
-      <button class="nav-action-btn" onclick="goTo('members')">👥 ทีมเรา</button>
+      <button class="nav-action-btn" onclick="goTo('members')">ทีมเรา</button>
     </div>
   </nav>
   <div class="comments-hero">
-    <h1>บอกเราได้เลย! 📣</h1>
+    <h1>บอกเราได้เลย!</h1>
     <div class="gold-line"></div>
     <p>อยากให้เราทำอะไรถ้าได้รับเลือก? มีนโยบายอะไรอยากเพิ่ม? เราฟังทุกเสียงของน้องๆ</p>
   </div>
@@ -2356,7 +2322,7 @@
       <div class="form-group" style="margin-bottom:1rem">
         <label class="form-label">ประเภท</label>
         <div class="type-tags" id="typeTags">
-          <button class="type-tag active" onclick="selectType(this, 'ความคิดเห็น')">💬 ความคิดเห็น</button>
+          <button class="type-tag active" onclick="selectType(this, 'ความคิดเห็น')">ความคิดเห็น</button>
           <button class="type-tag" onclick="selectType(this, 'ข้อเสนอแนะ')">💡 ข้อเสนอแนะ</button>
           <button class="type-tag" onclick="selectType(this, 'ร้องเรียน')">🚨 ร้องเรียน</button>
           <button class="type-tag" onclick="selectType(this, 'ขอสิ่งอำนวยความสะดวก')">🙏 ขอสิ่งอำนวยความสะดวก</button>
@@ -2370,7 +2336,7 @@
     </div>
     <div class="filter-tabs" id="filterTabs">
       <button class="filter-tab active" onclick="setFilter('ทั้งหมด', this)">📋 ทั้งหมด</button>
-      <button class="filter-tab" onclick="setFilter('ความคิดเห็น', this)">💬 ความคิดเห็น</button>
+      <button class="filter-tab" onclick="setFilter('ความคิดเห็น', this)">ความคิดเห็น</button>
       <button class="filter-tab" onclick="setFilter('ข้อเสนอแนะ', this)">💡 ข้อเสนอแนะ</button>
       <button class="filter-tab" onclick="setFilter('ร้องเรียน', this)">🚨 ร้องเรียน</button>
       <button class="filter-tab" onclick="setFilter('ขอสิ่งอำนวยความสะดวก', this)">🙏 ขอสิ่งอำนวยความสะดวก</button>
@@ -2381,12 +2347,12 @@
       <div style="font-family:Kanit,sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.38);text-transform:uppercase;margin-bottom:0.6rem">🎓 แสดงเฉพาะระดับชั้น</div>
       <div class="filter-tabs" id="gradeFilterTabs" style="margin-bottom:0">
         <button class="filter-tab grade-filter-tab active" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);color:var(--white);font-weight:700" onclick="setGradeFilter('', this)">🌐 ทุกชั้น</button>
-        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.1', this)">ป.1</button>
-        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.2', this)">ป.2</button>
-        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.3', this)">ป.3</button>
-        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.4', this)">ป.4</button>
-        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.5', this)">ป.5</button>
-        <button class="filter-tab grade-filter-tab" style="border-color:rgba(52,152,219,0.35);color:#74b9ff" onclick="setGradeFilter('ป.6', this)">ป.6</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(204,17,17,0.35);color:#ff8080" onclick="setGradeFilter('ป.1', this)">ป.1</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(204,17,17,0.35);color:#ff8080" onclick="setGradeFilter('ป.2', this)">ป.2</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(204,17,17,0.35);color:#ff8080" onclick="setGradeFilter('ป.3', this)">ป.3</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(204,17,17,0.35);color:#ff8080" onclick="setGradeFilter('ป.4', this)">ป.4</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(204,17,17,0.35);color:#ff8080" onclick="setGradeFilter('ป.5', this)">ป.5</button>
+        <button class="filter-tab grade-filter-tab" style="border-color:rgba(204,17,17,0.35);color:#ff8080" onclick="setGradeFilter('ป.6', this)">ป.6</button>
         <button class="filter-tab grade-filter-tab" style="border-color:rgba(155,89,182,0.35);color:#a29bfe" onclick="setGradeFilter('ม.1', this)">ม.1</button>
         <button class="filter-tab grade-filter-tab" style="border-color:rgba(155,89,182,0.35);color:#a29bfe" onclick="setGradeFilter('ม.2', this)">ม.2</button>
         <button class="filter-tab grade-filter-tab" style="border-color:rgba(155,89,182,0.35);color:#a29bfe" onclick="setGradeFilter('ม.3', this)">ม.3</button>
