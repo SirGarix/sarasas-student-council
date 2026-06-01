@@ -4332,14 +4332,28 @@
       const safeUid = (c.uid || '').replace(/'/g, "\\'");
       const safeName = (c.realName || c.name || '').replace(/'/g, "\\'");
       const isOwner = currentUser && currentUser.uid === c.uid;
+      // ต้องรู้ก่อนว่า isHistoryView หรือเปล่า เพื่อแยก dropdown
+      const _isHistoryViewForMenu = filterType === '__ban_history__';
+      const _histRecordForMenu = (window._allBanHistory || {})[c.uid];
+      const _effectiveBanForMenu = _histRecordForMenu || banData;
+      const _isUnbannedForMenu = _isHistoryViewForMenu && _effectiveBanForMenu && _effectiveBanForMenu.status === 'unbanned';
+      const _isExpiredForMenu = _isHistoryViewForMenu && !_isUnbannedForMenu && _effectiveBanForMenu && _effectiveBanForMenu.until !== -1 && _effectiveBanForMenu.until <= Date.now();
+      const _isReleasedFromBan = _isUnbannedForMenu || _isExpiredForMenu; // ปลดแบนแล้ว หรือหมดอายุแล้ว
+
       let dropdownHtml = '';
       if (isAdmin && !c.isBanOnly) {
-        const banBtn = userBanned
-          ? `<div class="dropdown-item success" onclick="unbanUser('${safeUid}')">✅ ปลดแบน</div>
+        let banBtn;
+        if (_isHistoryViewForMenu && _isReleasedFromBan) {
+          // ในหน้าประวัติ + คนนี้ถูกปลดแบนแล้ว → ระงับอีกครั้งได้
+          banBtn = `<div class="dropdown-item warn" onclick="openBanModal('${safeUid}','${safeName}')">🚫 ระงับอีกครั้ง</div>`;
+        } else if (userBanned) {
+          banBtn = `<div class="dropdown-item success" onclick="unbanUser('${safeUid}')">✅ ปลดแบน</div>
              <div class="dropdown-item warn" onclick="openExtendModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏰ เพิ่มเวลาแบน</div>
              <div class="dropdown-item" style="color:#c084fc" onclick="openResetBanModal('${safeUid}','${safeName}')">🔄 ตั้งเวลาแบนใหม่</div>
-             <div class="dropdown-item" style="color:#55efc4" onclick="openReduceModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏬ ลดเวลาแบน</div>`
-          : `<div class="dropdown-item warn" onclick="openBanModal('${safeUid}','${safeName}')">🚫 ระงับคอมเม้น</div>`;
+             <div class="dropdown-item" style="color:#55efc4" onclick="openReduceModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏬ ลดเวลาแบน</div>`;
+        } else {
+          banBtn = `<div class="dropdown-item warn" onclick="openBanModal('${safeUid}','${safeName}')">🚫 ระงับคอมเม้น</div>`;
+        }
         dropdownHtml = `
           <div class="comment-menu-wrap" id="menu-wrap-${c.id}">
             <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
@@ -4349,7 +4363,18 @@
               <div class="dropdown-item danger" onclick="deleteComment('${c.id}')">🗑️ ลบข้อความ</div>
             </div>
           </div>`;
+      } else if (isAdmin && c.isBanOnly && _isReleasedFromBan) {
+        // ประวัติ: คนที่ถูกปลดแบนแล้ว หรือหมดอายุแล้ว → แสดง ดูตัวจริง + ระงับอีกครั้ง
+        dropdownHtml = `
+          <div class="comment-menu-wrap" id="menu-wrap-${c.id}">
+            <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
+            <div class="comment-dropdown" id="menu-${c.id}">
+              <div class="dropdown-item" onclick="revealIdentityByUid('${safeUid}','${safeName}')">🔍 ดูตัวจริง</div>
+              <div class="dropdown-item warn" onclick="openBanModal('${safeUid}','${safeName}')">🚫 ระงับอีกครั้ง</div>
+            </div>
+          </div>`;
       } else if (isAdmin && c.isBanOnly) {
+        // ยังแบนอยู่ (ใน banned view หรือ history ที่ยังไม่ถูกปลด)
         dropdownHtml = `
           <div class="comment-menu-wrap" id="menu-wrap-${c.id}">
             <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
