@@ -1258,6 +1258,26 @@
     .reduce-title { color: #1a7a40 !important; }
     .reduce-confirm-btn { background: linear-gradient(135deg, #27ae60, #2ecc71); color: #ffffff; }
     .reduce-confirm-btn:hover { box-shadow: 0 6px 20px rgba(39,174,96,0.5); }
+    .ban-custom-time-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 0.4rem; margin-bottom: 1.2rem;
+    }
+    .ban-custom-time-item {
+      display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+    }
+    .ban-custom-input {
+      width: 100%; text-align: center; padding: 0.45rem 0.2rem;
+      border: 1px solid rgba(0,0,0,0.12); border-radius: 8px;
+      background: #f7f7fa; color: var(--text-main);
+      font-family: 'Kanit', sans-serif; font-size: 0.9rem; outline: none;
+      transition: border 0.2s;
+      -moz-appearance: textfield;
+    }
+    .ban-custom-input::-webkit-outer-spin-button,
+    .ban-custom-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .ban-custom-input:focus { border-color: rgba(192,57,43,0.45); }
+    .ban-custom-label {
+      font-size: 0.72rem; color: var(--text-muted); font-family: 'Kanit', sans-serif;
+    }
     .banned-comment-item { background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.2); }
     .private-comment-item { background: rgba(255,215,0,0.04); border: 1px solid rgba(255,215,0,0.18); }
     .banned-badge { background: rgba(192,57,43,0.10); color: #922b21; border: 1px solid rgba(192,57,43,0.28); font-size: 0.7rem; font-family: 'Kanit', sans-serif; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 20px; }
@@ -2248,6 +2268,13 @@
       <button class="ban-duration-btn" onclick="selectBanDuration(this,30)">30 วัน</button>
       <button class="ban-duration-btn" onclick="selectBanDuration(this,-1)">ถาวร</button>
     </div>
+    <div class="ban-duration-label" style="margin-top:0.5rem">⌨️ กรอกเวลาเอง</div>
+    <div class="ban-custom-time-grid">
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="banCustomDays" min="0" placeholder="0" oninput="onBanCustomInput()"/><label class="ban-custom-label">วัน</label></div>
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="banCustomHours" min="0" max="23" placeholder="0" oninput="onBanCustomInput()"/><label class="ban-custom-label">ชั่วโมง</label></div>
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="banCustomMins" min="0" max="59" placeholder="0" oninput="onBanCustomInput()"/><label class="ban-custom-label">นาที</label></div>
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="banCustomSecs" min="0" max="59" placeholder="0" oninput="onBanCustomInput()"/><label class="ban-custom-label">วินาที</label></div>
+    </div>
     <div class="ban-reason-label">📝 สาเหตุ <span style="color:rgba(30,30,30,0.4);font-weight:400">(ไม่ระบุได้)</span></div>
     <textarea class="ban-reason-input" id="banReasonInput" placeholder="ระบุสาเหตุการระงับ (ถ้ามี)..."></textarea>
     <button class="ban-confirm-btn" id="banConfirmBtn" onclick="confirmBan()">🚫 ยืนยันระงับการคอมเม้น</button>
@@ -2266,6 +2293,13 @@
       <button class="ban-duration-btn" onclick="selectExtendDuration(this,30)">+30 วัน</button>
       <button class="ban-duration-btn" onclick="selectExtendDuration(this,-1)">ถาวร</button>
     </div>
+    <div class="ban-duration-label" style="margin-top:0.5rem">⌨️ กรอกเวลาเอง</div>
+    <div class="ban-custom-time-grid">
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="extendCustomDays" min="0" placeholder="0" oninput="onExtendCustomInput()"/><label class="ban-custom-label">วัน</label></div>
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="extendCustomHours" min="0" max="23" placeholder="0" oninput="onExtendCustomInput()"/><label class="ban-custom-label">ชั่วโมง</label></div>
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="extendCustomMins" min="0" max="59" placeholder="0" oninput="onExtendCustomInput()"/><label class="ban-custom-label">นาที</label></div>
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="extendCustomSecs" min="0" max="59" placeholder="0" oninput="onExtendCustomInput()"/><label class="ban-custom-label">วินาที</label></div>
+    </div>
     <button class="ban-confirm-btn extend-confirm-btn" onclick="confirmExtend()">⏰ ยืนยันเพิ่มเวลา</button>
   </div>
 </div>
@@ -2274,12 +2308,33 @@
     <button class="ban-close" onclick="closeReduceModal()">✕</button>
     <div class="ban-title reduce-title">⏬ ลดเวลาระงับ</div>
     <div class="ban-target-info" id="reduceTargetInfo">กำลังโหลด...</div>
-    <div class="ban-duration-label">⏱ ลดระยะเวลา</div>
-    <div class="ban-duration-grid">
-      <button class="ban-duration-btn active" onclick="selectReduceDuration(this,1)">-1 วัน</button>
-      <button class="ban-duration-btn" onclick="selectReduceDuration(this,3)">-3 วัน</button>
-      <button class="ban-duration-btn" onclick="selectReduceDuration(this,7)">-7 วัน</button>
-      <button class="ban-duration-btn" onclick="selectReduceDuration(this,30)">-30 วัน</button>
+    <!-- โหมดถาวร: เลือกเหลือกี่วัน -->
+    <div id="reducePermanentSection" style="display:none">
+      <div class="ban-duration-label">📅 เปลี่ยนเป็นเหลือกี่วัน</div>
+      <div class="ban-duration-grid">
+        <button class="ban-duration-btn active" onclick="selectReduceSetDays(this,1)">เหลือ 1 วัน</button>
+        <button class="ban-duration-btn" onclick="selectReduceSetDays(this,3)">เหลือ 3 วัน</button>
+        <button class="ban-duration-btn" onclick="selectReduceSetDays(this,7)">เหลือ 7 วัน</button>
+        <button class="ban-duration-btn" onclick="selectReduceSetDays(this,14)">เหลือ 14 วัน</button>
+        <button class="ban-duration-btn" onclick="selectReduceSetDays(this,30)">เหลือ 30 วัน</button>
+      </div>
+    </div>
+    <!-- โหมดมีเวลา: ลดออก -->
+    <div id="reduceNormalSection">
+      <div class="ban-duration-label">⏱ ลดระยะเวลา</div>
+      <div class="ban-duration-grid">
+        <button class="ban-duration-btn active" onclick="selectReduceDuration(this,1)">-1 วัน</button>
+        <button class="ban-duration-btn" onclick="selectReduceDuration(this,3)">-3 วัน</button>
+        <button class="ban-duration-btn" onclick="selectReduceDuration(this,7)">-7 วัน</button>
+        <button class="ban-duration-btn" onclick="selectReduceDuration(this,30)">-30 วัน</button>
+      </div>
+      <div class="ban-duration-label" style="margin-top:0.5rem">⌨️ กรอกเวลาเอง</div>
+      <div class="ban-custom-time-grid">
+        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reduceCustomDays" min="0" placeholder="0" oninput="onReduceCustomInput()"/><label class="ban-custom-label">วัน</label></div>
+        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reduceCustomHours" min="0" max="23" placeholder="0" oninput="onReduceCustomInput()"/><label class="ban-custom-label">ชั่วโมง</label></div>
+        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reduceCustomMins" min="0" max="59" placeholder="0" oninput="onReduceCustomInput()"/><label class="ban-custom-label">นาที</label></div>
+        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reduceCustomSecs" min="0" max="59" placeholder="0" oninput="onReduceCustomInput()"/><label class="ban-custom-label">วินาที</label></div>
+      </div>
     </div>
     <button class="ban-confirm-btn reduce-confirm-btn" onclick="confirmReduce()">⏬ ยืนยันลดเวลา</button>
   </div>
@@ -2907,13 +2962,16 @@
   window._banTargetUid = null;
   window._banTargetName = null;
   window._banDurationDays = 1;
+  window._banCustomMs = 0;
   window._extendTargetUid = null;
   window._extendDurationDays = 1;
+  window._extendCustomMs = 0;
   window.openBanModal = function(uid, name) {
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     window._banTargetUid = uid;
     window._banTargetName = name;
     window._banDurationDays = 1;
+    window._banCustomMs = 0;
     const comments = window._allComments || [];
     const targetComment = comments.find(c => c.uid === uid);
     window._banTargetEmail = targetComment ? (targetComment.realEmail || '') : '';
@@ -2921,12 +2979,15 @@
     document.getElementById('banTargetInfo').innerHTML = `<strong>👤 ${name}</strong>${emailDisplay}`;
     document.getElementById('banReasonInput').value = '';
     document.querySelectorAll('#banModal .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    ['Days','Hours','Mins','Secs'].forEach(f => { const el = document.getElementById('banCustom'+f); if(el) el.value = ''; });
     document.getElementById('banModal').classList.add('open');
   };
   window.closeBanModal = function() { document.getElementById('banModal').classList.remove('open'); };
   window.closeBanOutside = function(e) { if (e.target === document.getElementById('banModal')) window.closeBanModal(); };
   window.selectBanDuration = function(el, days) {
     window._banDurationDays = days;
+    window._banCustomMs = 0;
+    ['Days','Hours','Mins','Secs'].forEach(f => { const inp = document.getElementById('banCustom'+f); if(inp) inp.value = ''; });
     document.querySelectorAll('#banModal .ban-duration-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
   };
@@ -2934,35 +2995,98 @@
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     window._extendTargetUid = uid;
     window._extendDurationDays = 1;
+    window._extendCustomMs = 0;
     const expiryText = currentExpiry === -1 ? 'ถาวร' : (currentExpiry ? new Date(currentExpiry).toLocaleDateString('th-TH') : 'ไม่ทราบ');
     document.getElementById('extendTargetInfo').innerHTML = `<strong>👤 ${name}</strong><br/><span style="font-size:0.78rem;color:rgba(255,200,100,0.8)">หมดอายุปัจจุบัน: ${expiryText}</span>`;
     document.querySelectorAll('#extendModal .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    ['Days','Hours','Mins','Secs'].forEach(f => { const el = document.getElementById('extendCustom'+f); if(el) el.value = ''; });
     document.getElementById('extendModal').classList.add('open');
   };
   window.closeExtendModal = function() { document.getElementById('extendModal').classList.remove('open'); };
   window.closeExtendOutside = function(e) { if (e.target === document.getElementById('extendModal')) window.closeExtendModal(); };
   window.selectExtendDuration = function(el, days) {
     window._extendDurationDays = days;
+    window._extendCustomMs = 0;
+    ['Days','Hours','Mins','Secs'].forEach(f => { const inp = document.getElementById('extendCustom'+f); if(inp) inp.value = ''; });
     document.querySelectorAll('#extendModal .ban-duration-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
   };
   window._reduceTargetUid = null;
   window._reduceDurationDays = 1;
+  window._reduceIsPermanent = false;
+  window._reduceSetDays = 1;
   window.openReduceModal = function(uid, name, currentExpiry) {
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     window._reduceTargetUid = uid;
     window._reduceDurationDays = 1;
-    const expiryText = currentExpiry === -1 ? 'ถาวร' : (currentExpiry ? new Date(currentExpiry).toLocaleDateString('th-TH') : 'ไม่ทราบ');
+    window._reduceCustomMs = 0;
+    const isPermanent = currentExpiry === -1;
+    window._reduceIsPermanent = isPermanent;
+    const expiryText = isPermanent ? 'ถาวร' : (currentExpiry ? new Date(currentExpiry).toLocaleDateString('th-TH') : 'ไม่ทราบ');
     document.getElementById('reduceTargetInfo').innerHTML = `<strong>👤 ${name}</strong><br/><span style="font-size:0.78rem;color:rgba(100,255,180,0.85)">หมดอายุปัจจุบัน: ${expiryText}</span>`;
-    document.querySelectorAll('#reduceModal .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    // แสดง section ที่ถูกต้อง
+    document.getElementById('reducePermanentSection').style.display = isPermanent ? '' : 'none';
+    document.getElementById('reduceNormalSection').style.display = isPermanent ? 'none' : '';
+    if (isPermanent) {
+      window._reduceSetDays = 1;
+      document.querySelectorAll('#reducePermanentSection .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    } else {
+      document.querySelectorAll('#reduceNormalSection .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+      ['Days','Hours','Mins','Secs'].forEach(f => { const el = document.getElementById('reduceCustom'+f); if(el) el.value = ''; });
+    }
     document.getElementById('reduceModal').classList.add('open');
   };
   window.closeReduceModal = function() { document.getElementById('reduceModal').classList.remove('open'); };
   window.closeReduceOutside = function(e) { if (e.target === document.getElementById('reduceModal')) window.closeReduceModal(); };
   window.selectReduceDuration = function(el, days) {
     window._reduceDurationDays = days;
-    document.querySelectorAll('#reduceModal .ban-duration-btn').forEach(b => b.classList.remove('active'));
+    window._reduceCustomMs = 0;
+    ['Days','Hours','Mins','Secs'].forEach(f => { const inp = document.getElementById('reduceCustom'+f); if(inp) inp.value = ''; });
+    document.querySelectorAll('#reduceNormalSection .ban-duration-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
+  };
+  window.selectReduceSetDays = function(el, days) {
+    window._reduceSetDays = days;
+    document.querySelectorAll('#reducePermanentSection .ban-duration-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  };
+  window.onReduceCustomInput = function() {
+    const d = parseInt(document.getElementById('reduceCustomDays').value) || 0;
+    const h = parseInt(document.getElementById('reduceCustomHours').value) || 0;
+    const m = parseInt(document.getElementById('reduceCustomMins').value) || 0;
+    const s = parseInt(document.getElementById('reduceCustomSecs').value) || 0;
+    const ms = (d*86400 + h*3600 + m*60 + s) * 1000;
+    window._reduceCustomMs = ms;
+    if (ms > 0) {
+      document.querySelectorAll('#reduceNormalSection .ban-duration-btn').forEach(b => b.classList.remove('active'));
+      window._reduceDurationDays = 0;
+    }
+  };
+  // custom input handlers สำหรับ banModal
+  window.onBanCustomInput = function() {
+    const d = parseInt(document.getElementById('banCustomDays').value) || 0;
+    const h = parseInt(document.getElementById('banCustomHours').value) || 0;
+    const m = parseInt(document.getElementById('banCustomMins').value) || 0;
+    const s = parseInt(document.getElementById('banCustomSecs').value) || 0;
+    const ms = (d*86400 + h*3600 + m*60 + s) * 1000;
+    window._banCustomMs = ms;
+    if (ms > 0) {
+      document.querySelectorAll('#banModal .ban-duration-btn').forEach(b => b.classList.remove('active'));
+      window._banDurationDays = 0;
+    }
+  };
+  // custom input handlers สำหรับ extendModal
+  window.onExtendCustomInput = function() {
+    const d = parseInt(document.getElementById('extendCustomDays').value) || 0;
+    const h = parseInt(document.getElementById('extendCustomHours').value) || 0;
+    const m = parseInt(document.getElementById('extendCustomMins').value) || 0;
+    const s = parseInt(document.getElementById('extendCustomSecs').value) || 0;
+    const ms = (d*86400 + h*3600 + m*60 + s) * 1000;
+    window._extendCustomMs = ms;
+    if (ms > 0) {
+      document.querySelectorAll('#extendModal .ban-duration-btn').forEach(b => b.classList.remove('active'));
+      window._extendDurationDays = 0;
+    }
   };
   const container = document.getElementById('starsContainer');
   for (let i = 0; i < 60; i++) {
@@ -3264,9 +3388,14 @@
   window.confirmBan = async function() {
     const uid = window._banTargetUid;
     const days = window._banDurationDays;
+    const customMs = window._banCustomMs || 0;
     const reason = document.getElementById('banReasonInput').value.trim();
     if (!uid) { alert('ไม่พบข้อมูลผู้ใช้'); return; }
-    const until = days === -1 ? -1 : Date.now() + days * 86400000;
+    let until;
+    if (days === -1) { until = -1; }
+    else if (customMs > 0) { until = Date.now() + customMs; }
+    else if (days > 0) { until = Date.now() + days * 86400000; }
+    else { alert('กรุณาเลือกหรือกรอกระยะเวลาแบน'); return; }
     const targetComment = allComments.find(c => c.uid === uid);
     const targetEmail = targetComment ? (targetComment.realEmail || '') : (window._banTargetEmail || '');
     const targetPhotoURL = targetComment ? (targetComment.realPhotoURL || targetComment.photoURL || '') : '';
@@ -3338,12 +3467,23 @@
   };
   window.confirmReduce = async function() {
     const uid = window._reduceTargetUid;
-    const days = window._reduceDurationDays;
     if (!uid) return;
     const ban = (window._allBans || allBans)[uid];
     if (!ban) { alert('ไม่พบข้อมูลการระงับ'); return; }
-    if (ban.until === -1) { alert('ไม่สามารถลดเวลาแบนถาวรได้ กรุณาใช้ปลดแบนแทน'); return; }
-    const newUntil = ban.until - days * 86400000;
+    let newUntil;
+    if (ban.until === -1) {
+      // ถาวร → เปลี่ยนเป็นวันที่กำหนด
+      const setDays = window._reduceSetDays || 1;
+      newUntil = Date.now() + setDays * 86400000;
+    } else {
+      const customMs = window._reduceCustomMs || 0;
+      const days = window._reduceDurationDays;
+      if (customMs > 0) {
+        newUntil = ban.until - customMs;
+      } else {
+        newUntil = ban.until - days * 86400000;
+      }
+    }
     try {
       if (newUntil <= Date.now()) {
         if (!confirm('หลังจากลดเวลาแล้ว การระงับจะหมดอายุทันที ต้องการปลดแบนผู้ใช้นี้เลยหรือไม่?')) return;
@@ -3367,12 +3507,20 @@
   window.confirmExtend = async function() {
     const uid = window._extendTargetUid;
     const days = window._extendDurationDays;
+    const customMs = window._extendCustomMs || 0;
     if (!uid) return;
     const ban = allBans[uid];
     let newUntil;
     if (days === -1) { newUntil = -1; }
-    else if (ban && ban.until === -1) { newUntil = -1; }
-    else { newUntil = (ban && ban.until > Date.now() ? ban.until : Date.now()) + days * 86400000; }
+    else if (ban && ban.until === -1) {
+      // ถาวรอยู่แล้ว + เพิ่มเวลา = ยังถาวร
+      if (customMs === 0 && days === 0) { alert('กรุณาเลือกหรือกรอกระยะเวลา'); return; }
+      newUntil = -1;
+    } else if (customMs > 0) {
+      newUntil = (ban && ban.until > Date.now() ? ban.until : Date.now()) + customMs;
+    } else {
+      newUntil = (ban && ban.until > Date.now() ? ban.until : Date.now()) + days * 86400000;
+    }
     try {
       await updateDoc(doc(db, 'bans', uid), { until: newUntil });
       window.closeExtendModal();
