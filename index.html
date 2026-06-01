@@ -2318,6 +2318,13 @@
         <button class="ban-duration-btn" onclick="selectReduceSetDays(this,14)">เหลือ 14 วัน</button>
         <button class="ban-duration-btn" onclick="selectReduceSetDays(this,30)">เหลือ 30 วัน</button>
       </div>
+      <div class="ban-duration-label" style="margin-top:0.5rem">⌨️ หรือกรอกเวลาเอง (จะใช้แทนปุ่มด้านบน)</div>
+      <div class="ban-custom-time-grid">
+        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reducePermCustomDays" min="0" placeholder="0" oninput="onReducePermCustomInput()"/><label class="ban-custom-label">วัน</label></div>
+        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reducePermCustomHours" min="0" max="23" placeholder="0" oninput="onReducePermCustomInput()"/><label class="ban-custom-label">ชั่วโมง</label></div>
+        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reducePermCustomMins" min="0" max="59" placeholder="0" oninput="onReducePermCustomInput()"/><label class="ban-custom-label">นาที</label></div>
+        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reducePermCustomSecs" min="0" max="59" placeholder="0" oninput="onReducePermCustomInput()"/><label class="ban-custom-label">วินาที</label></div>
+      </div>
     </div>
     <!-- โหมดมีเวลา: ลดออก -->
     <div id="reduceNormalSection">
@@ -3029,7 +3036,9 @@
     document.getElementById('reduceNormalSection').style.display = isPermanent ? 'none' : '';
     if (isPermanent) {
       window._reduceSetDays = 1;
+      window._reducePermCustomMs = 0;
       document.querySelectorAll('#reducePermanentSection .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+      ['Days','Hours','Mins','Secs'].forEach(f => { const el = document.getElementById('reducePermCustom'+f); if(el) el.value = ''; });
     } else {
       document.querySelectorAll('#reduceNormalSection .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
       ['Days','Hours','Mins','Secs'].forEach(f => { const el = document.getElementById('reduceCustom'+f); if(el) el.value = ''; });
@@ -3047,8 +3056,22 @@
   };
   window.selectReduceSetDays = function(el, days) {
     window._reduceSetDays = days;
+    window._reducePermCustomMs = 0;
+    ['Days','Hours','Mins','Secs'].forEach(f => { const inp = document.getElementById('reducePermCustom'+f); if(inp) inp.value = ''; });
     document.querySelectorAll('#reducePermanentSection .ban-duration-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
+  };
+  window.onReducePermCustomInput = function() {
+    const d = parseInt(document.getElementById('reducePermCustomDays').value) || 0;
+    const h = parseInt(document.getElementById('reducePermCustomHours').value) || 0;
+    const m = parseInt(document.getElementById('reducePermCustomMins').value) || 0;
+    const s = parseInt(document.getElementById('reducePermCustomSecs').value) || 0;
+    const ms = (d*86400 + h*3600 + m*60 + s) * 1000;
+    window._reducePermCustomMs = ms;
+    if (ms > 0) {
+      document.querySelectorAll('#reducePermanentSection .ban-duration-btn').forEach(b => b.classList.remove('active'));
+      window._reduceSetDays = 0;
+    }
   };
   window.onReduceCustomInput = function() {
     const d = parseInt(document.getElementById('reduceCustomDays').value) || 0;
@@ -3473,8 +3496,13 @@
     let newUntil;
     if (ban.until === -1) {
       // ถาวร → เปลี่ยนเป็นวันที่กำหนด
-      const setDays = window._reduceSetDays || 1;
-      newUntil = Date.now() + setDays * 86400000;
+      const permCustomMs = window._reducePermCustomMs || 0;
+      if (permCustomMs > 0) {
+        newUntil = Date.now() + permCustomMs;
+      } else {
+        const setDays = window._reduceSetDays || 1;
+        newUntil = Date.now() + setDays * 86400000;
+      }
     } else {
       const customMs = window._reduceCustomMs || 0;
       const days = window._reduceDurationDays;
