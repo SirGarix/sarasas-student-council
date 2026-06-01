@@ -3413,6 +3413,11 @@
     }
     const wall = document.getElementById('banWall');
     const box = document.getElementById('banWallBox');
+    // reset animation class เผื่อ hideBanWall กำลัง animate อยู่
+    box.classList.remove('ban-wall-lifted');
+    const titleEl = document.getElementById('banWallTitle');
+    titleEl.classList.remove('ban-wall-lifted-title');
+    titleEl.textContent = 'บัญชีถูกระงับการใช้งาน';
     const isPermanent = ban.until === -1;
     document.getElementById('banWallBannedAt').textContent =
       ban.bannedAt ? new Date(ban.bannedAt).toLocaleString('th-TH') : '-';
@@ -3455,18 +3460,35 @@
     document.addEventListener('keydown', blockKeyboard, true);
   }
   function hideBanWall() {
+    // เช็คก่อนว่ายังแบนอยู่จริงๆ ไหม ถ้าใช่ให้ไม่ซ่อน ban wall
+    if (currentUser && !isAdmin) {
+      const stillBanned = getBanForUser(currentUser);
+      if (stillBanned) {
+        // ยังแบนอยู่ — อัปเดต showBanWall แทนการซ่อน
+        showBanWall(currentUser);
+        return;
+      }
+    }
     if (banWallCountdownInterval) {
       clearInterval(banWallCountdownInterval);
       banWallCountdownInterval = null;
     }
     const wall = document.getElementById('banWall');
     const box = document.getElementById('banWallBox');
+    box.classList.remove('ban-wall-lifted');
     box.classList.add('ban-wall-lifted');
     document.getElementById('banWallTitle').textContent = '✅ การระงับสิ้นสุดแล้ว';
     document.getElementById('banWallTitle').classList.add('ban-wall-lifted-title');
     document.getElementById('banWallCountdownLabel').textContent = 'บัญชีของคุณได้รับการปลดแบนแล้ว';
     document.getElementById('banWallCountdown').textContent = 'ปลดแบนแล้ว';
     setTimeout(() => {
+      // เช็คอีกรอบก่อนซ่อน ป้องกัน race condition
+      if (currentUser && !isAdmin && getBanForUser(currentUser)) {
+        box.classList.remove('ban-wall-lifted');
+        document.getElementById('banWallTitle').classList.remove('ban-wall-lifted-title');
+        showBanWall(currentUser);
+        return;
+      }
       wall.classList.remove('show');
       window.unlockPageScroll();
       document.removeEventListener('keydown', blockKeyboard, true);
@@ -4054,7 +4076,9 @@
   };
   window._revealCommentByUid = async function(uid, fallbackName) {
     const bans = window._allBans || allBans;
-    const banData = bans[uid];
+    const historyBans = window._allBanHistory || {};
+    // ดึงจาก allBans ก่อน (ยังแบนอยู่) fallback ไป ban_history (ปลดแบนแล้ว)
+    const banData = bans[uid] || historyBans[uid] || null;
     const c = allComments.find(x => x.uid === uid);
     const revealPhoto = document.getElementById('revealPhoto');
     revealPhoto.innerHTML = '<span style="font-size:1.5rem;display:flex;align-items:center;justify-content:center;height:100%">⏳</span>';
@@ -4092,7 +4116,11 @@
     } else if (c) {
       document.getElementById('revealCommentPreview').textContent = '"' + (c.text || '') + '"';
     } else {
-      document.getElementById('revealCommentPreview').textContent = '(ไม่พบโพสที่บันทึกไว้)';
+      // ไม่มีโพสที่บันทึกไว้ — แสดงข้อมูลจากประวัติแบนแทน
+      const reason = (banData && banData.reason && banData.reason !== 'ไม่ระบุ') ? banData.reason : 'ไม่ระบุ';
+      const bannedAtText = banData && banData.bannedAt ? new Date(banData.bannedAt).toLocaleDateString('th-TH') : '-';
+      document.getElementById('revealCommentPreview').textContent =
+        `ผู้ใช้นี้โดนแบนจากหน้าประวัติ\nเหตุผล: ${reason}\nวันที่แบน: ${bannedAtText}`;
     }
   };
   window.deleteComment = async function(docId) {
