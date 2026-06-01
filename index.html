@@ -14,28 +14,28 @@
       --royal: #c0392b;
       --accent: #e74c3c;
       /* Semantic aliases kept for backward compat */
-      --navy: #1a1a2e;
-      --gold: #7a6a5a;
-      --gold-light: #5a4a3a;
-      --gold-pale: #f8f5f0;
-      --dark: #f4f4f6;
-      --dark-mid: #e8e8ed;
+      --navy: #111111;
+      --gold: #c0392b;
+      --gold-light: #922b21;
+      --gold-pale: #fff5f5;
+      --dark: #1a1a1a;
+      --dark-mid: #2a2a2a;
       --white: #ffffff;
-      --cream: #f0f0f5;
+      --cream: #fafafa;
       --crimson-mid: #922b21;
-      /* Layout / theme */
-      --bg-main: #f4f4f6;
-      --bg-mid: #e8e8ed;
-      --text-main: #1a1a1a;
-      --text-muted: rgba(30,30,30,0.55);
-      --text-faint: rgba(30,30,30,0.38);
-      --border: rgba(0,0,0,0.1);
-      --border-strong: rgba(0,0,0,0.18);
+      /* Layout / theme — ขาว/เทาอ่อน พื้นหลัง, การ์ดขาว, ข้อความดำ, accent แดง */
+      --bg-main: #f0f0f0;
+      --bg-mid: #e2e2e2;
+      --text-main: #111111;
+      --text-muted: #555555;
+      --text-faint: #888888;
+      --border: rgba(0,0,0,0.14);
+      --border-strong: rgba(0,0,0,0.28);
       --card-bg: #ffffff;
-      --card-bg2: #f7f7fa;
+      --card-bg2: #fafafa;
       --red: #c0392b;
       --red-soft: rgba(192,57,43,0.10);
-      --red-border: rgba(192,57,43,0.28);
+      --red-border: rgba(192,57,43,0.35);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
@@ -62,7 +62,7 @@
     .page.active { display: block; }
     #lobby.active { display: flex; }
     #lobby {
-      background: linear-gradient(135deg, #f0f0f5 0%, #e8e8f0 50%, #ececf2 100%);
+      background: linear-gradient(135deg, #f8f8f8 0%, #efefef 50%, #f3f3f3 100%);
       min-height: 100%;
       flex-direction: column;
       align-items: center;
@@ -290,13 +290,13 @@
       font-weight: 400;
     }
     .top-nav {
-      background: rgba(255,255,255,0.97);
+      background: #ffffff;
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(0,0,0,0.09);
+      border-bottom: 2px solid #e0e0e0;
       padding: 0.8rem 2rem;
       display: flex; align-items: center; gap: 1rem;
       position: sticky; top: 0; z-index: 100;
-      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     }
     .nav-back {
       background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.22);
@@ -312,7 +312,7 @@
       font-weight: 700; color: var(--text-main);
     }
     #members {
-      background: linear-gradient(180deg, #f0f0f5 0%, #e8e8ed 100%);
+      background: linear-gradient(180deg, #f0f0f0 0%, #e8e8e8 100%);
       min-height: 100vh;
     }
     .members-hero {
@@ -674,7 +674,7 @@
       border-radius: 50px;
     }
     #comments {
-      background: linear-gradient(180deg, #f0f0f5 0%, #e8e8ed 100%);
+      background: linear-gradient(180deg, #f0f0f0 0%, #e8e8e8 100%);
       min-height: 100vh;
     }
     .comments-hero {
@@ -694,9 +694,10 @@
     }
     .comment-form-box {
       background: #ffffff;
-      border: 1px solid rgba(0,0,0,0.12);
+      border: 1.5px solid #d0d0d0;
       border-radius: 20px; padding: 2rem;
       margin-bottom: 2.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     }
     .form-title {
       font-family: 'Kanit', sans-serif; font-size: 1.1rem;
@@ -709,32 +710,33 @@
       gap: 1rem; margin-bottom: 1rem;
     }
     .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-    .form-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+    .form-label { font-size: 0.85rem; color: #444444; font-weight: 700; }
     .form-input, .form-select, .form-textarea {
-      background: rgba(0,0,0,0.03);
-      border: 1px solid rgba(0,0,0,0.08);
+      background: #f8f8f8;
+      border: 1.5px solid #cccccc;
       border-radius: 10px; padding: 0.7rem 1rem;
-      color: var(--text-main);
+      color: #111111;
       font-family: 'Sarabun', sans-serif; font-size: 0.95rem;
       transition: border 0.2s; width: 100%;
     }
     .form-input:focus, .form-select:focus, .form-textarea:focus {
-      outline: none; border-color: var(--gold);
-      background: rgba(0,0,0,0.03);
+      outline: none; border-color: var(--red);
+      background: #ffffff;
     }
-    .form-select option { background: var(--dark-mid); }
+    .form-select option { background: #f0f0f0; }
     .form-textarea { resize: vertical; min-height: 100px; }
     .type-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
     .type-tag {
       padding: 0.3rem 0.9rem; border-radius: 20px;
-      border: 1px solid rgba(192,57,43,0.18);
-      background: transparent; color: rgba(30,30,30,0.5);
+      border: 1.5px solid #cccccc;
+      background: #ffffff; color: #444444;
       font-family: 'Sarabun', sans-serif; font-size: 0.8rem;
       cursor: pointer; transition: all 0.2s;
+      font-weight: 600;
     }
     .type-tag.active, .type-tag:hover {
-      border-color: var(--red); color: var(--red);
-      background: rgba(0,0,0,0.06);
+      border-color: var(--red); color: #ffffff;
+      background: var(--red);
     }
     .btn-submit {
       width: 100%; padding: 0.9rem;
@@ -760,11 +762,12 @@
     }
     .comment-item {
       background: #ffffff;
-      border: 1px solid rgba(0,0,0,0.08);
+      border: 1.5px solid #d8d8d8;
       border-radius: 16px; padding: 1.2rem 1.5rem;
       margin-bottom: 1rem; transition: border-color 0.2s;
       animation: slideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
       contain: layout style;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(8px); }
@@ -788,14 +791,15 @@
     .comment-author {
       font-weight: 700; font-size: 0.9rem;
       display: flex; align-items: center; gap: 0.5rem;
+      color: #111111;
     }
     .comment-level-badge {
       font-size: 0.7rem; padding: 0.1rem 0.5rem;
       border-radius: 10px;
-      background: rgba(0,0,0,0.04); color: rgba(30,30,30,0.85);
-      border: 1px solid rgba(192,57,43,0.18);
+      background: #f0f0f0; color: #333333;
+      border: 1px solid #cccccc;
     }
-    .comment-time { font-size: 0.75rem; color: var(--text-faint); }
+    .comment-time { font-size: 0.75rem; color: #777777; }
     .comment-type-pill {
       font-size: 0.72rem; padding: 0.2rem 0.6rem;
       border-radius: 10px; font-weight: 600;
@@ -804,7 +808,7 @@
     .pill-ข้อเสนอแนะ { background: rgba(39,174,96,0.12); color: #1a7a40; border: 1px solid rgba(39,174,96,0.3); }
     .pill-ร้องเรียน { background: rgba(192,57,43,0.10); color: #922b21; border: 1px solid rgba(192,57,43,0.25); }
     .pill-ขอสิ่งอำนวยความสะดวก { background: rgba(142,68,173,0.10); color: #6d3399; border: 1px solid rgba(142,68,173,0.28); }
-    .comment-text { font-size: 0.95rem; color: rgba(30,30,30,0.85); line-height: 1.7; }
+    .comment-text { font-size: 0.95rem; color: #222222; line-height: 1.7; }
     .comment-likes { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.8rem; }
     .like-btn {
       background: none; border: 1px solid rgba(0,0,0,0.08);
@@ -830,21 +834,26 @@
     .filter-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
     .filter-tab {
       padding: 0.4rem 1rem; border-radius: 50px;
-      border: 1px solid rgba(0,0,0,0.12);
-      background: transparent; color: rgba(0,0,0,0.35);
+      border: 1.5px solid #cccccc;
+      background: #ffffff; color: #333333;
       font-family: 'Sarabun', sans-serif; font-size: 0.82rem;
       cursor: pointer; transition: all 0.2s; white-space: nowrap;
+      font-weight: 600;
     }
-    .filter-tab:hover { border-color: rgba(192,57,43,0.4); color: var(--red); }
+    .filter-tab:hover { border-color: var(--red); color: var(--red); background: #fff5f5; }
     .filter-tab.active {
-      color: var(--red);
+      background: var(--red);
+      color: #ffffff;
+      border-color: var(--red);
       font-weight: 700;
+      box-shadow: 0 2px 8px rgba(192,57,43,0.3);
     }
     .grade-filter-tab.active {
-      background: var(--red-soft) !important;
-      color: var(--red) !important;
-      border-color: var(--red-border) !important;
+      background: var(--red) !important;
+      color: #ffffff !important;
+      border-color: var(--red) !important;
       font-weight: 700;
+      box-shadow: 0 2px 8px rgba(192,57,43,0.3);
     }
     .login-prompt {
       background: #ffffff;
