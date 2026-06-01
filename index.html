@@ -3308,6 +3308,8 @@
   const provider = new GoogleAuthProvider();
   const commentsCol = collection(db, 'comments');
   const bansCol = collection(db, 'bans');
+  const banHistoryCol = collection(db, 'ban_history');
+  let allBanHistory = {}; // uid -> latest history record
   let allBans = {};
   let banWallInterval = null;
   let banWallCountdownInterval = null;
@@ -3371,6 +3373,11 @@
     });
   }
   window.subscribeAllBans = function() {
+    onSnapshot(banHistoryCol, (snap) => {
+      allBanHistory = {};
+      snap.docs.forEach(d => { allBanHistory[d.id] = { id: d.id, ...d.data() }; });
+      window._allBanHistory = allBanHistory;
+    }, (err) => { console.warn('ban_history error:', err); });
     onSnapshot(bansCol, (snap) => {
       allBans = {};
       snap.docs.forEach(d => { allBans[d.id] = { id: d.id, ...d.data() }; });
@@ -3503,7 +3510,7 @@
     const targetEmail = targetComment ? (targetComment.realEmail || '') : (window._banTargetEmail || '');
     const targetPhotoURL = targetComment ? (targetComment.realPhotoURL || targetComment.photoURL || '') : '';
     try {
-      await setDoc(doc(db, 'bans', uid), {
+      const banData = {
         uid,
         email: targetEmail.toLowerCase().trim(),
         reason: reason || 'ไม่ระบุ',
@@ -3512,7 +3519,17 @@
         bannedBy: currentUser ? currentUser.email : 'admin',
         realName: window._banTargetName || '',
         realPhotoURL: targetPhotoURL
-      });
+      };
+      await setDoc(doc(db, 'bans', uid), banData);
+      // บันทึกประวัติการแบนถาวร (ไม่ถูกลบตอนปลดแบน)
+      try {
+        await setDoc(doc(db, 'ban_history', uid), {
+          ...banData,
+          unbannedAt: null,
+          unbannedBy: null,
+          status: 'banned'
+        });
+      } catch(eH) { console.warn('บันทึก ban_history ไม่สำเร็จ:', eH); }
       const userComments = allComments.filter(c => c.uid === uid);
       // บันทึกโพสทั้งหมดไว้ใน bannedComments ก่อนลบ
       if (userComments.length > 0) {
@@ -3554,6 +3571,16 @@
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     if (!confirm('ปลดแบนผู้ใช้นี้?')) return;
     try {
+      // บันทึกประวัติว่าถูกปลดแบนแล้ว
+      try {
+        const hist = allBanHistory[uid] || allBans[uid] || {};
+        await setDoc(doc(db, 'ban_history', uid), {
+          ...hist,
+          unbannedAt: Date.now(),
+          unbannedBy: currentUser ? currentUser.email : 'admin',
+          status: 'unbanned'
+        });
+      } catch(eH) { console.warn('อัปเดต ban_history ไม่สำเร็จ:', eH); }
       await deleteDoc(doc(db, 'bans', uid));
       try { await deleteDoc(doc(db, 'bannedComments', uid)); } catch(e2) {}
       delete allBans[uid];
@@ -3597,6 +3624,12 @@
       const _db = window._getDb();
       if (newUntil <= Date.now()) {
         if (!confirm('หลังจากลดเวลาแล้ว การระงับจะหมดอายุทันที ต้องการปลดแบนผู้ใช้นี้เลยหรือไม่?')) return;
+        // บันทึกประวัติปลดแบน
+        try {
+          const { setDoc: _set } = window._fbWrite;
+          const hist = (window._allBanHistory || {})[uid] || (window._allBans || {})[uid] || {};
+          await _set(_doc(_db, 'ban_history', uid), { ...hist, unbannedAt: Date.now(), unbannedBy: currentUser ? currentUser.email : 'admin', status: 'unbanned' });
+        } catch(eH) { console.warn('ban_history update failed:', eH); }
         await _del(_doc(_db, 'bans', uid));
         try { await _del(_doc(_db, 'bannedComments', uid)); } catch(e3) {}
         delete allBans[uid];
@@ -4238,8 +4271,11 @@
         }
       });
     } else if (filterType === '__ban_history__' && isAdmin) {
-      const bans = window._allBans || allBans;
-      const allBannedUids = Object.keys(bans);
+      // รวม ban_history (ทั้งที่ยังแบนและถูกปลดแล้ว) + allBans (fallback)
+      const history = window._allBanHistory || allBanHistory || {};
+      const activeBans = window._allBans || allBans;
+      const mergedBans = { ...activeBans, ...history };
+      const allBannedUids = Object.keys(mergedBans);
       const seen = new Set();
       filtered = [];
       for (const c of comments) {
@@ -4250,7 +4286,7 @@
       }
       allBannedUids.forEach(uid => {
         if (!seen.has(uid)) {
-          const ban = bans[uid];
+          const ban = mergedBans[uid];
           filtered.push({ id: '__ban__' + uid, uid, realEmail: ban.email || ban.realEmail || '', name: ban.realName || uid, text: '', avatar: '📋', isBanOnly: true, isHistoryOnly: true });
         }
       });
@@ -4335,16 +4371,23 @@
           </div>`;
       }
       const isHistoryView = filterType === '__ban_history__';
-      const isExpiredBan = isHistoryView && banData && banData.until !== -1 && banData.until <= Date.now();
+      // ดึงจาก ban_history ก่อน fallback ไป allBans
+      const histRecord = (window._allBanHistory || {})[c.uid];
+      const effectiveBanData = histRecord || banData;
+      const isUnbanned = isHistoryView && effectiveBanData && effectiveBanData.status === 'unbanned';
+      const isExpiredBan = isHistoryView && !isUnbanned && effectiveBanData && effectiveBanData.until !== -1 && effectiveBanData.until <= Date.now();
       const bannedBadgesHtml = (userBanned || isBanView) ? `
         <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;flex-wrap:wrap">
-          ${isExpiredBan
-            ? `<span class="banned-badge" style="background:rgba(100,100,100,0.12);color:#777;border-color:rgba(100,100,100,0.25)">✅ เคยถูกระงับ (หมดอายุแล้ว)</span>`
-            : `<span class="banned-badge">🚫 ถูกระงับ</span>`
+          ${isUnbanned
+            ? `<span class="banned-badge" style="background:rgba(80,200,120,0.12);color:#4caf88;border-color:rgba(80,200,120,0.35)">✅ ถูกปลดแบนแล้ว</span>`
+            : isExpiredBan
+              ? `<span class="banned-badge" style="background:rgba(100,100,100,0.12);color:#777;border-color:rgba(100,100,100,0.25)">✅ เคยถูกระงับ (หมดอายุแล้ว)</span>`
+              : `<span class="banned-badge">🚫 ถูกระงับ</span>`
           }
-          ${timeLeft ? `<span class="banned-time-badge">${timeLeft}</span>` : ''}
-          ${banData && banData.reason && banData.reason !== 'ไม่ระบุ' ? `<span class="banned-reason">สาเหตุ: ${banData.reason}</span>` : ''}
-          ${banData && banData.bannedAt ? `<span style="font-size:0.72rem;color:rgba(30,30,30,0.4)">แบนเมื่อ: ${new Date(banData.bannedAt).toLocaleDateString('th-TH')}</span>` : ''}
+          ${!isUnbanned && !isExpiredBan && timeLeft ? `<span class="banned-time-badge">${timeLeft}</span>` : ''}
+          ${effectiveBanData && effectiveBanData.reason && effectiveBanData.reason !== 'ไม่ระบุ' ? `<span class="banned-reason">สาเหตุ: ${effectiveBanData.reason}</span>` : ''}
+          ${effectiveBanData && effectiveBanData.bannedAt ? `<span style="font-size:0.72rem;color:rgba(30,30,30,0.4)">แบนเมื่อ: ${new Date(effectiveBanData.bannedAt).toLocaleDateString('th-TH')}</span>` : ''}
+          ${isUnbanned && effectiveBanData.unbannedAt ? `<span style="font-size:0.72rem;color:rgba(80,200,120,0.7)">ปลดแบนเมื่อ: ${new Date(effectiveBanData.unbannedAt).toLocaleDateString('th-TH')}${effectiveBanData.unbannedBy ? ' โดย ' + effectiveBanData.unbannedBy : ''}</span>` : ''}
         </div>` : '';
       const isOwnerOfThisPost = currentUser && currentUser.uid === c.uid;
       const privateBadgeHtml = c.isPrivate ? `
@@ -4358,7 +4401,7 @@
         </div>` : '';
       const nameDisplay = isBanView ? (c.realName || c.name) : c.name;
       return `
-        <div class="comment-item ${isHistoryView && isExpiredBan ? 'history-ban-expired-item' : (userBanned || isBanView) ? 'banned-comment-item' : ''}${c.isPrivate ? ' private-comment-item' : ''}">
+        <div class="comment-item ${isHistoryView && (isUnbanned || isExpiredBan) ? 'history-ban-expired-item' : (userBanned || isBanView) ? 'banned-comment-item' : ''}${c.isPrivate ? ' private-comment-item' : ''}">
           ${bannedBadgesHtml}
           ${privateBadgeHtml}
           <div class="comment-header">
