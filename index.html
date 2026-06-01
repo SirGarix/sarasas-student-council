@@ -3264,6 +3264,7 @@
     const until = days === -1 ? -1 : Date.now() + days * 86400000;
     const targetComment = allComments.find(c => c.uid === uid);
     const targetEmail = targetComment ? (targetComment.realEmail || '') : (window._banTargetEmail || '');
+    const targetPhotoURL = targetComment ? (targetComment.realPhotoURL || targetComment.photoURL || '') : '';
     try {
       await setDoc(doc(db, 'bans', uid), {
         uid,
@@ -3272,7 +3273,8 @@
         until,
         bannedAt: Date.now(),
         bannedBy: currentUser ? currentUser.email : 'admin',
-        realName: window._banTargetName || ''
+        realName: window._banTargetName || '',
+        realPhotoURL: targetPhotoURL
       });
       const userComments = allComments.filter(c => c.uid === uid);
       for (const c of userComments) {
@@ -3710,9 +3712,10 @@
     const c = allComments.find(x => x.uid === uid);
     const revealPhoto = document.getElementById('revealPhoto');
     revealPhoto.innerHTML = '';
-    if (c && c.realPhotoURL) {
+    const photoURL = (banData && banData.realPhotoURL) || (c && (c.realPhotoURL || c.photoURL)) || '';
+    if (photoURL) {
       const img = document.createElement('img');
-      img.src = c.realPhotoURL;
+      img.src = photoURL;
       img.onerror = () => { revealPhoto.innerHTML = '<span>👤</span>'; };
       revealPhoto.appendChild(img);
     } else {
@@ -3722,7 +3725,7 @@
     const realEmail = (banData && (banData.email || banData.realEmail)) || (c && c.realEmail) || '-';
     document.getElementById('revealName').textContent = realName;
     document.getElementById('revealEmail').textContent = realEmail;
-    const previewText = c ? ('"' + (c.text || '') + '"') : '(ไม่มีคอมเม้น — ผู้ใช้ถูกแบนก่อนโพส)';
+    const previewText = c ? ('"' + (c.text || '') + '"') : '(โพสถูกลบอัตโนมัติเมื่อแบน)';
     document.getElementById('revealCommentPreview').textContent = previewText;
     document.getElementById('revealModal').classList.add('open');
   };
