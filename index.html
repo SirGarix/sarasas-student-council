@@ -3017,11 +3017,13 @@
     document.querySelectorAll('#banModal .ban-duration-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
   };
-  window.openExtendModal = function(uid, name, currentExpiry) {
+  window.openExtendModal = function(uid, name, _unused) {
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     window._extendTargetUid = uid;
     window._extendDurationDays = 1;
     window._extendCustomMs = 0;
+    const freshBanE = (window._allBans || {})[uid];
+    const currentExpiry = freshBanE ? freshBanE.until : 0;
     const expiryText = currentExpiry === -1 ? 'ถาวร' : (currentExpiry ? new Date(currentExpiry).toLocaleDateString('th-TH') : 'ไม่ทราบ');
     document.getElementById('extendTargetInfo').innerHTML = `<strong>👤 ${name}</strong><br/><span style="font-size:0.78rem;color:rgba(255,200,100,0.8)">หมดอายุปัจจุบัน: ${expiryText}</span>`;
     document.querySelectorAll('#extendModal .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
@@ -3041,12 +3043,14 @@
   window._reduceDurationDays = 1;
   window._reduceIsPermanent = false;
   window._reduceSetDays = 1;
-  window.openReduceModal = function(uid, name, currentExpiry) {
+  window.openReduceModal = function(uid, name, _unused) {
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     window._reduceTargetUid = uid;
     window._reduceTargetName = name;
     window._reduceDurationDays = 1;
     window._reduceCustomMs = 0;
+    const freshBanR = (window._allBans || {})[uid];
+    const currentExpiry = freshBanR ? freshBanR.until : 0;
     const isPermanent = currentExpiry === -1;
     window._reduceIsPermanent = isPermanent;
     const expiryText = isPermanent ? 'ถาวร' : (currentExpiry ? new Date(currentExpiry).toLocaleDateString('th-TH') : 'ไม่ทราบ');
