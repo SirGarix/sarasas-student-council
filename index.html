@@ -3277,6 +3277,30 @@
         realPhotoURL: targetPhotoURL
       });
       const userComments = allComments.filter(c => c.uid === uid);
+      // บันทึกโพสทั้งหมดไว้ใน bannedComments ก่อนลบ
+      if (userComments.length > 0) {
+        try {
+          await setDoc(doc(db, 'bannedComments', uid), {
+            uid,
+            savedAt: Date.now(),
+            comments: userComments.map(c => ({
+              id: c.id,
+              text: c.text || '',
+              name: c.name || '',
+              realName: c.realName || '',
+              realEmail: c.realEmail || '',
+              realPhotoURL: c.realPhotoURL || '',
+              photoURL: c.photoURL || '',
+              type: c.type || '',
+              level: c.level || '',
+              time: c.time || '',
+              isAnon: c.isAnon || false,
+              isPrivate: c.isPrivate || false,
+              createdAt: c.createdAt || 0
+            }))
+          });
+        } catch(e3) { console.error('บันทึก bannedComments ไม่สำเร็จ:', e3); }
+      }
       for (const c of userComments) {
         try {
           const repliesSnap = await getDocs(collection(db, 'comments', c.id, 'replies'));
@@ -3294,6 +3318,7 @@
     if (!confirm('ปลดแบนผู้ใช้นี้?')) return;
     try {
       await deleteDoc(doc(db, 'bans', uid));
+      try { await deleteDoc(doc(db, 'bannedComments', uid)); } catch(e2) {}
       delete allBans[uid];
       window._allBans = allBans;
       window._publicBannedUids = new Set(
@@ -3318,6 +3343,7 @@
       if (newUntil <= Date.now()) {
         if (!confirm('หลังจากลดเวลาแล้ว การระงับจะหมดอายุทันที ต้องการปลดแบนผู้ใช้นี้เลยหรือไม่?')) return;
         await deleteDoc(doc(db, 'bans', uid));
+        try { await deleteDoc(doc(db, 'bannedComments', uid)); } catch(e3) {}
         delete allBans[uid];
         window._allBans = allBans;
         window._publicBannedUids = new Set(
@@ -3657,6 +3683,7 @@
       if (!isAdmin) await incrementUserTodayCount();
       document.getElementById('inputText').value = '';
       document.getElementById('inputLevel').value = '';
+      // ไม่รีเซ็ต anonCheck และ privateCheck — ให้คงสถานะเหมือนเดิม
       showToast();
       _submitAttempts = 0;
       if (!isAdmin) {
@@ -3706,13 +3733,26 @@
     document.getElementById('revealCommentPreview').textContent = '"' + (c.text || '') + '"';
     document.getElementById('revealModal').classList.add('open');
   };
-  window._revealCommentByUid = function(uid, fallbackName) {
+  window._revealCommentByUid = async function(uid, fallbackName) {
     const bans = window._allBans || allBans;
     const banData = bans[uid];
     const c = allComments.find(x => x.uid === uid);
     const revealPhoto = document.getElementById('revealPhoto');
+    revealPhoto.innerHTML = '<span style="font-size:1.5rem;display:flex;align-items:center;justify-content:center;height:100%">⏳</span>';
+    document.getElementById('revealName').textContent = '...';
+    document.getElementById('revealEmail').textContent = '...';
+    document.getElementById('revealCommentPreview').textContent = '';
+    document.getElementById('revealModal').classList.add('open');
+    // ดึงข้อมูลโพสที่เก็บไว้ตอนแบน
+    let savedComments = [];
+    try {
+      const snap = await getDoc(doc(db, 'bannedComments', uid));
+      if (snap.exists()) {
+        savedComments = snap.data().comments || [];
+      }
+    } catch(e) { console.error('ดึง bannedComments ไม่สำเร็จ:', e); }
+    const photoURL = (banData && banData.realPhotoURL) || (c && (c.realPhotoURL || c.photoURL)) || (savedComments[0] && savedComments[0].realPhotoURL) || '';
     revealPhoto.innerHTML = '';
-    const photoURL = (banData && banData.realPhotoURL) || (c && (c.realPhotoURL || c.photoURL)) || '';
     if (photoURL) {
       const img = document.createElement('img');
       img.src = photoURL;
@@ -3721,13 +3761,20 @@
     } else {
       revealPhoto.innerHTML = '<span>👤</span>';
     }
-    const realName = (banData && banData.realName) || (c && (c.realName || c.name)) || fallbackName || '-';
-    const realEmail = (banData && (banData.email || banData.realEmail)) || (c && c.realEmail) || '-';
+    const realName = (banData && banData.realName) || (c && (c.realName || c.name)) || (savedComments[0] && savedComments[0].realName) || fallbackName || '-';
+    const realEmail = (banData && (banData.email || banData.realEmail)) || (c && c.realEmail) || (savedComments[0] && savedComments[0].realEmail) || '-';
     document.getElementById('revealName').textContent = realName;
     document.getElementById('revealEmail').textContent = realEmail;
-    const previewText = c ? ('"' + (c.text || '') + '"') : '(โพสถูกลบอัตโนมัติเมื่อแบน)';
-    document.getElementById('revealCommentPreview').textContent = previewText;
-    document.getElementById('revealModal').classList.add('open');
+    if (savedComments.length > 0) {
+      const preview = savedComments.map((sc, i) =>
+        `[${i+1}] ${sc.isPrivate ? '🔒 ' : ''}${sc.text || '(ไม่มีข้อความ)'}`
+      ).join('\n');
+      document.getElementById('revealCommentPreview').textContent = preview;
+    } else if (c) {
+      document.getElementById('revealCommentPreview').textContent = '"' + (c.text || '') + '"';
+    } else {
+      document.getElementById('revealCommentPreview').textContent = '(ไม่พบโพสที่บันทึกไว้)';
+    }
   };
   window.deleteComment = async function(docId) {
     if (!currentUser) return;
