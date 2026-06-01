@@ -2894,6 +2894,10 @@
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     if (window._revealComment) window._revealComment(docId);
   };
+  window.revealIdentityByUid = function(uid, fallbackName) {
+    document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
+    if (window._revealCommentByUid) window._revealCommentByUid(uid, fallbackName);
+  };
   window.closeReveal = function() {
     document.getElementById('revealModal').classList.remove('open');
   };
@@ -3700,6 +3704,28 @@
     document.getElementById('revealCommentPreview').textContent = '"' + (c.text || '') + '"';
     document.getElementById('revealModal').classList.add('open');
   };
+  window._revealCommentByUid = function(uid, fallbackName) {
+    const bans = window._allBans || allBans;
+    const banData = bans[uid];
+    const c = allComments.find(x => x.uid === uid);
+    const revealPhoto = document.getElementById('revealPhoto');
+    revealPhoto.innerHTML = '';
+    if (c && c.realPhotoURL) {
+      const img = document.createElement('img');
+      img.src = c.realPhotoURL;
+      img.onerror = () => { revealPhoto.innerHTML = '<span>👤</span>'; };
+      revealPhoto.appendChild(img);
+    } else {
+      revealPhoto.innerHTML = '<span>👤</span>';
+    }
+    const realName = (banData && banData.realName) || (c && (c.realName || c.name)) || fallbackName || '-';
+    const realEmail = (banData && (banData.email || banData.realEmail)) || (c && c.realEmail) || '-';
+    document.getElementById('revealName').textContent = realName;
+    document.getElementById('revealEmail').textContent = realEmail;
+    const previewText = c ? ('"' + (c.text || '') + '"') : '(ไม่มีคอมเม้น — ผู้ใช้ถูกแบนก่อนโพส)';
+    document.getElementById('revealCommentPreview').textContent = previewText;
+    document.getElementById('revealModal').classList.add('open');
+  };
   window.deleteComment = async function(docId) {
     if (!currentUser) return;
     const comment = allComments.find(c => c.id === docId);
@@ -3938,6 +3964,7 @@
           <div class="comment-menu-wrap" id="menu-wrap-${c.id}">
             <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
             <div class="comment-dropdown" id="menu-${c.id}">
+              <div class="dropdown-item" onclick="revealIdentityByUid('${safeUid}','${safeName}')">🔍 ดูตัวจริง</div>
               <div class="dropdown-item success" onclick="unbanUser('${safeUid}')">✅ ปลดแบน</div>
               <div class="dropdown-item warn" onclick="openExtendModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏰ เพิ่มเวลาแบน</div>
               <div class="dropdown-item" style="color:#55efc4" onclick="openReduceModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏬ ลดเวลาแบน</div>
