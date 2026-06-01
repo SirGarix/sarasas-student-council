@@ -2077,7 +2077,7 @@
       ร่วมแสดงความคิดเห็น
     </button>
     <button class="btn-lobby btn-primary" onclick="goTo('policy')" style="justify-content:center">
-      นโยบายของเรา
+      นโยบาย
     </button>
   </div>
 </div>
@@ -2091,7 +2091,7 @@
 <div id="policy" class="page">
   <nav class="top-nav">
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
-    <div class="nav-title">นโยบายของเรา SWSK PROMAX</div>
+    <div class="nav-title">นโยบาย SWSK PROMAX</div>
   </nav>
   <div id="policySlidesContainer" style="max-width:1000px;margin:0 auto;padding:1.5rem 1rem 3rem;display:flex;flex-direction:column;gap:1.2rem;"></div>
 </div>
@@ -2144,7 +2144,7 @@
       </label>
       <label class="anon-row" for="privateCheck" style="border-color:rgba(255,215,0,0.2);background:rgba(255,215,0,0.04)">
         <input type="checkbox" id="privateCheck" style="accent-color:#f1c40f" />
-        <span class="anon-label" style="color:rgba(255,215,0,0.9)">🔒 ส่งตรงถึงทีมของเรา</span>
+        <span class="anon-label" style="color:rgba(255,215,0,0.9)">🔒 ส่งตรงถึงทีม</span>
         <span class="anon-desc">มีแค่ทีมเราเท่านั้นที่เห็น คนอื่นมองไม่เห็น</span>
       </label>
       <div class="form-group" style="margin-bottom:1rem">
@@ -2251,7 +2251,7 @@
       <div class="support-channels" id="supportChannels">
       </div>
       <div class="support-note">
-        โปรดติดต่อ เพจทีมสภาของเรา<br/>
+        โปรดติดต่อ เพจทีมสภา<br/>
         เราจะตอบกลับโดยเร็วที่สุด 💙
       </div>
     </div>
@@ -2390,7 +2390,7 @@
       <div class="ban-wall-progress-bar" id="banWallProgress" style="width:100%"></div>
     </div>
     <div class="ban-wall-note" id="banWallNote">
-      หากคิดว่าเกิดข้อผิดพลาด กรุณาติดต่อทีมของเรา<br/>Popup นี้จะปิดอัตโนมัติเมื่อหมดเวลาแบน
+      หากคิดว่าเกิดข้อผิดพลาด กรุณาติดต่อทีม<br/>Popup นี้จะปิดอัตโนมัติเมื่อหมดเวลาแบน
     </div>
   </div>
 </div>
@@ -2410,7 +2410,7 @@
   <div class="privacy-box">
     <div class="privacy-header">
       <h2 id="privacyModalTitle">🔐 นโยบายความเป็นส่วนตัว</h2>
-      <p id="privacyModalSub">ทีมหาเสียง SARASAS PROMAX · ปีการศึกษา 2569</p>
+      <p id="privacyModalSub">ทีมของเรา SARASAS PROMAX · ปีการศึกษา 2569</p>
     </div>
     <button class="privacy-close" onclick="closePrivacyModal()">✕</button>
     <div class="privacy-body" id="privacyBody">
@@ -2421,7 +2421,7 @@
   const PRIVACY_CONTENT = {
     privacy: {
       title: '🔐 นโยบายความเป็นส่วนตัว',
-      sub: 'ทีมหาเสียง SARASAS PROMAX · ปีการศึกษา 2569',
+      sub: 'ทีมของเรา SARASAS PROMAX · ปีการศึกษา 2569',
       html: `
         <div class="privacy-section">
           <div class="privacy-section-title">📌 ข้อมูลที่เก็บรวบรวม</div>
@@ -2434,24 +2434,24 @@
         <div class="privacy-section">
           <div class="privacy-section-title">🔒 การปกป้องข้อมูล</div>
           <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ข้อมูลส่วนตัวจะไม่ถูกเปิดเผยให้บุคคลภายนอกโดยไม่ได้รับความยินยอม</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>อีเมลและข้อมูลจริงของคุณจะถูกเก็บในระบบ ทีมหาเสียงสามารถเข้าถึงได้เพื่อวัตถุประสงค์ในการดูแลระบบและป้องกันการกระทำผิดกฎหมายเท่านั้น</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>อีเมลและข้อมูลจริงของคุณจะถูกเก็บในระบบ ทีมของเราสามารถเข้าถึงได้เพื่อวัตถุประสงค์ในการดูแลระบบและป้องกันการกระทำผิดกฎหมายเท่านั้น</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ระบบใช้ Firebase (Google) เป็นฐานข้อมูล มีมาตรฐานความปลอดภัยตาม Google Cloud</span></div>
         </div>
         <div class="privacy-section">
           <div class="privacy-section-title">🗂️ การเก็บข้อมูลและระยะเวลา</div>
-          <div class="privacy-text">ข้อมูลของคุณจะถูกเก็บไว้ตราบเท่าที่จำเป็นสำหรับการทำงานของระบบ หากต้องการลบข้อมูลของคุณ กรุณาติดต่อทีมหาเสียงโดยตรง</div>
+          <div class="privacy-text">ข้อมูลของคุณจะถูกเก็บไว้ตราบเท่าที่จำเป็นสำหรับการทำงานของระบบ หากต้องการลบข้อมูลของคุณ กรุณาติดต่อทีมโดยตรง</div>
         </div>
         <div class="privacy-updated">นโยบายนี้อาจมีการปรับปรุงได้ตลอดเวลา การใช้งานต่อเนื่องถือว่ายอมรับนโยบายฉบับปัจจุบัน</div>
       `
     },
     terms: {
       title: '📋 ข้อกำหนดการใช้งาน',
-      sub: 'ทีมหาเสียง SARASAS PROMAX · ปีการศึกษา 2569',
+      sub: 'ทีมของเรา SARASAS PROMAX · ปีการศึกษา 2569',
       html: `
         <div class="privacy-section">
           <div class="privacy-section-title">✅ สิ่งที่ทำได้</div>
           <div class="privacy-rule"><span class="privacy-rule-icon">💬</span><span>แสดงความคิดเห็น ข้อเสนอแนะ หรือร้องเรียนในนามของตัวเองหรือนิรนาม</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">🔒</span><span>ส่งเรื่องเป็นความลับ ส่งตรงถึงทีมหาเสียงโดยใช้โหมดลับ</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔒</span><span>ส่งเรื่องเป็นความลับ ส่งตรงถึงทีมของเราโดยใช้โหมดลับ</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">👍</span><span>กด "เห็นด้วย" ความคิดเห็นที่คุณเห็นด้วย</span></div>
         </div>
         <div class="privacy-section">
@@ -2464,9 +2464,9 @@
         </div>
         <div class="privacy-section">
           <div class="privacy-section-title">⚖️ ผลของการละเมิดข้อกำหนด</div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">🔴</span><span>ทีมหาเสียงมีสิทธิ์ระงับการใช้งานชั่วคราวหรือถาวรหากพบการละเมิด</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔴</span><span>ทีมของเรามีสิทธิ์ระงับการใช้งานชั่วคราวหรือถาวรหากพบการละเมิด</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">🔴</span><span>หากการกระทำมีความผิดทางกฎหมาย ข้อมูลตัวตนจริงอาจถูกส่งให้ผู้มีอำนาจที่เกี่ยวข้อง</span></div>
-          <div class="privacy-warn">⚠️ การใช้โหมดนิรนามไม่ได้หมายความว่าคุณไม่สามารถถูกระบุตัวตนได้ ทีมหาเสียงสามารถดูว่าโพสนั้นเป็นของใครได้เสมอ</div>
+          <div class="privacy-warn">⚠️ การใช้โหมดนิรนามไม่ได้หมายความว่าคุณไม่สามารถถูกระบุตัวตนได้ ทีมของเราสามารถดูว่าโพสนั้นเป็นของใครได้เสมอ</div>
         </div>
         <div class="privacy-updated">ข้อกำหนดนี้บังคับใช้กับผู้ใช้งานทุกคน การใช้งานระบบถือว่ายอมรับข้อกำหนดทั้งหมด</div>
       `
@@ -2480,23 +2480,23 @@
           <div class="privacy-text" style="margin-bottom:0.8rem">เมื่อเปิดโหมดนี้ ความคิดเห็นของคุณจะปรากฏโดยไม่แสดงชื่อหรือรูปโปรไฟล์จริง</div>
           <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ทุกคนสามารถเห็นความคิดเห็นของคุณ แต่จะไม่รู้ว่าคุณเป็นใคร</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>คุณจะใช้ชื่อนิรนามและอีโมจิสุ่มแทนตัวตนจริง</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">🛡️</span><span><strong>ทีมหาเสียง (Admin)</strong> สามารถดูตัวตนจริงของผู้โพสในโหมดนิรนามได้ เพื่อป้องกันการกระทำที่ผิดกฎหมายและการไม่ยอมรับของระบบ</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🛡️</span><span><strong>ทีมของเรา (Admin)</strong> สามารถดูตัวตนจริงของผู้โพสในโหมดนิรนามได้ เพื่อป้องกันการกระทำที่ผิดกฎหมายและการไม่ยอมรับของระบบ</span></div>
           <div class="privacy-warn">⚠️ โหมดนิรนามไม่ใช่การปกปิดตัวตนจากทีมเรา เป็นเพียงการซ่อนจากนักเรียนคนอื่นเท่านั้น</div>
         </div>
         <div class="privacy-section">
           <div class="privacy-section-title">🔒 โหมดลับเฉพาะทีม <span class="privacy-badge-private">Council Only</span></div>
-          <div class="privacy-text" style="margin-bottom:0.8rem">เมื่อเปิดโหมดนี้ ความคิดเห็นของคุณจะถูกส่งตรงถึงทีมหาเสียงเท่านั้น ไม่ปรากฏในฟีดสาธารณะ</div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>เฉพาะทีมหาเสียง (Admin) เท่านั้นที่เห็นความคิดเห็นนี้</span></div>
+          <div class="privacy-text" style="margin-bottom:0.8rem">เมื่อเปิดโหมดนี้ ความคิดเห็นของคุณจะถูกส่งตรงถึงทีมของเราเท่านั้น ไม่ปรากฏในฟีดสาธารณะ</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>เฉพาะทีมของเรา (Admin) เท่านั้นที่เห็นความคิดเห็นนี้</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span><strong>คุณเอง</strong> (ผู้โพส) จะเห็นโพสของตัวเองในฟีดปกติด้วย เพื่อยืนยันว่าส่งสำเร็จ</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>นักเรียนคนอื่นจะไม่เห็นความคิดเห็นนี้เลย เหมาะสำหรับเรื่องส่วนตัวหรือเรื่องละเอียดอ่อน</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">🔍</span><span>ทีมหาเสียงจะเห็นชื่อจริงและอีเมลของผู้โพส แม้จะใช้โหมดนิรนามร่วมด้วย</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔍</span><span>ทีมของเราจะเห็นชื่อจริงและอีเมลของผู้โพส แม้จะใช้โหมดนิรนามร่วมด้วย</span></div>
         </div>
         <div class="privacy-section">
           <div class="privacy-section-title">🌐 โหมดปกติ (ไม่ติ้กอะไรเลย)</div>
           <div class="privacy-rule"><span class="privacy-rule-icon">👁️</span><span>ทุกคนเห็นความคิดเห็น รวมถึงชื่อและรูปโปรไฟล์ของคุณ</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">👍</span><span>ผู้อื่นสามารถกด "เห็นด้วย" ได้</span></div>
         </div>
-        <div class="privacy-updated">หากมีข้อสงสัย ติดต่อทีมหาเสียงได้โดยตรง หรือส่งเรื่องผ่านโหมดลับเฉพาะทีม</div>
+        <div class="privacy-updated">หากมีข้อสงสัย ติดต่อทีมของเราได้โดยตรง หรือส่งเรื่องผ่านโหมดลับเฉพาะทีม</div>
       `
     }
   };
@@ -3000,7 +3000,11 @@
     window._banCustomMs = 0;
     const comments = window._allComments || [];
     const targetComment = comments.find(c => c.uid === uid);
-    window._banTargetEmail = targetComment ? (targetComment.realEmail || '') : '';
+    // ดึง email และ photoURL จาก comment, allBans หรือ ban_history
+    const _histData = (window._allBanHistory || {})[uid] || (window._allBans || {})[uid] || {};
+    const _pickStr = (...arr) => arr.find(u => u && typeof u === 'string' && u.trim()) || '';
+    window._banTargetEmail = _pickStr(targetComment && targetComment.realEmail, _histData.email, _histData.realEmail);
+    window._banTargetPhotoURL = _pickStr(targetComment && targetComment.realPhotoURL, targetComment && targetComment.photoURL, _histData.realPhotoURL, _histData.photoURL);
     const emailDisplay = window._banTargetEmail ? `<br/><span style="font-size:0.78rem;color:rgba(255,200,100,0.8)">📧 ${window._banTargetEmail}</span>` : '';
     document.getElementById('banTargetInfo').innerHTML = `<strong>👤 ${name}</strong>${emailDisplay}`;
     document.getElementById('banReasonInput').value = '';
@@ -3435,11 +3439,11 @@
       countdownEl.classList.add('permanent');
       labelEl.textContent = '🚫 การระงับนี้เป็นแบบถาวร';
       progressWrap.style.display = 'none';
-      noteEl.innerHTML = 'หากคิดว่าเกิดข้อผิดพลาด กรุณาติดต่อทีมหาเสียงโดยตรง';
+      noteEl.innerHTML = 'หากคิดว่าเกิดข้อผิดพลาด กรุณาติดต่อทีมโดยตรง';
     } else {
       countdownEl.classList.remove('permanent');
       progressWrap.style.display = '';
-      noteEl.innerHTML = 'หากคิดว่าเกิดข้อผิดพลาด กรุณาติดต่อทีมหาเสียง<br/>Popup นี้จะปิดอัตโนมัติเมื่อหมดเวลาแบน';
+      noteEl.innerHTML = 'หากคิดว่าเกิดข้อผิดพลาด กรุณาติดต่อทีมของเรา<br/>Popup นี้จะปิดอัตโนมัติเมื่อหมดเวลาแบน';
       const totalMs = ban.until - (ban.bannedAt || (ban.until - 86400000));
       const tick = () => {
         const remaining = ban.until - Date.now();
@@ -3530,7 +3534,13 @@
     else { alert('กรุณาเลือกหรือกรอกระยะเวลาแบน'); return; }
     const targetComment = allComments.find(c => c.uid === uid);
     const targetEmail = targetComment ? (targetComment.realEmail || '') : (window._banTargetEmail || '');
-    const targetPhotoURL = targetComment ? (targetComment.realPhotoURL || targetComment.photoURL || '') : '';
+    // ดึง photoURL จากทุก source ที่เป็นไปได้
+    const _pickP = (...arr) => arr.find(u => u && typeof u === 'string' && u.trim()) || '';
+    const targetPhotoURL = _pickP(
+      targetComment && targetComment.realPhotoURL,
+      targetComment && targetComment.photoURL,
+      window._banTargetPhotoURL
+    );
     try {
       const banData = {
         uid,
@@ -4059,15 +4069,17 @@
     const c = allComments.find(x => x.id === docId);
     if (!c) return;
     const revealPhoto = document.getElementById('revealPhoto');
-    const revealPhotoEmoji = document.getElementById('revealPhotoEmoji');
     revealPhoto.innerHTML = '';
-    if (c.realPhotoURL) {
+    const _pickU = (...arr) => arr.find(u => u && typeof u === 'string' && u.trim()) || '';
+    const photoSrc = _pickU(c.realPhotoURL, c.photoURL);
+    if (photoSrc) {
       const img = document.createElement('img');
-      img.src = c.realPhotoURL;
-      img.onerror = () => { revealPhoto.innerHTML = '<span>👤</span>'; };
+      img.src = photoSrc;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
+      img.onerror = () => { revealPhoto.innerHTML = '<span style="font-size:2rem;display:flex;align-items:center;justify-content:center;height:100%">👤</span>'; };
       revealPhoto.appendChild(img);
     } else {
-      revealPhoto.innerHTML = '<span>👤</span>';
+      revealPhoto.innerHTML = '<span style="font-size:2rem;display:flex;align-items:center;justify-content:center;height:100%">👤</span>';
     }
     document.getElementById('revealName').textContent = c.realName || c.name || '-';
     document.getElementById('revealEmail').textContent = c.realEmail || '-';
@@ -4094,15 +4106,25 @@
         savedComments = snap.data().comments || [];
       }
     } catch(e) { console.error('ดึง bannedComments ไม่สำเร็จ:', e); }
-    const photoURL = (banData && banData.realPhotoURL) || (c && (c.realPhotoURL || c.photoURL)) || (savedComments[0] && savedComments[0].realPhotoURL) || '';
+    // หา photoURL จากทุก source โดยกรองค่าว่างออก
+    const _pickURL = (...candidates) => candidates.find(u => u && typeof u === 'string' && u.trim() !== '') || '';
+    const photoURL = _pickURL(
+      banData && banData.realPhotoURL,
+      banData && banData.photoURL,
+      c && c.realPhotoURL,
+      c && c.photoURL,
+      savedComments[0] && savedComments[0].realPhotoURL,
+      savedComments[0] && savedComments[0].photoURL
+    );
     revealPhoto.innerHTML = '';
     if (photoURL) {
       const img = document.createElement('img');
       img.src = photoURL;
-      img.onerror = () => { revealPhoto.innerHTML = '<span>👤</span>'; };
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
+      img.onerror = () => { revealPhoto.innerHTML = '<span style="font-size:2rem;display:flex;align-items:center;justify-content:center;height:100%">👤</span>'; };
       revealPhoto.appendChild(img);
     } else {
-      revealPhoto.innerHTML = '<span>👤</span>';
+      revealPhoto.innerHTML = '<span style="font-size:2rem;display:flex;align-items:center;justify-content:center;height:100%">👤</span>';
     }
     const realName = (banData && banData.realName) || (c && (c.realName || c.name)) || (savedComments[0] && savedComments[0].realName) || fallbackName || '-';
     const realEmail = (banData && (banData.email || banData.realEmail)) || (c && c.realEmail) || (savedComments[0] && savedComments[0].realEmail) || '-';
@@ -4446,9 +4468,9 @@
       const privateBadgeHtml = c.isPrivate ? `
         <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem">
           ${isAdmin
-            ? `<span style="background:rgba(255,215,0,0.15);color:rgba(255,215,0,0.9);border:1px solid rgba(255,215,0,0.3);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 เฉพาะทีมหาเสียงเห็น</span>`
+            ? `<span style="background:rgba(255,215,0,0.15);color:rgba(255,215,0,0.9);border:1px solid rgba(255,215,0,0.3);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 เฉพาะทีมของเราเห็น</span>`
             : isOwnerOfThisPost
-              ? `<span style="background:rgba(255,215,0,0.1);color:rgba(255,215,0,0.85);border:1px solid rgba(255,215,0,0.25);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 มีแค่คุณและทีมหาเสียงที่เห็นคอมเม้นนี้</span>`
+              ? `<span style="background:rgba(255,215,0,0.1);color:rgba(255,215,0,0.85);border:1px solid rgba(255,215,0,0.25);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 มีแค่คุณและทีมของเราที่เห็นคอมเม้นนี้</span>`
               : ''
           }
         </div>` : '';
@@ -4462,7 +4484,7 @@
             <div class="comment-meta">
               <div class="comment-author">
                 ${nameDisplay}
-                ${(c.isAdmin && !c.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">🗳️ ทีมหาเสียง</span>` : ''}
+                ${(c.isAdmin && !c.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">🗳️ ทีมของเรา</span>` : ''}
                 ${isBanView && cEmail ? `<span class="comment-level-badge" style="font-size:0.65rem">${cEmail}</span>` : ''}
                 ${c.level ? `<span class="comment-level-badge">${c.level}</span>` : ''}
                 ${c.type ? `<span class="comment-type-pill pill-${c.type}">${c.type}</span>` : ''}
