@@ -3144,7 +3144,7 @@
       _bansReady = true;
     });
   }
-  function subscribeAllBans() {
+  window.subscribeAllBans = function() {
     onSnapshot(bansCol, (snap) => {
       allBans = {};
       snap.docs.forEach(d => { allBans[d.id] = { id: d.id, ...d.data() }; });
