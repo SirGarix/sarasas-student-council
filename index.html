@@ -3177,6 +3177,11 @@
   function showBanWall(user) {
     const ban = getBanForUser(user);
     if (!ban) return;
+    // clear interval เก่าก่อนเสมอ ป้องกัน timer เก่าเขียนทับ
+    if (banWallCountdownInterval) {
+      clearInterval(banWallCountdownInterval);
+      banWallCountdownInterval = null;
+    }
     const wall = document.getElementById('banWall');
     const box = document.getElementById('banWallBox');
     const isPermanent = ban.until === -1;
