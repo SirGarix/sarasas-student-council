@@ -1279,6 +1279,7 @@
       font-size: 0.72rem; color: var(--text-muted); font-family: 'Kanit', sans-serif;
     }
     .banned-comment-item { background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.2); }
+    .history-ban-expired-item { background: rgba(100,100,120,0.05); border: 1px solid rgba(100,100,120,0.15); opacity: 0.75; }
     .private-comment-item { background: rgba(255,215,0,0.04); border: 1px solid rgba(255,215,0,0.18); }
     .banned-badge { background: rgba(192,57,43,0.10); color: #922b21; border: 1px solid rgba(192,57,43,0.28); font-size: 0.7rem; font-family: 'Kanit', sans-serif; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 20px; }
     .banned-time-badge { font-size: 0.72rem; color: #7a5800; background: rgba(180,130,0,0.10); border: 1px solid rgba(180,130,0,0.22); padding: 0.15rem 0.6rem; border-radius: 20px; font-family: 'Kanit', sans-serif; }
@@ -2167,7 +2168,8 @@
       <button class="filter-tab" onclick="setFilter('ข้อเสนอแนะ', this)">💡 ข้อเสนอแนะ</button>
       <button class="filter-tab" onclick="setFilter('ร้องเรียน', this)">🚨 ร้องเรียน</button>
       <button class="filter-tab" onclick="setFilter('ขอสิ่งอำนวยความสะดวก', this)">🙏 ขอสิ่งอำนวยความสะดวก</button>
-      <button class="filter-tab admin-only-tab" id="adminOnlyTab" style="display:none;background:rgba(192,57,43,0.15);border-color:rgba(192,57,43,0.35);color:#ff8080" onclick="setFilter('__banned__', this)">🛡️ Admin Only</button>
+      <button class="filter-tab admin-only-tab" id="adminOnlyTab" style="display:none;background:rgba(192,57,43,0.15);border-color:rgba(192,57,43,0.35);color:#ff8080" onclick="setFilter('__banned__', this)">🚫 รายชื่อคนถูกระงับ</button>
+      <button class="filter-tab admin-only-tab" id="adminHistoryTab" style="display:none;background:rgba(120,80,200,0.15);border-color:rgba(120,80,200,0.35);color:#c084fc" onclick="setFilter('__ban_history__', this)">📋 ประวัติรายชื่อคนโดนแบน</button>
       <button class="filter-tab" id="councilOnlyTab" style="display:none;background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.25);color:rgba(255,215,0,0.85)" onclick="setFilter('__council__', this)">🔒 เฉพาะทีมเรา</button>
     </div>
     <div style="margin-bottom:1.5rem">
@@ -2310,21 +2312,11 @@
     <div class="ban-target-info" id="reduceTargetInfo">กำลังโหลด...</div>
     <!-- โหมดถาวร: เลือกเหลือกี่วัน -->
     <div id="reducePermanentSection" style="display:none">
-      <div class="ban-duration-label">📅 เปลี่ยนเป็นเหลือกี่วัน</div>
-      <div class="ban-duration-grid">
-        <button class="ban-duration-btn active" onclick="selectReduceSetDays(this,1)">เหลือ 1 วัน</button>
-        <button class="ban-duration-btn" onclick="selectReduceSetDays(this,3)">เหลือ 3 วัน</button>
-        <button class="ban-duration-btn" onclick="selectReduceSetDays(this,7)">เหลือ 7 วัน</button>
-        <button class="ban-duration-btn" onclick="selectReduceSetDays(this,14)">เหลือ 14 วัน</button>
-        <button class="ban-duration-btn" onclick="selectReduceSetDays(this,30)">เหลือ 30 วัน</button>
+      <div style="background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.25);border-radius:10px;padding:0.8rem 1rem;font-size:0.85rem;color:#c0392b;font-family:'Kanit',sans-serif;text-align:center">
+        ⛔ ผู้ใช้นี้ถูกแบนถาวร ไม่สามารถลดเวลาได้<br/>
+        <span style="font-size:0.78rem;color:rgba(192,57,43,0.7)">กรุณาใช้ฟังก์ชัน "ตั้งเวลาแบนใหม่" แทน</span>
       </div>
-      <div class="ban-duration-label" style="margin-top:0.5rem">⌨️ หรือกรอกเวลาเอง (จะใช้แทนปุ่มด้านบน)</div>
-      <div class="ban-custom-time-grid">
-        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reducePermCustomDays" min="0" placeholder="0" oninput="onReducePermCustomInput()"/><label class="ban-custom-label">วัน</label></div>
-        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reducePermCustomHours" min="0" max="23" placeholder="0" oninput="onReducePermCustomInput()"/><label class="ban-custom-label">ชั่วโมง</label></div>
-        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reducePermCustomMins" min="0" max="59" placeholder="0" oninput="onReducePermCustomInput()"/><label class="ban-custom-label">นาที</label></div>
-        <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="reducePermCustomSecs" min="0" max="59" placeholder="0" oninput="onReducePermCustomInput()"/><label class="ban-custom-label">วินาที</label></div>
-      </div>
+      <button class="ban-confirm-btn" style="background:linear-gradient(135deg,#7c3aed,#a855f7);margin-top:0.8rem" onclick="closeReduceModal();openResetBanModal(window._reduceTargetUid, window._reduceTargetName)">🔄 ไปยัง ตั้งเวลาแบนใหม่</button>
     </div>
     <!-- โหมดมีเวลา: ลดออก -->
     <div id="reduceNormalSection">
@@ -2344,6 +2336,33 @@
       </div>
     </div>
     <button class="ban-confirm-btn reduce-confirm-btn" onclick="confirmReduce()">⏬ ยืนยันลดเวลา</button>
+  </div>
+</div>
+<!-- Modal: ตั้งเวลาแบนใหม่ -->
+<div class="ban-overlay" id="resetBanModal" onclick="closeResetBanOutside(event)">
+  <div class="ban-box" id="resetBanBox" style="border-color:rgba(168,85,247,0.5);box-shadow:0 8px 40px rgba(168,85,247,0.25),0 2px 8px rgba(0,0,0,0.15)">
+    <button class="ban-close" onclick="closeResetBanModal()">✕</button>
+    <div class="ban-title" style="background:linear-gradient(135deg,#7c3aed,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">🔄 ตั้งเวลาแบนใหม่</div>
+    <div class="ban-target-info" id="resetBanTargetInfo">กำลังโหลด...</div>
+    <div style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);border-radius:10px;padding:0.7rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:rgba(130,60,220,0.9);font-family:'Kanit',sans-serif">
+      ⚠️ เวลาใหม่จะเริ่มนับจากตอนนี้ทันที ไม่สนใจเวลาเดิม
+    </div>
+    <div class="ban-duration-label">⏱ ระยะเวลาใหม่</div>
+    <div class="ban-duration-grid">
+      <button class="ban-duration-btn active" onclick="selectResetBanDuration(this,1)">1 วัน</button>
+      <button class="ban-duration-btn" onclick="selectResetBanDuration(this,3)">3 วัน</button>
+      <button class="ban-duration-btn" onclick="selectResetBanDuration(this,7)">7 วัน</button>
+      <button class="ban-duration-btn" onclick="selectResetBanDuration(this,14)">14 วัน</button>
+      <button class="ban-duration-btn" onclick="selectResetBanDuration(this,30)">30 วัน</button>
+    </div>
+    <div class="ban-duration-label" style="margin-top:0.5rem">⌨️ กรอกเวลาเอง</div>
+    <div class="ban-custom-time-grid">
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="resetBanCustomDays" min="0" placeholder="0" oninput="onResetBanCustomInput()"/><label class="ban-custom-label">วัน</label></div>
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="resetBanCustomHours" min="0" max="23" placeholder="0" oninput="onResetBanCustomInput()"/><label class="ban-custom-label">ชั่วโมง</label></div>
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="resetBanCustomMins" min="0" max="59" placeholder="0" oninput="onResetBanCustomInput()"/><label class="ban-custom-label">นาที</label></div>
+      <div class="ban-custom-time-item"><input type="number" class="ban-custom-input" id="resetBanCustomSecs" min="0" max="59" placeholder="0" oninput="onResetBanCustomInput()"/><label class="ban-custom-label">วินาที</label></div>
+    </div>
+    <button class="ban-confirm-btn" style="background:linear-gradient(135deg,#7c3aed,#a855f7);margin-top:1.2rem" onclick="confirmResetBan()">🔄 ยืนยันตั้งเวลาใหม่</button>
   </div>
 </div>
 <div id="banWall">
@@ -3025,21 +3044,16 @@
   window.openReduceModal = function(uid, name, currentExpiry) {
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
     window._reduceTargetUid = uid;
+    window._reduceTargetName = name;
     window._reduceDurationDays = 1;
     window._reduceCustomMs = 0;
     const isPermanent = currentExpiry === -1;
     window._reduceIsPermanent = isPermanent;
     const expiryText = isPermanent ? 'ถาวร' : (currentExpiry ? new Date(currentExpiry).toLocaleDateString('th-TH') : 'ไม่ทราบ');
     document.getElementById('reduceTargetInfo').innerHTML = `<strong>👤 ${name}</strong><br/><span style="font-size:0.78rem;color:rgba(100,255,180,0.85)">หมดอายุปัจจุบัน: ${expiryText}</span>`;
-    // แสดง section ที่ถูกต้อง
     document.getElementById('reducePermanentSection').style.display = isPermanent ? '' : 'none';
     document.getElementById('reduceNormalSection').style.display = isPermanent ? 'none' : '';
-    if (isPermanent) {
-      window._reduceSetDays = 1;
-      window._reducePermCustomMs = 0;
-      document.querySelectorAll('#reducePermanentSection .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
-      ['Days','Hours','Mins','Secs'].forEach(f => { const el = document.getElementById('reducePermCustom'+f); if(el) el.value = ''; });
-    } else {
+    if (!isPermanent) {
       document.querySelectorAll('#reduceNormalSection .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
       ['Days','Hours','Mins','Secs'].forEach(f => { const el = document.getElementById('reduceCustom'+f); if(el) el.value = ''; });
     }
@@ -3047,6 +3061,59 @@
   };
   window.closeReduceModal = function() { document.getElementById('reduceModal').classList.remove('open'); };
   window.closeReduceOutside = function(e) { if (e.target === document.getElementById('reduceModal')) window.closeReduceModal(); };
+  // ── ตั้งเวลาแบนใหม่ Modal ──
+  window._resetBanTargetUid = null;
+  window._resetBanTargetName = '';
+  window._resetBanDurationDays = 1;
+  window._resetBanCustomMs = 0;
+  window.openResetBanModal = function(uid, name) {
+    document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
+    window._resetBanTargetUid = uid;
+    window._resetBanTargetName = name || uid;
+    window._resetBanDurationDays = 1;
+    window._resetBanCustomMs = 0;
+    const ban = (window._allBans || allBans)[uid];
+    const expiryText = ban ? (ban.until === -1 ? 'ถาวร' : new Date(ban.until).toLocaleDateString('th-TH')) : 'ไม่ทราบ';
+    document.getElementById('resetBanTargetInfo').innerHTML = `<strong>👤 ${name}</strong><br/><span style="font-size:0.78rem;color:rgba(192,57,43,0.8)">เวลาแบนปัจจุบัน: ${expiryText}</span>`;
+    document.querySelectorAll('#resetBanModal .ban-duration-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    ['Days','Hours','Mins','Secs'].forEach(f => { const el = document.getElementById('resetBanCustom'+f); if(el) el.value = ''; });
+    document.getElementById('resetBanModal').classList.add('open');
+  };
+  window.closeResetBanModal = function() { document.getElementById('resetBanModal').classList.remove('open'); };
+  window.closeResetBanOutside = function(e) { if (e.target === document.getElementById('resetBanModal')) window.closeResetBanModal(); };
+  window.selectResetBanDuration = function(el, days) {
+    window._resetBanDurationDays = days;
+    window._resetBanCustomMs = 0;
+    ['Days','Hours','Mins','Secs'].forEach(f => { const inp = document.getElementById('resetBanCustom'+f); if(inp) inp.value = ''; });
+    document.querySelectorAll('#resetBanModal .ban-duration-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  };
+  window.onResetBanCustomInput = function() {
+    const d = parseInt(document.getElementById('resetBanCustomDays').value) || 0;
+    const h = parseInt(document.getElementById('resetBanCustomHours').value) || 0;
+    const m = parseInt(document.getElementById('resetBanCustomMins').value) || 0;
+    const s = parseInt(document.getElementById('resetBanCustomSecs').value) || 0;
+    const ms = (d*86400 + h*3600 + m*60 + s) * 1000;
+    window._resetBanCustomMs = ms;
+    if (ms > 0) {
+      document.querySelectorAll('#resetBanModal .ban-duration-btn').forEach(b => b.classList.remove('active'));
+      window._resetBanDurationDays = 0;
+    }
+  };
+  window.confirmResetBan = async function() {
+    const uid = window._resetBanTargetUid;
+    if (!uid) return;
+    const customMs = window._resetBanCustomMs || 0;
+    const days = window._resetBanDurationDays;
+    let newUntil;
+    if (customMs > 0) { newUntil = Date.now() + customMs; }
+    else if (days > 0) { newUntil = Date.now() + days * 86400000; }
+    else { alert('กรุณาเลือกหรือกรอกระยะเวลา'); return; }
+    try {
+      await updateDoc(doc(db, 'bans', uid), { until: newUntil, bannedAt: Date.now() });
+      window.closeResetBanModal();
+    } catch(e) { alert('เกิดข้อผิดพลาด: ' + e.message); console.error(e); }
+  };
   window.selectReduceDuration = function(el, days) {
     window._reduceDurationDays = days;
     window._reduceCustomMs = 0;
@@ -4158,6 +4225,23 @@
           filtered.push({ id: '__ban__' + uid, uid, realEmail: ban.email || ban.realEmail || '', name: ban.realName || uid, text: '', avatar: '🚫', isBanOnly: true });
         }
       });
+    } else if (filterType === '__ban_history__' && isAdmin) {
+      const bans = window._allBans || allBans;
+      const allBannedUids = Object.keys(bans);
+      const seen = new Set();
+      filtered = [];
+      for (const c of comments) {
+        if (allBannedUids.includes(c.uid) && !seen.has(c.uid)) {
+          seen.add(c.uid);
+          filtered.push(c);
+        }
+      }
+      allBannedUids.forEach(uid => {
+        if (!seen.has(uid)) {
+          const ban = bans[uid];
+          filtered.push({ id: '__ban__' + uid, uid, realEmail: ban.email || ban.realEmail || '', name: ban.realName || uid, text: '', avatar: '📋', isBanOnly: true, isHistoryOnly: true });
+        }
+      });
     } else if (filterType === '__council__' && isAdmin) {
       filtered = comments.filter(c => c.isPrivate);
     } else if (filterType === 'ทั้งหมด') {
@@ -4173,7 +4257,7 @@
     if (gradeFilter) {
       filtered = filtered.filter(c => c.level === gradeFilter);
     }
-    if (filterType !== '__banned__' && filterType !== '__council__') {
+    if (filterType !== '__banned__' && filterType !== '__council__' && filterType !== '__ban_history__') {
       filtered = [...filtered].sort((a, b) => {
         const likesDiff = (b.likes || 0) - (a.likes || 0);
         if (likesDiff !== 0) return likesDiff;
@@ -4182,7 +4266,7 @@
     }
     document.getElementById('countBadge').textContent = filtered.length;
     if (filtered.length === 0) {
-      list.innerHTML = `<div class="empty-state"><div class="icon">${filterType === '__banned__' ? '✅' : filterType === '__council__' ? '🔒' : '🌟'}</div><p>${filterType === '__banned__' ? 'ยังไม่มีผู้ถูกระงับ' : filterType === '__council__' ? 'ยังไม่มีข้อความเฉพาะทีม' : 'ยังไม่มีความคิดเห็นในหมวดนี้<br/>เป็นคนแรกที่บอกเราได้เลย!'}</p></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="icon">${filterType === '__banned__' ? '✅' : filterType === '__ban_history__' ? '📋' : filterType === '__council__' ? '🔒' : '🌟'}</div><p>${filterType === '__banned__' ? 'ยังไม่มีผู้ถูกระงับ' : filterType === '__ban_history__' ? 'ยังไม่มีประวัติการแบน' : filterType === '__council__' ? 'ยังไม่มีข้อความเฉพาะทีม' : 'ยังไม่มีความคิดเห็นในหมวดนี้<br/>เป็นคนแรกที่บอกเราได้เลย!'}</p></div>`;
       return;
     }
     list.innerHTML = filtered.map(c => {
@@ -4193,7 +4277,7 @@
       const banData = _bans[c.uid];
       const userBanned = isAdmin && banData && (banData.until === -1 || banData.until > Date.now());
       const timeLeft = getBanTimeLeft(c.uid);
-      const isBanView = filterType === '__banned__';
+      const isBanView = filterType === '__banned__' || filterType === '__ban_history__';
       const avatarHtml = (c.photoURL && !c.isAnon)
         ? `<img src="${c.photoURL}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block" onerror="this.style.display='none';this.nextSibling.style.display='flex'" /><span style="display:none;font-size:1.3rem;align-items:center;justify-content:center;width:100%;height:100%">${c.avatar || '😊'}</span>`
         : `<span style="font-size:1.3rem;display:flex;align-items:center;justify-content:center;width:100%;height:100%">${c.avatar || '😊'}</span>`;
@@ -4205,6 +4289,7 @@
         const banBtn = userBanned
           ? `<div class="dropdown-item success" onclick="unbanUser('${safeUid}')">✅ ปลดแบน</div>
              <div class="dropdown-item warn" onclick="openExtendModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏰ เพิ่มเวลาแบน</div>
+             <div class="dropdown-item" style="color:#c084fc" onclick="openResetBanModal('${safeUid}','${safeName}')">🔄 ตั้งเวลาแบนใหม่</div>
              <div class="dropdown-item" style="color:#55efc4" onclick="openReduceModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏬ ลดเวลาแบน</div>`
           : `<div class="dropdown-item warn" onclick="openBanModal('${safeUid}','${safeName}')">🚫 ระงับคอมเม้น</div>`;
         dropdownHtml = `
@@ -4224,6 +4309,7 @@
               <div class="dropdown-item" onclick="revealIdentityByUid('${safeUid}','${safeName}')">🔍 ดูตัวจริง</div>
               <div class="dropdown-item success" onclick="unbanUser('${safeUid}')">✅ ปลดแบน</div>
               <div class="dropdown-item warn" onclick="openExtendModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏰ เพิ่มเวลาแบน</div>
+              <div class="dropdown-item" style="color:#c084fc" onclick="openResetBanModal('${safeUid}','${safeName}')">🔄 ตั้งเวลาแบนใหม่</div>
               <div class="dropdown-item" style="color:#55efc4" onclick="openReduceModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏬ ลดเวลาแบน</div>
             </div>
           </div>`;
@@ -4236,9 +4322,14 @@
             </div>
           </div>`;
       }
+      const isHistoryView = filterType === '__ban_history__';
+      const isExpiredBan = isHistoryView && banData && banData.until !== -1 && banData.until <= Date.now();
       const bannedBadgesHtml = (userBanned || isBanView) ? `
         <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;flex-wrap:wrap">
-          <span class="banned-badge">🚫 ถูกระงับ</span>
+          ${isExpiredBan
+            ? `<span class="banned-badge" style="background:rgba(100,100,100,0.12);color:#777;border-color:rgba(100,100,100,0.25)">✅ เคยถูกระงับ (หมดอายุแล้ว)</span>`
+            : `<span class="banned-badge">🚫 ถูกระงับ</span>`
+          }
           ${timeLeft ? `<span class="banned-time-badge">${timeLeft}</span>` : ''}
           ${banData && banData.reason && banData.reason !== 'ไม่ระบุ' ? `<span class="banned-reason">สาเหตุ: ${banData.reason}</span>` : ''}
           ${banData && banData.bannedAt ? `<span style="font-size:0.72rem;color:rgba(30,30,30,0.4)">แบนเมื่อ: ${new Date(banData.bannedAt).toLocaleDateString('th-TH')}</span>` : ''}
@@ -4255,7 +4346,7 @@
         </div>` : '';
       const nameDisplay = isBanView ? (c.realName || c.name) : c.name;
       return `
-        <div class="comment-item ${(userBanned || isBanView) ? 'banned-comment-item' : ''}${c.isPrivate ? ' private-comment-item' : ''}">
+        <div class="comment-item ${isHistoryView && isExpiredBan ? 'history-ban-expired-item' : (userBanned || isBanView) ? 'banned-comment-item' : ''}${c.isPrivate ? ' private-comment-item' : ''}">
           ${bannedBadgesHtml}
           ${privateBadgeHtml}
           <div class="comment-header">
