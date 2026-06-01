@@ -1354,12 +1354,22 @@
       text-align: center; padding: 1rem 0 2rem;
       display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;
     }
-      font-size: 0.78rem; color: var(--text-faint);
-      cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
-      transition: color 0.2s; background: none; border: none;
+      font-size: 0.78rem; color: var(--crimson);
+      cursor: pointer; text-decoration: none;
+      transition: all 0.2s;
+      background: rgba(192,57,43,0.06);
+      border: 1.5px solid rgba(192,57,43,0.35);
+      border-radius: 50px;
+      padding: 0.35rem 0.9rem;
       font-family: 'Sarabun', sans-serif;
+      outline: none;
+      display: inline-flex; align-items: center; gap: 0.3rem;
     }
-    .footer-link:hover { color: var(--text-muted); }
+    .footer-link:hover {
+      background: rgba(192,57,43,0.12);
+      border-color: rgba(192,57,43,0.65);
+      color: var(--crimson-dark);
+    }
     #banWall {
       position: fixed; inset: 0; z-index: 99999;
       background: rgba(0,0,0,0.97);
