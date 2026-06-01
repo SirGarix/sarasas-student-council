@@ -2410,24 +2410,24 @@
 <script>
   const SEAL_IMAGE_URL = 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/icon.webp';
 
-  // รูปสไลด์ผู้สมัคร — ใส่ URL รูปภาพแต่ละสไลด์ตามลำดับ
+  // รูปสไลด์ผู้สมัคร — instagram: '' = ไม่มีลิงก์, ใส่ username เพื่อเปิด IG
   const MEMBER_SLIDES = [
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/1.webp',  alt: 'ทีมผู้สมัคร SWSK PROMAX' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/2.webp',  alt: 'Member 1 - สุภัทรตรา จิรโชติเมธากุล' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/3.webp',   alt: 'Member 2 - พิมพ์สิริ ศิริวงษ์ศิลป์' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/4.webp',    alt: 'Member 3 - ชาหิส์ดา เชาว์ดารี' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/5.webp', alt: 'Member 4 - ณิชานันท์ พิริยะสันติ' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_arin.webp',   alt: 'Member 5 - อริญชยา อินทะนะ' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_poo.webp',    alt: 'Member 6 - ภูชนะ จันทร์เลื่อน' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_jel.webp',    alt: 'Member 7 - อนุพงษ์ มณีสอดแสง' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_songkran.webp', alt: 'Member 8 - บารเมษ์ สงคราม' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_singto.webp', alt: 'Member 9 - สุรเสกข์ ศิริศิลป์' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_pep.webp',    alt: 'Member 10 - กีรติ ศรีพา' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_ing.webp',    alt: 'Member 11 - เพชรดา จันทะวงษา' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_im.webp',     alt: 'Member 12 - มนัสนันท์ ศรียศ' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_itim.webp',   alt: 'Member 13 - กัญญาณัฐ สุ่มมาตย์' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_sky.webp',    alt: 'Member 14 - สุทธวีร์ ราชรักษา' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_jame.webp',   alt: 'Member 15 - ปกรณ์เกียรติ มณีสอดแสง' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/1.webp',  alt: 'ทีมผู้สมัคร SWSK PROMAX',          instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/2.webp',  alt: 'สุภัทรตรา จิรโชติเมธากุล (ดรีม)',  instagram: 'imyourdreax_' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/3.webp',  alt: 'พิมพ์สิริ ศิริวงษ์ศิลป์ (นานะ)',   instagram: 'jumeowlod' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/4.webp',  alt: 'ชาหิส์ดา เชาว์ดารี (เรนโบ)',        instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/5.webp',  alt: 'ณิชานันท์ พิริยะสันติ (สายลม)',    instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_arin.webp',    alt: 'อริญชยา อินทะนะ (อลิน)',            instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_poo.webp',     alt: 'ภูชนะ จันทร์เลื่อน (หมีภู)',        instagram: 'junr_xn' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_jel.webp',     alt: 'อนุพงษ์ มณีสอดแสง (เจล)',           instagram: 'anupongmaneesodsaeng' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_songkran.webp',alt: 'บารเมษ์ สงคราม (สงกราน)',           instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_singto.webp',  alt: 'สุรเสกข์ ศิริศิลป์ (สิงโต)',        instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_pep.webp',     alt: 'กีรติ ศรีพา (เป๊ป)',                instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_ing.webp',     alt: 'เพชรดา จันทะวงษา (อุ๋งอิ๋ง)',       instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_im.webp',      alt: 'มนัสนันท์ ศรียศ (อิม)',             instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_itim.webp',    alt: 'กัญญาณัฐ สุ่มมาตย์ (ไอติม)',        instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_sky.webp',     alt: 'สุทธวีร์ ราชรักษา (สกาย)',          instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_jame.webp',    alt: 'ปกรณ์เกียรติ มณีสอดแสง (เจมส์)',   instagram: '' },
   ];
 
   (function renderMemberSlides() {
@@ -2435,7 +2435,8 @@
     if (!container) return;
     MEMBER_SLIDES.forEach(function(slide, i) {
       const wrap = document.createElement('div');
-      wrap.style.cssText = 'width:100%;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.13);background:#1a0000;opacity:0;transform:translateY(16px);transition:opacity 0.4s ease,transform 0.4s ease;';
+      wrap.style.cssText = 'width:100%;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.13);background:#1a0000;opacity:0;transform:translateY(16px);transition:opacity 0.4s ease,transform 0.4s ease;position:relative;';
+
       const img = document.createElement('img');
       img.src = slide.url;
       img.alt = slide.alt;
@@ -2448,14 +2449,34 @@
           wrap.style.transform = 'translateY(0)';
         }, i * 60);
       };
-      wrap.appendChild(img);
+
+      if (slide.instagram) {
+        // ห่อรูปด้วย <a> เปิด IG ใน tab ใหม่
+        const link = document.createElement('a');
+        link.href = 'https://instagram.com/' + slide.instagram;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.style.cssText = 'display:block;position:relative;-webkit-tap-highlight-color:transparent;';
+        link.title = 'ดูโปรไฟล์ Instagram @' + slide.instagram;
+        link.appendChild(img);
+
+        // ป้าย IG ลอยมุมขวาล่าง
+        const badge = document.createElement('div');
+        badge.style.cssText = 'position:absolute;bottom:14px;right:14px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.18);border-radius:50px;padding:6px 14px 6px 10px;color:#fff;font-family:Kanit,sans-serif;font-size:0.82rem;font-weight:600;pointer-events:none;';
+        badge.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span>@' + slide.instagram + '</span>';
+        link.appendChild(badge);
+        wrap.appendChild(link);
+      } else {
+        wrap.appendChild(img);
+      }
+
       container.appendChild(wrap);
     });
   })();
 
   // รูปสไลด์นโยบาย — ใส่ URL รูปภาพแต่ละสไลด์ตามลำดับ
   const POLICY_SLIDES = [
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_cover.webp',   alt: 'นโยบาย SWSK PROMAX' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/1.webp',   alt: 'นโยบาย SWSK PROMAX' },
     { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_01.webp',      alt: 'นโยบายที่ 1' },
     { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_02.webp',      alt: 'นโยบายที่ 2' },
     { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_03.webp',      alt: 'นโยบายที่ 3' },
