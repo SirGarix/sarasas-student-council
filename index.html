@@ -2021,23 +2021,37 @@
     </a>
   </div>
   <div class="lobby-buttons">
-    <a class="btn-lobby btn-primary" href="https://canva.link/5njusz1oh2d3kr5" target="_blank" rel="noopener" style="justify-content:center">
+    <button class="btn-lobby btn-primary" onclick="goTo('members')" style="justify-content:center">
       ทีมผู้สมัครของเรา
-    </a>
+    </button>
     <button class="btn-lobby btn-primary" onclick="goTo('comments')" style="justify-content:center">
       ร่วมแสดงความคิดเห็น
     </button>
-    <a class="btn-lobby btn-primary" href="ใส่ลิงก์หน้านโยบายที่นี่" target="_blank" rel="noopener" style="justify-content:center">
+    <button class="btn-lobby btn-primary" onclick="goTo('policy')" style="justify-content:center">
       นโยบายของเรา
-    </a>
+    </button>
   </div>
+</div>
+<div id="members" class="page">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
+    <div class="nav-title">ทีมผู้สมัคร SWSK PROMAX</div>
+  </nav>
+  <div id="memberSlidesContainer" style="max-width:1000px;margin:0 auto;padding:1.5rem 1rem 3rem;display:flex;flex-direction:column;gap:1.2rem;"></div>
+</div>
+<div id="policy" class="page">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
+    <div class="nav-title">นโยบายของเรา SWSK PROMAX</div>
+  </nav>
+  <div id="policySlidesContainer" style="max-width:1000px;margin:0 auto;padding:1.5rem 1rem 3rem;display:flex;flex-direction:column;gap:1.2rem;"></div>
 </div>
 <div id="comments" class="page">
   <nav class="top-nav">
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
     <div class="nav-breadcrumb"><span>หน้าหลัก</span> › <strong>ความคิดเห็น</strong></div>
     <div class="nav-right-actions">
-      <a class="nav-action-btn" href="https://canva.link/5njusz1oh2d3kr5" target="_blank" rel="noopener" style="text-decoration:none">ทีมเรา</a>
+      <button class="nav-action-btn" onclick="goTo('members')" style="background:none;border:none;cursor:pointer;font-family:Kanit,sans-serif;font-size:0.9rem;color:#c0392b;padding:0.4rem 0.9rem;border-radius:20px;background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.22)">ทีมเรา</button>
     </div>
   </nav>
   <div class="comments-hero">
@@ -2395,6 +2409,82 @@
 </script>
 <script>
   const SEAL_IMAGE_URL = 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/icon.webp';
+
+  // รูปสไลด์ผู้สมัคร — ใส่ URL รูปภาพแต่ละสไลด์ตามลำดับ
+  const MEMBER_SLIDES = [
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/1.webp',  alt: 'ทีมผู้สมัคร SWSK PROMAX' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/2.webp',  alt: 'Member 1 - สุภัทรตรา จิรโชติเมธากุล' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/3.webp',   alt: 'Member 2 - พิมพ์สิริ ศิริวงษ์ศิลป์' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/4.webp',    alt: 'Member 3 - ชาหิส์ดา เชาว์ดารี' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/5.webp', alt: 'Member 4 - ณิชานันท์ พิริยะสันติ' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_arin.webp',   alt: 'Member 5 - อริญชยา อินทะนะ' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_poo.webp',    alt: 'Member 6 - ภูชนะ จันทร์เลื่อน' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_jel.webp',    alt: 'Member 7 - อนุพงษ์ มณีสอดแสง' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_songkran.webp', alt: 'Member 8 - บารเมษ์ สงคราม' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_singto.webp', alt: 'Member 9 - สุรเสกข์ ศิริศิลป์' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_pep.webp',    alt: 'Member 10 - กีรติ ศรีพา' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_ing.webp',    alt: 'Member 11 - เพชรดา จันทะวงษา' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_im.webp',     alt: 'Member 12 - มนัสนันท์ ศรียศ' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_itim.webp',   alt: 'Member 13 - กัญญาณัฐ สุ่มมาตย์' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_sky.webp',    alt: 'Member 14 - สุทธวีร์ ราชรักษา' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_jame.webp',   alt: 'Member 15 - ปกรณ์เกียรติ มณีสอดแสง' },
+  ];
+
+  (function renderMemberSlides() {
+    const container = document.getElementById('memberSlidesContainer');
+    if (!container) return;
+    MEMBER_SLIDES.forEach(function(slide, i) {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'width:100%;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.13);background:#1a0000;opacity:0;transform:translateY(16px);transition:opacity 0.4s ease,transform 0.4s ease;';
+      const img = document.createElement('img');
+      img.src = slide.url;
+      img.alt = slide.alt;
+      img.loading = 'lazy';
+      img.style.cssText = 'width:100%;height:auto;display:block;';
+      img.onerror = function() { wrap.style.display = 'none'; };
+      img.onload = function() {
+        setTimeout(function() {
+          wrap.style.opacity = '1';
+          wrap.style.transform = 'translateY(0)';
+        }, i * 60);
+      };
+      wrap.appendChild(img);
+      container.appendChild(wrap);
+    });
+  })();
+
+  // รูปสไลด์นโยบาย — ใส่ URL รูปภาพแต่ละสไลด์ตามลำดับ
+  const POLICY_SLIDES = [
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_cover.webp',   alt: 'นโยบาย SWSK PROMAX' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_01.webp',      alt: 'นโยบายที่ 1' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_02.webp',      alt: 'นโยบายที่ 2' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_03.webp',      alt: 'นโยบายที่ 3' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_04.webp',      alt: 'นโยบายที่ 4' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_05.webp',      alt: 'นโยบายที่ 5' },
+  ];
+
+  (function renderPolicySlides() {
+    const container = document.getElementById('policySlidesContainer');
+    if (!container) return;
+    POLICY_SLIDES.forEach(function(slide, i) {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'width:100%;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.13);background:#1a0000;opacity:0;transform:translateY(16px);transition:opacity 0.4s ease,transform 0.4s ease;';
+      const img = document.createElement('img');
+      img.src = slide.url;
+      img.alt = slide.alt;
+      img.loading = 'lazy';
+      img.style.cssText = 'width:100%;height:auto;display:block;';
+      img.onerror = function() { wrap.style.display = 'none'; };
+      img.onload = function() {
+        setTimeout(function() {
+          wrap.style.opacity = '1';
+          wrap.style.transform = 'translateY(0)';
+        }, i * 60);
+      };
+      wrap.appendChild(img);
+      container.appendChild(wrap);
+    });
+  })();
   function lockPageScroll() {}
   function unlockPageScroll() {}
   window.lockPageScroll = lockPageScroll;
