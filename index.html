@@ -151,7 +151,7 @@
     }
     .lobby-buttons {
       display: flex; gap: 1.5rem;
-      flex-wrap: wrap; justify-content: center;
+      flex-wrap: wrap; justify-content: center; align-items: center;
       opacity: 0;
       animation: fadeUp 0.8s forwards 1.05s;
     }
@@ -162,7 +162,7 @@
       font-size: 1rem; font-weight: 600;
       cursor: pointer; border: none;
       transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      display: flex; align-items: center; gap: 0.6rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
       text-decoration: none;
       position: relative; overflow: hidden;
       will-change: transform;
@@ -259,6 +259,16 @@
       border-color: rgba(100,160,255,0.8);
       box-shadow: 0 6px 24px rgba(24,119,242,0.35);
       color: #a8ccff;
+    }
+    .social-tt {
+      background: linear-gradient(135deg, rgba(105,201,208,0.2), rgba(238,29,82,0.15));
+      border-color: rgba(105,201,208,0.55);
+      color: #69C9D0;
+    }
+    .social-tt:hover {
+      border-color: rgba(105,201,208,0.85);
+      box-shadow: 0 6px 24px rgba(105,201,208,0.3), 0 0 0 1px rgba(238,29,82,0.15);
+      color: #8fe8ed;
     }
     .social-icon {
       width: 20px; height: 20px;
@@ -981,17 +991,23 @@
       border: 1px solid transparent;
     }
     .support-channel-link.ig {
-      background: rgba(225,48,108,0.1);
-      color: #ffadc7;
-      border-color: rgba(225,48,108,0.2);
+      background: linear-gradient(135deg, rgba(131,58,180,0.22), rgba(252,176,69,0.15));
+      color: #e090f0;
+      border-color: rgba(200,100,200,0.45);
     }
-    .support-channel-link.ig:hover { background: rgba(225,48,108,0.2); border-color: rgba(225,48,108,0.4); transform: translateX(4px); }
+    .support-channel-link.ig:hover { background: linear-gradient(135deg, rgba(131,58,180,0.32), rgba(252,176,69,0.22)); border-color: rgba(220,130,255,0.8); transform: translateX(4px); box-shadow: 0 4px 18px rgba(180,80,220,0.3); }
     .support-channel-link.fb {
-      background: rgba(24,119,242,0.10);
-      color: #1565c0;
-      border-color: rgba(24,119,242,0.25);
+      background: linear-gradient(135deg, rgba(24,119,242,0.22), rgba(66,103,178,0.15));
+      color: #80b0ff;
+      border-color: rgba(80,130,240,0.45);
     }
-    .support-channel-link.fb:hover { background: rgba(24,119,242,0.18); border-color: rgba(24,119,242,0.45); transform: translateX(4px); }
+    .support-channel-link.fb:hover { background: linear-gradient(135deg, rgba(24,119,242,0.32), rgba(66,103,178,0.22)); border-color: rgba(100,160,255,0.8); transform: translateX(4px); box-shadow: 0 4px 18px rgba(24,119,242,0.3); }
+    .support-channel-link.tt {
+      background: linear-gradient(135deg, rgba(105,201,208,0.18), rgba(238,29,82,0.13));
+      color: #69C9D0;
+      border-color: rgba(105,201,208,0.52);
+    }
+    .support-channel-link.tt:hover { background: linear-gradient(135deg, rgba(105,201,208,0.26), rgba(238,29,82,0.18)); border-color: rgba(105,201,208,0.85); transform: translateX(4px); box-shadow: 0 4px 18px rgba(105,201,208,0.28); }
     .support-channel-link.no-social {
       background: rgba(0,0,0,0.03);
       color: rgba(30,30,30,0.3);
@@ -1002,11 +1018,21 @@
       width: 34px; height: 34px; border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       font-size: 1rem; flex-shrink: 0;
+      background: rgba(255,255,255,0.08);
     }
     .support-channel-icon.ig-icon {
-      background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+      background: linear-gradient(135deg, rgba(131,58,180,0.25), rgba(252,176,69,0.18));
+      color: #e090f0;
     }
-    .support-channel-icon.fb-icon { background: #1877f2; color: white; font-weight: 900; }
+    .support-channel-icon.fb-icon {
+      background: linear-gradient(135deg, rgba(24,119,242,0.25), rgba(66,103,178,0.18));
+      color: #80b0ff;
+    }
+    .support-channel-link.tt { }
+    .support-channel-icon.tt-icon {
+      background: linear-gradient(135deg, rgba(105,201,208,0.2), rgba(238,29,82,0.15));
+      color: #69C9D0;
+    }
     .support-note {
       font-size: 0.75rem; text-align: center;
       color: var(--text-faint); font-family: 'Sarabun', sans-serif;
@@ -1563,6 +1589,7 @@
       max-width: 800px;
       margin: 0 auto;
       padding: 2.5rem 1.5rem 4rem;
+      width: 100%;
     }
     .policy-card {
       position: relative;
@@ -1972,7 +1999,7 @@
         <span class="social-handle">ของพรรคเรา</span>
       </div>
     </a>
-    <a href="https://www.facebook.com/" target="_blank" class="social-link social-fb">
+    <a href="https://www.facebook.com/@Pak.swskpromax" target="_blank" class="social-link social-fb">
       <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -1981,273 +2008,28 @@
         <span class="social-handle">ของพรรคเรา</span>
       </div>
     </a>
+    <a href="https://www.tiktok.com/@pak.swskpromax" target="_blank" class="social-link social-tt">
+      <svg class="social-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+        <path d="M19 3a4.3 4.3 0 0 1-3.4-3H12v12.5a2.6 2.6 0 1 1-2.6-2.6c.25 0 .49.04.72.1V6.55a6.5 6.5 0 1 0 5.88 6.45V8.3A8.5 8.5 0 0 0 20 9V5.1A4.32 4.32 0 0 1 19 3z" fill="none" stroke="#EE1D52" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" transform="translate(0.5, 0.4)"/>
+        <path d="M19 3a4.3 4.3 0 0 1-3.4-3H12v12.5a2.6 2.6 0 1 1-2.6-2.6c.25 0 .49.04.72.1V6.55a6.5 6.5 0 1 0 5.88 6.45V8.3A8.5 8.5 0 0 0 20 9V5.1A4.32 4.32 0 0 1 19 3z" fill="none" stroke="#69C9D0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5, 0)"/>
+        <path d="M19 3a4.3 4.3 0 0 1-3.4-3H12v12.5a2.6 2.6 0 1 1-2.6-2.6c.25 0 .49.04.72.1V6.55a6.5 6.5 0 1 0 5.88 6.45V8.3A8.5 8.5 0 0 0 20 9V5.1A4.32 4.32 0 0 1 19 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="social-text">
+        <span class="social-label">TikTok</span>
+        <span class="social-handle" style="background:linear-gradient(90deg,#69C9D0,#EE1D52);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:1">ของพรรคเรา</span>
+      </div>
+    </a>
   </div>
   <div class="lobby-buttons">
-    <button class="btn-lobby btn-primary" onclick="goTo('members')">
+    <a class="btn-lobby btn-primary" href="https://canva.link/5njusz1oh2d3kr5" target="_blank" rel="noopener" style="justify-content:center">
       ทีมผู้สมัครของเรา
-    </button>
-    <button class="btn-lobby btn-primary" onclick="goTo('comments')">
+    </a>
+    <button class="btn-lobby btn-primary" onclick="goTo('comments')" style="justify-content:center">
       ร่วมแสดงความคิดเห็น
     </button>
-    <button class="btn-lobby btn-primary" onclick="goTo('policy')">
-      นโยบาย
-    </button>
-  </div>
-</div>
-<div id="policy" class="page">
-  <nav class="top-nav">
-    <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
-    <div class="nav-breadcrumb"><span>หน้าหลัก</span> › <strong>นโยบาย</strong></div>
-    <div class="nav-right-actions">
-      <button class="nav-action-btn" onclick="goTo('members')">ทีมเรา</button>
-    </div>
-  </nav>
-  <div class="policy-hero">
-    <span class="policy-hero-icon">📢</span>
-    <h1>นโยบาย 5 ด้านของเรา</h1>
-    <div class="policy-gold-line"></div>
-    <p>ทีม SARASAS PROMAX สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569<br/>ถ้าได้รับความไว้วางใจ เราสัญญาว่าจะทำสิ่งเหล่านี้ให้เป็นจริง</p>
-  </div>
-  <div class="policy-container">
-    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#ffd060,#ffaa20);--policy-bg:rgba(255,200,60,0.12);--policy-border:rgba(255,200,60,0.4);--policy-text-color:rgba(255,200,60,0.95);--policy-badge-bg:rgba(255,200,60,0.12);--policy-badge-color:rgba(255,200,60,0.9);--policy-badge-border:rgba(255,200,60,0.3)">
-      <div class="policy-number">1</div>
-      <span class="policy-emoji">📚</span>
-      <div class="policy-title">นโยบายด้านวิชาการ <span class="policy-title-accent">Academic</span></div>
-      <div class="policy-desc">
-        ส่งเสริมการเรียนรู้และพัฒนาศักยภาพทางวิชาการของนักเรียนทุกระดับชั้น ให้มีความพร้อมในการแข่งขัน และมีทักษะที่จำเป็นในศตวรรษที่ 21
-        <ul>
-          <li>จัดกิจกรรมติวเสริมและแลกเปลี่ยนความรู้ระหว่างรุ่นพี่–รุ่นน้อง</li>
-          <li>ผลักดันห้องสมุดและพื้นที่การเรียนรู้ให้ทันสมัยและเข้าถึงง่าย</li>
-          <li>สนับสนุนการส่งนักเรียนเข้าแข่งขันทางวิชาการทั้งระดับภูมิภาคและระดับประเทศ</li>
-        </ul>
-      </div>
-    </div>
-    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#e74c3c,#c0392b);--policy-bg:rgba(192,57,43,0.1);--policy-border:rgba(192,57,43,0.35);--policy-text-color:rgba(192,57,43,0.95);--policy-badge-bg:rgba(192,57,43,0.1);--policy-badge-color:rgba(192,57,43,0.9);--policy-badge-border:rgba(192,57,43,0.3)">
-      <div class="policy-number">2</div>
-      <span class="policy-emoji">🎨</span>
-      <div class="policy-title">นโยบายด้านกิจกรรมและความคิดสร้างสรรค์ <span class="policy-title-accent">Activities</span></div>
-      <div class="policy-desc">
-        สนับสนุนกิจกรรมนอกห้องเรียนที่หลากหลาย เพื่อให้นักเรียนได้ค้นพบความสามารถพิเศษของตนเอง และเปิดโอกาสให้ทุกคนได้แสดงออก
-        <ul>
-          <li>จัดงานนิทรรศการและเวทีแสดงความสามารถประจำปี</li>
-          <li>เพิ่มชมรมและกิจกรรม Extracurricular ที่ตรงความต้องการของนักเรียน</li>
-          <li>สร้างพื้นที่สร้างสรรค์ให้นักเรียนได้ริเริ่มโครงการของตนเอง</li>
-        </ul>
-      </div>
-    </div>
-    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#55efc4,#00b894);--policy-bg:rgba(85,239,196,0.1);--policy-border:rgba(85,239,196,0.38);--policy-text-color:rgba(85,239,196,0.95);--policy-badge-bg:rgba(85,239,196,0.1);--policy-badge-color:rgba(85,239,196,0.9);--policy-badge-border:rgba(85,239,196,0.3)">
-      <div class="policy-number">3</div>
-      <span class="policy-emoji">❤️</span>
-      <div class="policy-title">นโยบายด้านสุขภาวะและความเป็นอยู่ที่ดี <span class="policy-title-accent">Well-being</span></div>
-      <div class="policy-desc">
-        ใส่ใจสุขภาพกายและสุขภาพจิตของนักเรียนทุกคน สร้างสภาพแวดล้อมโรงเรียนที่ปลอดภัย อบอุ่น และเป็นมิตร
-        <ul>
-          <li>ผลักดันมาตรการป้องกันการกลั่นแกล้ง (Anti-Bullying) อย่างเป็นรูปธรรม</li>
-          <li>จัดกิจกรรมส่งเสริมสุขภาพจิตและพื้นที่ระบาย–ปรึกษาปัญหา</li>
-          <li>ดูแลความสะอาดและความปลอดภัยของพื้นที่ส่วนกลางในโรงเรียน</li>
-        </ul>
-      </div>
-    </div>
-    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#fd79a8,#e84393);--policy-bg:rgba(253,121,168,0.1);--policy-border:rgba(253,121,168,0.38);--policy-text-color:rgba(253,121,168,0.95);--policy-badge-bg:rgba(253,121,168,0.1);--policy-badge-color:rgba(253,121,168,0.9);--policy-badge-border:rgba(253,121,168,0.3)">
-      <div class="policy-number">4</div>
-      <span class="policy-emoji">🤝</span>
-      <div class="policy-title">นโยบายด้านความสัมพันธ์และชุมชน <span class="policy-title-accent">Community</span></div>
-      <div class="policy-desc">
-        เสริมสร้างความสัมพันธ์อันดีระหว่างนักเรียน ครู ผู้ปกครอง และชุมชน เพื่อสร้างวัฒนธรรมโรงเรียนที่เข้มแข็งและอบอุ่น
-        <ul>
-          <li>เปิดช่องทางสื่อสารระหว่างนักเรียนกับฝ่ายบริหารอย่างโปร่งใส</li>
-          <li>จัดโครงการบำเพ็ญประโยชน์และกิจกรรมเพื่อชุมชนโดยรอบ</li>
-          <li>ส่งเสริมความสามัคคีระหว่างรุ่นพี่–รุ่นน้องทุกระดับชั้น</li>
-        </ul>
-      </div>
-    </div>
-    <div class="policy-card" style="--policy-color:linear-gradient(180deg,#a29bfe,#6c5ce7);--policy-bg:rgba(162,155,254,0.1);--policy-border:rgba(162,155,254,0.38);--policy-text-color:rgba(162,155,254,0.95);--policy-badge-bg:rgba(162,155,254,0.1);--policy-badge-color:rgba(162,155,254,0.9);--policy-badge-border:rgba(162,155,254,0.3)">
-      <div class="policy-number">5</div>
-      <span class="policy-emoji">🌿</span>
-      <div class="policy-title">นโยบายด้านสิ่งแวดล้อมและเทคโนโลยี <span class="policy-title-accent">Green & Tech</span></div>
-      <div class="policy-desc">
-        ปลูกฝังจิตสำนึกรักสิ่งแวดล้อม ควบคู่กับการนำเทคโนโลยีมาใช้ยกระดับคุณภาพชีวิตนักเรียนในโรงเรียน
-        <ul>
-          <li>รณรงค์ลดขยะ คัดแยกขยะ และลด Single-use plastic ในโรงเรียน</li>
-          <li>สนับสนุนการนำเทคโนโลยีและ Digital Tools มาใช้ในกิจกรรมหาเสียง</li>
-          <li>พัฒนาพื้นที่สีเขียวและสวนโรงเรียนให้น่าอยู่และน่าเรียนมากขึ้น</li>
-        </ul>
-      </div>
-    </div>
-    <div class="policy-footer-note">
-      ทีม SARASAS PROMAX สมัครเลือกตั้งสภานักเรียน ปีการศึกษา 2569<br/>
-      นโยบายทั้ง 5 ด้านนี้คือสิ่งที่เราตั้งใจจะทำเพื่อทุกคนอย่างจริงจัง<br/>
-      <span style="color:rgba(0,0,0,0.12)">เลือกเราเพื่อเสียงของทุกคน 💙</span>
-    </div>
-  </div>
-</div>
-<div id="members" class="page">
-  <nav class="top-nav">
-    <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
-    <div class="nav-breadcrumb"><span>หน้าหลัก</span> › <strong>ทีมผู้สมัคร</strong></div>
-    <div class="nav-right-actions">
-      <button class="nav-action-btn" onclick="goTo('policy')">นโยบาย</button>
-    </div>
-  </nav>
-  <div class="members-hero">
-    <h1>ทีมผู้สมัครสภานักเรียน</h1>
-    <div class="gold-line"></div>
-    <p>โรงเรียนสารสาสน์วิเทศสมุทรสาคร · สมัครเลือกตั้ง ปีการศึกษา 2569</p>
-  </div>
-  <div class="achievement-strip">
-    <div class="ach-item">
-      <div class="ach-num">15</div>
-      <div class="ach-label">ผู้สมัครทั้งหมด</div>
-    </div>
-    <div class="ach-item">
-      <div class="ach-num">2</div>
-      <div class="ach-label">ระดับชั้น</div>
-    </div>
-    <div class="ach-item">
-      <div class="ach-num">7</div>
-      <div class="ach-label">ฝ่ายงาน</div>
-    </div>
-    <div class="ach-item">
-      <div class="ach-num">5</div>
-      <div class="ach-label">นโยบาย</div>
-    </div>
-  </div>
-  <div class="section-label">
-    <div class="section-label-line"></div>
-    <div class="section-label-text">🎓 ผู้สมัคร ชั้น มอปลาย</div>
-    <div class="section-label-line right"></div>
-  </div>
-  <div class="members-grid">
-    <div class="member-card president" id="card-president" onclick="openProfile('president')" style="grid-column:1/-1;max-width:300px;margin:0 auto;width:100%">
-      <div class="member-avatar">
-        <img src="" alt="" onerror="this.style.display='none'" style="display:none" />
-        <span class="avatar-emoji">👑</span>
-      </div>
-      <div class="member-role-badge">ประธานนักเรียน</div>
-      <div class="member-name">สุภัทรตรา จิรโชติเมธากุล</div>
-      <div class="member-dept">ประธานนักเรียน</div>
-      <div class="member-motto">"ระฆังดังเพราะคนตี แต่ถ้าอยากได้ประธานดีๆต้องเบอร์ 3 อิอิ"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-vp1" onclick="openProfile('vp1')">
-      <div class="member-avatar"><span class="avatar-emoji">⭐</span></div>
-      <div class="member-role-badge">รองประธานนักเรียน</div>
-      <div class="member-name">รองประธานฝ่ายวิชาการ</div>
-      <div class="member-dept">รองประธานนักเรียน</div>
-      <div class="member-motto">"คอยแก้ปัญหา พัฒนาผู้เรียน กระตุ้นความเพียร ให้โรงเรียนพัฒนา"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-vp2" onclick="openProfile('vp2')">
-      <div class="member-avatar"><span class="avatar-emoji">🌟</span></div>
-      <div class="member-role-badge">ฝ่ายกิจกรรม</div>
-      <div class="member-name">ชาหิส์ดา เชาว์ดารี</div>
-      <div class="member-dept">ฝ่ายกิจกรรม</div>
-      <div class="member-motto">"เรนโบกิจกรรมไม่โบ๊เบ๊"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-academic" onclick="openProfile('academic')">
-      <div class="member-avatar"><span class="avatar-emoji">📚</span></div>
-      <div class="member-role-badge">เลขานุการ</div>
-      <div class="member-name">ณิชานันท์ พิริยะสันติ</div>
-      <div class="member-dept">เลขานุการ</div>
-      <div class="member-motto">"พรรคเพื่อน้อง พี่พร้อมพัฒนา"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-arts" onclick="openProfile('arts')">
-      <div class="member-avatar"><span class="avatar-emoji">🎨</span></div>
-      <div class="member-role-badge">ประชาสัมพันธ์</div>
-      <div class="member-name">อริญชยา อินทะนะ</div>
-      <div class="member-dept">ประชาสัมพันธ์</div>
-      <div class="member-motto">"ประสานงานรวดเร็ว ข่าวสารเข้าถึงทุกคน"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-sports" onclick="openProfile('sports')">
-      <div class="member-avatar"><span class="avatar-emoji">⚽</span></div>
-      <div class="member-role-badge">โสตทัศนศิลป์</div>
-      <div class="member-name">ภูชนะ จันทร์เลื่อน</div>
-      <div class="member-dept">โสตทัศนศิลป์</div>
-      <div class="member-motto">"ทำให้เห็นไม่ใช่แค่พูด"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-env" onclick="openProfile('env')">
-      <div class="member-avatar"><span class="avatar-emoji">🌍</span></div>
-      <div class="member-role-badge">ฝ่ายกีฬา</div>
-      <div class="member-name">อนุพงษ์ มณีสอดแสง</div>
-      <div class="member-dept">ฝ่ายกีฬา</div>
-      <div class="member-motto">"ไม่พูดให้จํา แต่จะทําให้ดู"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-it" onclick="openProfile('it')">
-      <div class="member-avatar"><span class="avatar-emoji">💡</span></div>
-      <div class="member-role-badge">เหรัญญิก</div>
-      <div class="member-name">บารเมษ์ สงคราม</div>
-      <div class="member-dept">เหรัญญิก</div>
-      <div class="member-motto">"การเงินดี การันตีไม่ต้องตรวจ"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-community" onclick="openProfile('community')">
-      <div class="member-avatar"><span class="avatar-emoji">🤝</span></div>
-      <div class="member-role-badge">สุขาภิบาล</div>
-      <div class="member-name">สุรเสกข์ ศิริศิลป์</div>
-      <div class="member-dept">สุขาภิบาล</div>
-      <div class="member-motto">"ทีมสุขาภิบาล งานเนี๊ยบทุกตารางเมตร"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-finance" onclick="openProfile('finance')">
-      <div class="member-avatar"><span class="avatar-emoji">💰</span></div>
-      <div class="member-role-badge">วิชาการ</div>
-      <div class="member-name">กีรติ ศรีพา</div>
-      <div class="member-dept">วิชาการ</div>
-      <div class="member-motto">"ทุกความสำเร็จ เริ่มต้นจากการเรียนรู้"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-  </div>
-  <div class="section-label">
-    <div class="section-label-line"></div>
-    <div class="section-label-text">📘 ผู้สมัคร ชั้น มอต้น</div>
-    <div class="section-label-line right"></div>
-  </div>
-  <div class="members-grid" style="padding-bottom:4rem">
-    <div class="member-card" id="card-junior1" onclick="openProfile('junior1')">
-      <div class="member-avatar"><span class="avatar-emoji">🌱</span></div>
-      <div class="member-role-badge"> สุขาภิบาล</div>
-      <div class="member-name">เพชรดา จันทะวงษา</div>
-      <div class="member-dept"> สุขาภิบาล</div>
-      <div class="member-motto">"เห็นเงียบ ๆ กวาดเกือบทั้งโรงเรียนแล้วนะ"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-junior2" onclick="openProfile('junior2')">
-      <div class="member-avatar"><span class="avatar-emoji">🌿</span></div>
-      <div class="member-role-badge">วิชาการ</div>
-      <div class="member-name">มนัสนันท์ ศรียศ</div>
-      <div class="member-dept">วิชาการ</div>
-      <div class="member-motto">"อยากสูงต้องเขย่ง อยากเก่งต้องขยัน อยากไปให้ถึงฝันโปรดเลือกเบอร์3"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-junior3" onclick="openProfile('junior3')">
-      <div class="member-avatar"><span class="avatar-emoji">🌳</span></div>
-      <div class="member-role-badge">โสดทัศนศิลป์</div>
-      <div class="member-name">กัญญาณัฐ สุ่มมาตย์</div>
-      <div class="member-dept">โสดทัศนศิลป์</div>
-      <div class="member-motto">"ความรักของพี่ชัดเหมือนโฟกัสผ่านเลนส์ซูม"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-junior4" onclick="openProfile('junior4')">
-      <div class="member-avatar"><span class="avatar-emoji">⭐</span></div>
-      <div class="member-role-badge">ฝ่ายกิจกรรม</div>
-      <div class="member-name">สุทธวีร์ ราชรักษา</div>
-      <div class="member-dept">ฝ่ายกิจกรรม</div>
-      <div class="member-motto">"สร้างสรรค์ทุกกิจกรรม เติมสีสันทุกวัน"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
-    <div class="member-card" id="card-junior5" onclick="openProfile('junior5')">
-      <div class="member-avatar"><span class="avatar-emoji">💫</span></div>
-      <div class="member-role-badge">ฝ่ายกีฬา</div>
-      <div class="member-name">ปกรณ์เกียรติ มณีสอดแสง</div>
-      <div class="member-dept">ฝ่ายกีฬา</div>
-      <div class="member-motto">"ไม่หยุดพัฒนา ไม่กลัวความพ่ายแพ้"</div>
-      <div class="card-click-hint">แตะเพื่อดูข้อมูล ›</div>
-    </div>
+    <a class="btn-lobby btn-primary" href="ใส่ลิงก์หน้านโยบายที่นี่" target="_blank" rel="noopener" style="justify-content:center">
+      นโยบายของเรา
+    </a>
   </div>
 </div>
 <div id="comments" class="page">
@@ -2255,7 +2037,7 @@
     <button class="nav-back" onclick="goTo('lobby')">← กลับ</button>
     <div class="nav-breadcrumb"><span>หน้าหลัก</span> › <strong>ความคิดเห็น</strong></div>
     <div class="nav-right-actions">
-      <button class="nav-action-btn" onclick="goTo('members')">ทีมเรา</button>
+      <a class="nav-action-btn" href="https://canva.link/5njusz1oh2d3kr5" target="_blank" rel="noopener" style="text-decoration:none">ทีมเรา</a>
     </div>
   </nav>
   <div class="comments-hero">
@@ -2378,11 +2160,6 @@
         <div class="modal-fullname" id="modalFullname">-</div>
         <div class="modal-nickname" id="modalNickname">-</div>
         <div class="modal-info-grid">
-          <div class="modal-info-row">
-            <span class="info-icon">🎂</span>
-            <span class="info-label">วันเกิด</span>
-            <span class="info-value" id="modalBirthday">-</span>
-          </div>
           <div class="modal-info-row">
             <span class="info-icon">📐</span>
             <span class="info-label">แผนก</span>
@@ -2880,7 +2657,6 @@
     document.getElementById('modalRole').textContent = m.role;
     document.getElementById('modalFullname').textContent = m.fullname;
     document.getElementById('modalNickname').textContent = m.nickname;
-    document.getElementById('modalBirthday').textContent = m.birthday || '-';
     document.getElementById('modalDept').textContent = m.dept || '-';
     document.getElementById('modalPhotoEmoji').textContent = m.emoji || '👤';
     const img = document.getElementById('modalPhotoImg');
@@ -2895,19 +2671,6 @@
     const fbSVG = `<svg style="width:18px;height:18px;flex-shrink:0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     const igSVG = `<svg style="width:18px;height:18px;flex-shrink:0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>`;
     let html = '';
-    if (m.facebook) {
-      let fbDisplay = m.facebook;
-      try {
-        const url = new URL(m.facebook);
-        const parts = url.pathname.replace(/\//g, '').split('?')[0];
-        if (parts) fbDisplay = parts;
-      } catch(e) { fbDisplay = m.facebook; }
-      html += `<a class="social-link facebook" href="${m.facebook.startsWith('http') ? m.facebook : 'https://facebook.com/' + m.facebook}" target="_blank" rel="noopener">
-        ${fbSVG} ${fbDisplay}
-      </a>`;
-    } else {
-      html += `<div class="social-link no-link">${fbSVG} ยังไม่ได้ใส่ Facebook</div>`;
-    }
     if (m.instagram) {
       html += `<a class="social-link instagram" href="https://instagram.com/${m.instagram.replace('@','')}" target="_blank" rel="noopener">
         ${igSVG} @${m.instagram.replace('@','')}
@@ -3076,25 +2839,29 @@
     setTimeout(() => { t.classList.remove('show'); t.style.background = ''; }, 3000);
   }
   const SUPPORT_CONTACTS = {
-    instagram: 'junr_xn',
-    facebook:  'gghghij.igfggh',
+    instagram: '@pak.swskpromax',
+    facebook:  '@pak.swskpromax',
+    tiktok: '',
   };
   function renderSupportChannels() {
     const box = document.getElementById('supportChannels');
     if (!box) return;
+    const igSVG = `<svg style="width:20px;height:20px;flex-shrink:0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>`;
+    const fbSVG = `<svg style="width:20px;height:20px;flex-shrink:0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const ttSVG = `<svg style="width:20px;height:20px;flex-shrink:0;overflow:visible" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3a4.3 4.3 0 0 1-3.4-3H12v12.5a2.6 2.6 0 1 1-2.6-2.6c.25 0 .49.04.72.1V6.55a6.5 6.5 0 1 0 5.88 6.45V8.3A8.5 8.5 0 0 0 20 9V5.1A4.32 4.32 0 0 1 19 3z" fill="none" stroke="#EE1D52" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" transform="translate(0.5,0.4)"/><path d="M19 3a4.3 4.3 0 0 1-3.4-3H12v12.5a2.6 2.6 0 1 1-2.6-2.6c.25 0 .49.04.72.1V6.55a6.5 6.5 0 1 0 5.88 6.45V8.3A8.5 8.5 0 0 0 20 9V5.1A4.32 4.32 0 0 1 19 3z" fill="none" stroke="#69C9D0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5,0)"/><path d="M19 3a4.3 4.3 0 0 1-3.4-3H12v12.5a2.6 2.6 0 1 1-2.6-2.6c.25 0 .49.04.72.1V6.55a6.5 6.5 0 1 0 5.88 6.45V8.3A8.5 8.5 0 0 0 20 9V5.1A4.32 4.32 0 0 1 19 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     let html = '';
     if (SUPPORT_CONTACTS.instagram && SUPPORT_CONTACTS.instagram !== 'admin_instagram_here') {
       const ig = SUPPORT_CONTACTS.instagram.replace('@','');
       html += `<a class="support-channel-link ig" href="https://instagram.com/${ig}" target="_blank" rel="noopener">
-        <span class="support-channel-icon ig-icon">📷</span>
+        <span class="support-channel-icon ig-icon">${igSVG}</span>
         <div>
-          <div style="font-size:0.72rem;color:rgba(255,180,200,0.6);font-family:Sarabun,sans-serif;font-weight:400">Instagram</div>
+          <div style="font-size:0.72rem;color:rgba(224,144,240,0.6);font-family:Sarabun,sans-serif;font-weight:400">Instagram</div>
           <div>@${ig}</div>
         </div>
       </a>`;
     } else {
       html += `<div class="support-channel-link no-social">
-        <span class="support-channel-icon" style="background:rgba(192,57,43,0.08)">📷</span>
+        <span class="support-channel-icon" style="background:rgba(192,57,43,0.08)">${igSVG}</span>
         ยังไม่ได้ใส่ Instagram Admin
       </div>`;
     }
@@ -3102,17 +2869,27 @@
       const fb = SUPPORT_CONTACTS.facebook;
       const fbUrl = fb.startsWith('http') ? fb : 'https://facebook.com/' + fb;
       html += `<a class="support-channel-link fb" href="${fbUrl}" target="_blank" rel="noopener">
-        <span class="support-channel-icon fb-icon">f</span>
+        <span class="support-channel-icon fb-icon">${fbSVG}</span>
         <div>
-          <div style="font-size:0.72rem;color:rgba(144,195,255,0.6);font-family:Sarabun,sans-serif;font-weight:400">Facebook</div>
+          <div style="font-size:0.72rem;color:rgba(128,176,255,0.6);font-family:Sarabun,sans-serif;font-weight:400">Facebook</div>
           <div>${fb}</div>
         </div>
       </a>`;
     } else {
       html += `<div class="support-channel-link no-social">
-        <span class="support-channel-icon" style="background:rgba(192,57,43,0.08)">f</span>
+        <span class="support-channel-icon" style="background:rgba(192,57,43,0.08)">${fbSVG}</span>
         ยังไม่ได้ใส่ Facebook Admin
       </div>`;
+    }
+    if (SUPPORT_CONTACTS.tiktok && SUPPORT_CONTACTS.tiktok !== '') {
+      const tt = SUPPORT_CONTACTS.tiktok.replace('@','');
+      html += `<a class="support-channel-link tt" href="https://tiktok.com/@${tt}" target="_blank" rel="noopener">
+        <span class="support-channel-icon tt-icon">${ttSVG}</span>
+        <div>
+          <div style="font-size:0.72rem;color:rgba(105,201,208,0.6);font-family:Sarabun,sans-serif;font-weight:400">TikTok</div>
+          <div>@${tt}</div>
+        </div>
+      </a>`;
     }
     box.innerHTML = html;
   }
