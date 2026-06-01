@@ -3110,7 +3110,9 @@
     else if (days > 0) { newUntil = Date.now() + days * 86400000; }
     else { alert('กรุณาเลือกหรือกรอกระยะเวลา'); return; }
     try {
-      await updateDoc(doc(db, 'bans', uid), { until: newUntil, bannedAt: Date.now() });
+      const { updateDoc: _upd, doc: _doc } = window._fbWrite;
+      const _db = window._getDb();
+      await _upd(_doc(_db, 'bans', uid), { until: newUntil, bannedAt: Date.now() });
       window.closeResetBanModal();
     } catch(e) { alert('เกิดข้อผิดพลาด: ' + e.message); console.error(e); }
   };
@@ -3285,6 +3287,8 @@
   import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
   window._fbImports = { collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc };
+  window._fbWrite = { updateDoc, doc, deleteDoc, setDoc, increment, arrayUnion, arrayRemove };
+  window._getDb = () => db;
   const firebaseConfig = {
     apiKey: "AIzaSyBbTMEyc4-3_sn-i47Xm5xTvw52r36SWkM",
     authDomain: "sarasas-student-council.firebaseapp.com",
@@ -3585,10 +3589,12 @@
       }
     }
     try {
+      const { updateDoc: _upd, doc: _doc, deleteDoc: _del } = window._fbWrite;
+      const _db = window._getDb();
       if (newUntil <= Date.now()) {
         if (!confirm('หลังจากลดเวลาแล้ว การระงับจะหมดอายุทันที ต้องการปลดแบนผู้ใช้นี้เลยหรือไม่?')) return;
-        await deleteDoc(doc(db, 'bans', uid));
-        try { await deleteDoc(doc(db, 'bannedComments', uid)); } catch(e3) {}
+        await _del(_doc(_db, 'bans', uid));
+        try { await _del(_doc(_db, 'bannedComments', uid)); } catch(e3) {}
         delete allBans[uid];
         window._allBans = allBans;
         window._publicBannedUids = new Set(
@@ -3599,7 +3605,7 @@
         if (allComments.length > 0) renderComments(allComments);
         else renderComments([]);
       } else {
-        await updateDoc(doc(db, 'bans', uid), { until: newUntil });
+        await _upd(_doc(_db, 'bans', uid), { until: newUntil });
       }
       window.closeReduceModal();
     } catch(e) { alert('เกิดข้อผิดพลาด'); console.error(e); }
@@ -3622,7 +3628,9 @@
       newUntil = (ban && ban.until > Date.now() ? ban.until : Date.now()) + days * 86400000;
     }
     try {
-      await updateDoc(doc(db, 'bans', uid), { until: newUntil });
+      const { updateDoc: _upd, doc: _doc } = window._fbWrite;
+      const _db = window._getDb();
+      await _upd(_doc(_db, 'bans', uid), { until: newUntil });
       window.closeExtendModal();
     } catch(e) { alert('เกิดข้อผิดพลาด'); console.error(e); }
   };
