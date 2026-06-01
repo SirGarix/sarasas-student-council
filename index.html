@@ -2410,30 +2410,34 @@
 <script>
   const SEAL_IMAGE_URL = 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/icon.webp';
 
-  // รูปสไลด์ผู้สมัคร — instagram: '' = ไม่มีลิงก์, ใส่ username เพื่อเปิด IG
+  // รูปสไลด์ผู้สมัคร
+  // igArea: ตำแหน่ง hotspot วงไอจีในรูป (% จากขอบซ้าย/บน, กว้าง/สูง)
+  // { left, top, width, height } หน่วยเป็น % ของขนาดรูป
   const MEMBER_SLIDES = [
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/1.webp',  alt: 'ทีมผู้สมัคร SWSK PROMAX',          instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/2.webp',  alt: 'สุภัทรตรา จิรโชติเมธากุล (ดรีม)',  instagram: 'imyourdreax_' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/3.webp',  alt: 'พิมพ์สิริ ศิริวงษ์ศิลป์ (นานะ)',   instagram: 'jumeowlod' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/4.webp',  alt: 'ชาหิส์ดา เชาว์ดารี (เรนโบ)',        instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/5.webp',  alt: 'ณิชานันท์ พิริยะสันติ (สายลม)',    instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_arin.webp',    alt: 'อริญชยา อินทะนะ (อลิน)',            instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_poo.webp',     alt: 'ภูชนะ จันทร์เลื่อน (หมีภู)',        instagram: 'junr_xn' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_jel.webp',     alt: 'อนุพงษ์ มณีสอดแสง (เจล)',           instagram: 'anupongmaneesodsaeng' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_songkran.webp',alt: 'บารเมษ์ สงคราม (สงกราน)',           instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_singto.webp',  alt: 'สุรเสกข์ ศิริศิลป์ (สิงโต)',        instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_pep.webp',     alt: 'กีรติ ศรีพา (เป๊ป)',                instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_ing.webp',     alt: 'เพชรดา จันทะวงษา (อุ๋งอิ๋ง)',       instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_im.webp',      alt: 'มนัสนันท์ ศรียศ (อิม)',             instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_itim.webp',    alt: 'กัญญาณัฐ สุ่มมาตย์ (ไอติม)',        instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_sky.webp',     alt: 'สุทธวีร์ ราชรักษา (สกาย)',          instagram: '' },
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/slide_jame.webp',    alt: 'ปกรณ์เกียรติ มณีสอดแสง (เจมส์)',   instagram: '' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/1.webp',    alt: 'ทีมผู้สมัคร SWSK PROMAX',           instagram: '',                    igArea: null },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/2.webp',    alt: 'สุภัทรตรา จิรโชติเมธากุล (ดรีม)',   instagram: 'imyourdreax_',        igArea: { left: 44, top: 68.6, width: 37.7, height: 11.6 } },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/3.webp',    alt: 'พิมพ์สิริ ศิริวงษ์ศิลป์ (นานะ)',    instagram: 'jumeowlodi',           igArea: { left: 44.1, top: 73.1, width: 34.4, height: 9.5 } },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/4.webp',    alt: 'ณิชานันท์ พิริยะสันติ (สายลม)',         instagram: '__zail3q',                    igArea: { left: 41.6, top: 67.4, width: 29.8, height: 13.9 } },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/5.webp',    alt: 'อริญชยา อินทะนะ (อลิน)',     instagram: 'IINQS__',             igArea: { left: 43.7, top: 68.6, width: 23.3, height: 12 } },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/6.webp',    alt: 'ชาหิส์ดา เชาว์ดารี (เรนโบ)',             instagram: 'BOEEEEEIM',                    igArea: { left: 43.4, top: 68, width: 29.7, height: 12.4 } },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/7.webp',    alt: 'บารเมษ์ สงคราม (สงกราน)',         instagram: 'faraweeee',             igArea: { left: 44.1, top: 68.8, width: 28.5, height: 10.8 } },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/8.webp',    alt: 'อนุพงษ์ มณีสอดแสง (เจล)',         instagram: 'anupongmaneesodsaeng',igArea: { left: 43.3, top: 68.6, width: 56.6, height: 11.2 } },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/99.webp',    alt: 'สุรเสกข์ ศิริศิลป์ (สิงโต)',          instagram: 'slimetarr223',                    igArea: { left: 44, top: 69.2, width: 34.7, height: 9.7 } },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/10.webp',   alt: 'ภูชนะ จันทร์เลื่อน (หมีภู)',           instagram: '',                    igArea: null },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/11.webp',   alt: 'กีรติ ศรีพา (เป๊ป)',                instagram: '',                    igArea: null },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/12.webp',   alt: 'เพชรดา จันทะวงษา (อุ๋งอิ๋ง)',        instagram: '',                    igArea: null },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/13.webp',   alt: 'มนัสนันท์ ศรียศ (อิม)',             instagram: '',                    igArea: null },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/14.webp',   alt: 'กัญญาณัฐ สุ่มมาตย์ (ไอติม)',        instagram: '',                    igArea: null },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/15.webp',   alt: 'สุทธวีร์ ราชรักษา (สกาย)',          instagram: '',                    igArea: null },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/16.webp',   alt: 'ปกรณ์เกียรติ มณีสอดแสง (เจมส์)',    instagram: '',                    igArea: null },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/swskmember/16.webp',   alt: 'ปกรณ์เกียรติ มณีสอดแสง (เจมส์)',    instagram: '',                    igArea: null },
   ];
 
   (function renderMemberSlides() {
     const container = document.getElementById('memberSlidesContainer');
     if (!container) return;
     MEMBER_SLIDES.forEach(function(slide, i) {
+      // wrapper ทั้งหมด — position:relative เพื่อให้ hotspot ลอยทับรูปได้
       const wrap = document.createElement('div');
       wrap.style.cssText = 'width:100%;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.13);background:#1a0000;opacity:0;transform:translateY(16px);transition:opacity 0.4s ease,transform 0.4s ease;position:relative;';
 
@@ -2449,25 +2453,38 @@
           wrap.style.transform = 'translateY(0)';
         }, i * 60);
       };
+      wrap.appendChild(img);
 
-      if (slide.instagram) {
-        // ห่อรูปด้วย <a> เปิด IG ใน tab ใหม่
-        const link = document.createElement('a');
-        link.href = 'https://instagram.com/' + slide.instagram;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.style.cssText = 'display:block;position:relative;-webkit-tap-highlight-color:transparent;';
-        link.title = 'ดูโปรไฟล์ Instagram @' + slide.instagram;
-        link.appendChild(img);
-
-        // ป้าย IG ลอยมุมขวาล่าง
-        const badge = document.createElement('div');
-        badge.style.cssText = 'position:absolute;bottom:14px;right:14px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.18);border-radius:50px;padding:6px 14px 6px 10px;color:#fff;font-family:Kanit,sans-serif;font-size:0.82rem;font-weight:600;pointer-events:none;';
-        badge.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span>@' + slide.instagram + '</span>';
-        link.appendChild(badge);
-        wrap.appendChild(link);
-      } else {
-        wrap.appendChild(img);
+      // hotspot โปร่งใสทับตำแหน่งวง IG ในรูป
+      if (slide.instagram && slide.igArea) {
+        const a = slide.igArea;
+        const hotspot = document.createElement('a');
+        hotspot.href = 'https://instagram.com/' + slide.instagram;
+        hotspot.target = '_blank';
+        hotspot.rel = 'noopener noreferrer';
+        hotspot.title = '@' + slide.instagram;
+        hotspot.style.cssText = [
+          'position:absolute',
+          'left:' + a.left + '%',
+          'top:' + a.top + '%',
+          'width:' + a.width + '%',
+          'height:' + a.height + '%',
+          'cursor:pointer',
+          'border-radius:50px',
+          'background:transparent',
+          '-webkit-tap-highlight-color:transparent',
+          'transition:background 0.18s',
+        ].join(';');
+        // hover: glow เบาๆ ให้รู้ว่ากดได้
+        hotspot.addEventListener('mouseenter', function() {
+          this.style.background = 'rgba(255,255,255,0.08)';
+          this.style.boxShadow = '0 0 0 2px rgba(255,215,0,0.4)';
+        });
+        hotspot.addEventListener('mouseleave', function() {
+          this.style.background = 'transparent';
+          this.style.boxShadow = 'none';
+        });
+        wrap.appendChild(hotspot);
       }
 
       container.appendChild(wrap);
@@ -2476,7 +2493,7 @@
 
   // รูปสไลด์นโยบาย — ใส่ URL รูปภาพแต่ละสไลด์ตามลำดับ
   const POLICY_SLIDES = [
-    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/1.webp',   alt: 'นโยบาย SWSK PROMAX' },
+    { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_cover.webp',   alt: 'นโยบาย SWSK PROMAX' },
     { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_01.webp',      alt: 'นโยบายที่ 1' },
     { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_02.webp',      alt: 'นโยบายที่ 2' },
     { url: 'https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/policy_03.webp',      alt: 'นโยบายที่ 3' },
