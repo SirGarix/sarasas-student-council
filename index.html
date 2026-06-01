@@ -1354,6 +1354,7 @@
       text-align: center; padding: 1rem 0 2rem;
       display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;
     }
+    .footer-link {
       font-size: 0.78rem; color: var(--crimson);
       cursor: pointer; text-decoration: none;
       transition: all 0.2s;
@@ -1472,13 +1473,21 @@
       padding-top: 0.8rem;
     }
     .reply-toggle-btn {
-      color: rgba(30,30,30,0.5);
+      color: var(--crimson);
       font-family: 'Sarabun', sans-serif;
       font-size: 0.8rem; cursor: pointer;
-      padding: 0.2rem 0; transition: color 0.2s;
-      display: flex; align-items: center; gap: 0.4rem;
+      padding: 0.25rem 0.75rem; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(192,57,43,0.06);
+      border: 1.5px solid rgba(192,57,43,0.3);
+      border-radius: 50px;
+      outline: none;
     }
-    .reply-toggle-btn:hover { color: rgba(30,30,30,0.85); }
+    .reply-toggle-btn:hover {
+      background: rgba(192,57,43,0.12);
+      border-color: rgba(192,57,43,0.6);
+      color: var(--crimson-dark);
+    }
     .reply-toggle-btn .reply-count-chip {
       background: rgba(0,0,0,0.06);
       border: 1px solid rgba(0,0,0,0.1);
