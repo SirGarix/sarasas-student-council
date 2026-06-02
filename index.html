@@ -3000,11 +3000,7 @@
     window._banCustomMs = 0;
     const comments = window._allComments || [];
     const targetComment = comments.find(c => c.uid === uid);
-    // ดึง email และ photoURL จาก comment, allBans หรือ ban_history
-    const _histData = (window._allBanHistory || {})[uid] || (window._allBans || {})[uid] || {};
-    const _pickStr = (...arr) => arr.find(u => u && typeof u === 'string' && u.trim()) || '';
-    window._banTargetEmail = _pickStr(targetComment && targetComment.realEmail, _histData.email, _histData.realEmail);
-    window._banTargetPhotoURL = _pickStr(targetComment && targetComment.realPhotoURL, targetComment && targetComment.photoURL, _histData.realPhotoURL, _histData.photoURL);
+    window._banTargetEmail = targetComment ? (targetComment.realEmail || '') : '';
     const emailDisplay = window._banTargetEmail ? `<br/><span style="font-size:0.78rem;color:rgba(255,200,100,0.8)">📧 ${window._banTargetEmail}</span>` : '';
     document.getElementById('banTargetInfo').innerHTML = `<strong>👤 ${name}</strong>${emailDisplay}`;
     document.getElementById('banReasonInput').value = '';
@@ -3534,13 +3530,7 @@
     else { alert('กรุณาเลือกหรือกรอกระยะเวลาแบน'); return; }
     const targetComment = allComments.find(c => c.uid === uid);
     const targetEmail = targetComment ? (targetComment.realEmail || '') : (window._banTargetEmail || '');
-    // ดึง photoURL จากทุก source ที่เป็นไปได้
-    const _pickP = (...arr) => arr.find(u => u && typeof u === 'string' && u.trim()) || '';
-    const targetPhotoURL = _pickP(
-      targetComment && targetComment.realPhotoURL,
-      targetComment && targetComment.photoURL,
-      window._banTargetPhotoURL
-    );
+    const targetPhotoURL = targetComment ? (targetComment.realPhotoURL || targetComment.photoURL || '') : '';
     try {
       const banData = {
         uid,
@@ -4069,17 +4059,15 @@
     const c = allComments.find(x => x.id === docId);
     if (!c) return;
     const revealPhoto = document.getElementById('revealPhoto');
+    const revealPhotoEmoji = document.getElementById('revealPhotoEmoji');
     revealPhoto.innerHTML = '';
-    const _pickU = (...arr) => arr.find(u => u && typeof u === 'string' && u.trim()) || '';
-    const photoSrc = _pickU(c.realPhotoURL, c.photoURL);
-    if (photoSrc) {
+    if (c.realPhotoURL) {
       const img = document.createElement('img');
-      img.src = photoSrc;
-      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
-      img.onerror = () => { revealPhoto.innerHTML = '<span style="font-size:2rem;display:flex;align-items:center;justify-content:center;height:100%">👤</span>'; };
+      img.src = c.realPhotoURL;
+      img.onerror = () => { revealPhoto.innerHTML = '<span>👤</span>'; };
       revealPhoto.appendChild(img);
     } else {
-      revealPhoto.innerHTML = '<span style="font-size:2rem;display:flex;align-items:center;justify-content:center;height:100%">👤</span>';
+      revealPhoto.innerHTML = '<span>👤</span>';
     }
     document.getElementById('revealName').textContent = c.realName || c.name || '-';
     document.getElementById('revealEmail').textContent = c.realEmail || '-';
@@ -4106,11 +4094,21 @@
         savedComments = snap.data().comments || [];
       }
     } catch(e) { console.error('ดึง bannedComments ไม่สำเร็จ:', e); }
-    // หา photoURL จากทุก source โดยกรองค่าว่างออก
-    const _pickURL = (...candidates) => candidates.find(u => u && typeof u === 'string' && u.trim() !== '') || '';
-    const photoURL = _pickURL(
+    // กรองค่าว่างออกจากทุก source แล้วเลือกอันแรกที่มีค่า
+    const _pick = (...arr) => arr.find(u => u && typeof u === 'string' && u.trim()) || '';
+    // ถ้า _allBanHistory ไม่มีข้อมูล ให้ดึง ban_history จาก Firestore โดยตรง
+    let extraHistData = {};
+    if (!banData) {
+      try {
+        const hSnap = await getDoc(doc(db, 'ban_history', uid));
+        if (hSnap.exists()) extraHistData = hSnap.data();
+      } catch(_) {}
+    }
+    const photoURL = _pick(
       banData && banData.realPhotoURL,
       banData && banData.photoURL,
+      extraHistData.realPhotoURL,
+      extraHistData.photoURL,
       c && c.realPhotoURL,
       c && c.photoURL,
       savedComments[0] && savedComments[0].realPhotoURL,
@@ -4120,14 +4118,29 @@
     if (photoURL) {
       const img = document.createElement('img');
       img.src = photoURL;
-      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
-      img.onerror = () => { revealPhoto.innerHTML = '<span style="font-size:2rem;display:flex;align-items:center;justify-content:center;height:100%">👤</span>'; };
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block';
+      img.onerror = () => { revealPhoto.innerHTML = '<span style="font-size:2rem">👤</span>'; };
       revealPhoto.appendChild(img);
     } else {
-      revealPhoto.innerHTML = '<span style="font-size:2rem;display:flex;align-items:center;justify-content:center;height:100%">👤</span>';
+      revealPhoto.innerHTML = '<span style="font-size:2rem">👤</span>';
     }
-    const realName = (banData && banData.realName) || (c && (c.realName || c.name)) || (savedComments[0] && savedComments[0].realName) || fallbackName || '-';
-    const realEmail = (banData && (banData.email || banData.realEmail)) || (c && c.realEmail) || (savedComments[0] && savedComments[0].realEmail) || '-';
+    // fallback name/email จาก extraHistData ด้วย
+    const _picks = (...arr) => arr.find(v => v && typeof v === 'string' && v.trim()) || '-';
+    const realName = _picks(
+      banData && banData.realName,
+      extraHistData.realName,
+      c && c.realName,
+      c && c.name,
+      savedComments[0] && savedComments[0].realName,
+      fallbackName
+    );
+    const realEmail = _picks(
+      banData && (banData.email || banData.realEmail),
+      extraHistData.email,
+      extraHistData.realEmail,
+      c && c.realEmail,
+      savedComments[0] && savedComments[0].realEmail
+    );
     document.getElementById('revealName').textContent = realName;
     document.getElementById('revealEmail').textContent = realEmail;
     if (savedComments.length > 0) {
