@@ -2890,6 +2890,11 @@
   function openProfile(id) {
     const m = MEMBERS[id];
     if (!m) return;
+    // ถ้าผู้ใช้ถูกระงับ ไม่ให้ดูโปรไฟล์
+    if (window._getBanForUser && window._getCurrentUser && !window._getIsAdmin()) {
+      const _ban = window._getBanForUser(window._getCurrentUser());
+      if (_ban) return;
+    }
     currentMemberId = id;
     document.getElementById('modalRole').textContent = m.role;
     document.getElementById('modalFullname').textContent = m.fullname;
@@ -3696,6 +3701,9 @@
   let currentUser = null;
   let isAdmin = false;
   let allComments = [];
+  window._getCurrentUser = () => currentUser;
+  window._getIsAdmin = () => isAdmin;
+  window._getBanForUser = (user) => getBanForUser(user);
   async function checkIsAdmin(user) {
     if (!user) return false;
     const byUid = await getDoc(doc(db, 'admins', user.uid));
