@@ -1520,62 +1520,48 @@
       background: linear-gradient(90deg, #27ae60, #2ecc71, #27ae60);
     }
     .ban-wall-lifted-title { color: #1a7a40; }
-    /* ===== REPLY SECTION — Facebook style ===== */
-    .reply-section {
-      margin-top: 0.5rem;
-      padding-left: 0.2rem;
-    }
-    /* ปุ่ม "💬 ตอบกลับ N" — plain text link แบบ FB */
+    /* ===== REPLY SECTION ===== */
+    .reply-section { margin-top: 0.6rem; }
+
+    /* ปุ่ม toggle — เหมือน like-btn แต่สี accent */
     .reply-toggle-btn {
       background: none; border: none; outline: none;
       color: var(--text-faint);
       font-family: 'Sarabun', sans-serif;
-      font-size: 0.8rem; font-weight: 700;
-      cursor: pointer;
-      padding: 0.2rem 0; margin: 0;
-      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.8rem; font-weight: 700; cursor: pointer;
+      padding: 0.15rem 0; display: inline-flex; align-items: center; gap: 0.35rem;
       transition: color 0.15s;
     }
     .reply-toggle-btn:hover { color: var(--crimson); }
-    .reply-toggle-btn .reply-count-chip {
-      font-size: 0.78rem; color: inherit; font-weight: 700;
-    }
+    .reply-toggle-btn .reply-count-chip { font-size: 0.78rem; font-weight: 700; }
 
     /* replies container */
-    .replies-container { display: none; margin-top: 0.5rem; }
+    .replies-container { display: none; margin-top: 0.6rem; }
     .replies-container.open { display: block; }
 
-    /* ===== ทุก reply thread อยู่ใน fb-replies-wrap มีเส้นซ้ายเดียว ===== */
+    /* thread wrap — เส้นซ้าย */
     .fb-replies-wrap {
-      position: relative;
-      margin-left: 20px;
-      padding-left: 20px;
-      border-left: 2px solid rgba(0,0,0,0.1);
+      margin-left: 16px;
+      padding-left: 16px;
+      border-left: 2px solid rgba(0,0,0,0.09);
     }
 
-    /* reply item หลัก */
+    /* reply item */
     .reply-item {
-      display: flex; gap: 8px;
-      margin-bottom: 6px;
-      animation: slideIn 0.25s ease;
-      align-items: flex-start;
+      display: flex; gap: 8px; margin-bottom: 8px;
+      animation: slideIn 0.2s ease; align-items: flex-start;
     }
-    /* nested (reply ต่อ reply) — indent เพิ่มอีก 28px */
-    .reply-nested-wrap {
-      margin-left: 28px;
-      margin-bottom: 6px;
-    }
+    .reply-nested-wrap { margin-left: 36px; margin-bottom: 8px; }
     .reply-item.reply-nested { margin-bottom: 0; }
 
     /* avatar */
     .reply-avatar {
-      width: 32px; height: 32px; border-radius: 50%;
+      width: 30px; height: 30px; border-radius: 50%;
       background: linear-gradient(135deg, var(--royal), var(--accent));
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; flex-shrink: 0;
-      overflow: hidden;
+      font-size: 0.78rem; flex-shrink: 0; overflow: hidden;
     }
-    .reply-nested-wrap .reply-avatar { width: 28px; height: 28px; }
+    .reply-nested-wrap .reply-avatar { width: 26px; height: 26px; }
     .reply-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
 
     /* bubble */
@@ -1583,127 +1569,172 @@
     .reply-bubble {
       display: inline-block;
       background: #f0f2f5;
-      border-radius: 18px;
-      padding: 6px 12px 7px;
-      max-width: 100%;
+      border-radius: 16px;
+      padding: 7px 13px 8px;
+      max-width: calc(100% - 8px);
       word-break: break-word;
     }
-    .reply-author-row {
-      display: flex; align-items: center; gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-    .reply-author-name {
-      font-size: 0.82rem; font-weight: 700; color: var(--text-main);
-      line-height: 1.3;
-    }
-    .reply-text {
-      font-size: 0.88rem; color: rgba(30,30,30,0.88); line-height: 1.45;
-      margin-top: 1px;
-    }
-    .reply-mention-inline {
-      color: #1877f2; font-weight: 700; font-size: 0.88rem;
-    }
+    .reply-author-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .reply-author-name { font-size: 0.83rem; font-weight: 700; color: #111; line-height: 1.3; }
+    .reply-text { font-size: 0.88rem; color: rgba(20,20,20,0.85); line-height: 1.5; margin-top: 2px; }
+    .reply-mention-inline { color: var(--crimson); font-weight: 700; font-size: 0.88rem; }
 
-    /* footer actions — เหมือน FB: เวลา · ถูกใจ · ตอบกลับ */
+    /* footer: เวลา · ถูกใจ · ตอบกลับ · ⋮ */
     .reply-footer {
       display: flex; align-items: center; gap: 10px;
-      margin-top: 4px; padding-left: 4px;
+      margin-top: 3px; padding-left: 4px; flex-wrap: wrap;
     }
     .reply-time { font-size: 0.72rem; color: var(--text-faint); }
     .reply-like-btn {
       background: none; border: none; cursor: pointer;
       font-size: 0.75rem; font-weight: 700; color: var(--text-faint);
-      padding: 0; font-family: 'Sarabun', sans-serif;
-      transition: color 0.15s;
+      padding: 0; font-family: 'Sarabun', sans-serif; transition: color 0.15s;
     }
     .reply-like-btn:hover, .reply-like-btn.liked { color: var(--red); }
     .reply-to-reply-btn {
       background: none; border: none; cursor: pointer;
       font-size: 0.75rem; font-weight: 700; color: var(--text-faint);
-      padding: 0; font-family: 'Sarabun', sans-serif;
-      transition: color 0.15s;
-      display: inline-flex; align-items: center;
+      padding: 0; font-family: 'Sarabun', sans-serif; transition: color 0.15s;
     }
     .reply-to-reply-btn:hover { color: var(--crimson); }
 
-    /* like badge (ลูกกลมเล็กๆ ขวา bubble แบบ FB) */
+    /* like badge */
     .reply-like-badge {
       display: inline-flex; align-items: center; gap: 2px;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.1);
-      border-radius: 20px; padding: 1px 6px;
-      font-size: 0.72rem; color: var(--text-muted);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      margin-left: 4px;
-      vertical-align: middle;
+      background: #fff; border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 20px; padding: 1px 7px;
+      font-size: 0.71rem; color: var(--text-muted);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07); margin-left: auto;
     }
     .reply-like-badge.hidden { display: none; }
 
-    /* ปุ่มลบ */
-    .reply-delete-btn {
+    /* ===== REPLY ITEM MENU (⋮ dropdown) ===== */
+    .reply-menu-wrap { position: relative; margin-left: auto; flex-shrink: 0; }
+    .reply-menu-btn {
       background: none; border: none; cursor: pointer;
-      color: rgba(0,0,0,0.18); font-size: 0.85rem;
-      padding: 2px 4px; border-radius: 4px;
-      transition: all 0.2s; flex-shrink: 0;
+      color: rgba(30,30,30,0.3); font-size: 1rem; line-height: 1;
+      padding: 2px 5px; border-radius: 50%;
+      transition: all 0.15s;
     }
-    .reply-delete-btn:hover { color: #ff6b6b; background: rgba(255,50,50,0.1); }
+    .reply-menu-btn:hover { background: rgba(0,0,0,0.06); color: rgba(30,30,30,0.7); }
+    .reply-dropdown {
+      position: absolute; right: 0; top: 110%;
+      background: #fff; border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 10px; min-width: 150px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.14);
+      z-index: 250; overflow: hidden; display: none;
+    }
+    .reply-dropdown.open { display: block; }
+    .reply-dropdown-item {
+      padding: 0.6rem 1rem; font-size: 0.84rem;
+      font-family: 'Kanit', sans-serif; cursor: pointer;
+      display: flex; align-items: center; gap: 0.5rem;
+      transition: background 0.12s; color: #222;
+    }
+    .reply-dropdown-item:hover { background: #f5f5f5; }
+    .reply-dropdown-item.danger { color: #e53935; }
+    .reply-dropdown-item.danger:hover { background: rgba(229,57,53,0.08); }
 
-    /* "ดูการตอบกลับทั้ง N รายการ" — FB style text link */
-    .replies-show-more-btn {
-      display: inline-flex; align-items: center; gap: 4px;
+    /* edit mode inside bubble */
+    .reply-edit-textarea {
+      width: 100%; background: #fff; border: 1.5px solid rgba(192,57,43,0.4);
+      border-radius: 10px; padding: 6px 10px; margin-top: 4px;
+      font-family: 'Sarabun', sans-serif; font-size: 0.88rem;
+      color: #111; resize: none; outline: none; line-height: 1.5;
+      min-height: 40px; max-height: 140px; display: block; width: 100%;
+    }
+    .reply-edit-actions {
+      display: flex; gap: 6px; margin-top: 5px;
+    }
+    .reply-edit-save {
+      background: var(--crimson); color: #fff; border: none;
+      border-radius: 8px; padding: 4px 14px;
+      font-family: 'Kanit', sans-serif; font-size: 0.8rem; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .reply-edit-save:hover { opacity: 0.85; }
+    .reply-edit-cancel {
+      background: none; color: var(--text-faint); border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 8px; padding: 4px 14px;
+      font-family: 'Kanit', sans-serif; font-size: 0.8rem;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .reply-edit-cancel:hover { border-color: rgba(0,0,0,0.4); color: #333; }
+
+    /* "ดูการตอบกลับทั้ง N" + "ซ่อนการตอบกลับ" */
+    .replies-show-more-btn, .replies-hide-btn {
+      display: inline-flex; align-items: center; gap: 5px;
       background: none; border: none; outline: none;
-      color: var(--text-faint);
-      font-family: 'Sarabun', sans-serif;
-      font-size: 0.8rem; font-weight: 700;
-      cursor: pointer; padding: 4px 0; margin-bottom: 6px;
-      transition: color 0.15s;
+      color: var(--text-faint); font-family: 'Sarabun', sans-serif;
+      font-size: 0.8rem; font-weight: 700; cursor: pointer;
+      padding: 4px 0; margin-top: 2px; transition: color 0.15s;
     }
-    .replies-show-more-btn:hover { color: var(--crimson); }
+    .replies-show-more-btn:hover, .replies-hide-btn:hover { color: var(--crimson); }
 
-    /* Input row — FB style: avatar กลม + input pill กลม */
+    /* Input row */
     .reply-input-outer {
       display: flex; align-items: flex-end; gap: 8px;
-      margin-top: 8px; padding-left: 2px;
+      margin-top: 10px;
     }
     .reply-input-avatar {
-      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
       background: linear-gradient(135deg, var(--royal), var(--accent));
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; overflow: hidden;
+      font-size: 0.78rem; overflow: hidden;
     }
     .reply-input-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
     .reply-input-pill {
       flex: 1; display: flex; align-items: flex-end; gap: 4px;
-      background: #f0f2f5;
-      border-radius: 20px;
-      padding: 6px 8px 6px 14px;
-      border: 1.5px solid transparent;
-      transition: border-color 0.2s;
+      background: #f0f2f5; border-radius: 22px;
+      padding: 7px 8px 7px 14px;
+      border: 1.5px solid transparent; transition: border-color 0.2s, background 0.2s;
     }
-    .reply-input-pill:focus-within { border-color: rgba(192,57,43,0.4); background: #fff; }
+    .reply-input-pill:focus-within { border-color: rgba(192,57,43,0.35); background: #fff; }
     .reply-input {
       flex: 1; background: none; border: none; outline: none;
-      color: var(--text-main); font-family: 'Sarabun', sans-serif;
+      color: #111; font-family: 'Sarabun', sans-serif;
       font-size: 0.88rem; resize: none;
-      min-height: 24px; max-height: 120px;
-      line-height: 1.4; padding: 0;
+      min-height: 22px; max-height: 120px; line-height: 1.4; padding: 0;
     }
-    .reply-input::placeholder { color: rgba(30,30,30,0.35); }
+    .reply-input::placeholder { color: rgba(30,30,30,0.3); font-size: 0.85rem; }
     .reply-send-btn {
       background: none; border: none; cursor: pointer;
-      color: var(--crimson); font-size: 1.15rem;
-      padding: 2px 4px; flex-shrink: 0;
-      transition: opacity 0.2s; line-height: 1;
-      display: flex; align-items: center;
+      color: var(--crimson); font-size: 1.1rem;
+      padding: 1px 4px; flex-shrink: 0;
+      transition: opacity 0.2s; line-height: 1; display: flex; align-items: center;
     }
-    .reply-send-btn:hover { opacity: 0.75; }
-    .reply-send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .reply-send-btn:hover { opacity: 0.7; }
+    .reply-send-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 
-    /* reply-target bar (กำลังตอบ X) */
+    /* ===== COMMENT EDIT MODE ===== */
+    .comment-edit-textarea {
+      width: 100%; background: #fff; border: 1.5px solid rgba(192,57,43,0.4);
+      border-radius: 10px; padding: 8px 12px; margin-top: 6px;
+      font-family: 'Sarabun', sans-serif; font-size: 0.95rem;
+      color: #111; resize: none; outline: none; line-height: 1.6;
+      min-height: 60px; max-height: 200px;
+    }
+    .comment-edit-actions { display: flex; gap: 8px; margin-top: 6px; }
+    .comment-edit-save {
+      background: var(--crimson); color: #fff; border: none;
+      border-radius: 8px; padding: 5px 18px;
+      font-family: 'Kanit', sans-serif; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .comment-edit-save:hover { opacity: 0.85; }
+    .comment-edit-cancel {
+      background: none; color: var(--text-faint); border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 8px; padding: 5px 18px;
+      font-family: 'Kanit', sans-serif; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .comment-edit-cancel:hover { border-color: rgba(0,0,0,0.4); color: #333; }
+
+    /* reply-target bar */
     .reply-target-bar {
       display: none; align-items: center; justify-content: space-between;
       background: rgba(192,57,43,0.06); border: 1px solid rgba(192,57,43,0.2);
-      border-radius: 8px; padding: 4px 10px; margin-bottom: 4px; margin-left: 40px;
+      border-radius: 8px; padding: 4px 10px; margin-bottom: 6px; margin-left: 38px;
       font-size: 0.78rem; color: var(--crimson-dark); font-family: 'Sarabun', sans-serif;
     }
     .reply-target-bar span b { font-weight: 700; }
@@ -4362,8 +4393,9 @@
   function buildReplyItem(r, commentId, myUid) {
     const avatarHtml = (r.photoURL && !r.isAnon)
       ? `<img src="${r.photoURL}" alt="" onerror="this.style.display='none'" />`
-      : `<span style="font-size:0.8rem">${r.avatar || '😊'}</span>`;
-    const canDelete = isAdmin || (myUid && myUid === r.uid);
+      : `<span style="font-size:0.78rem">${r.avatar || '😊'}</span>`;
+    const canManage = isAdmin || (myUid && myUid === r.uid);
+    const canEdit = myUid && myUid === r.uid; // เฉพาะเจ้าของ edit ได้
     const safeReplyName = (r.name || 'ไม่ระบุ').replace(/'/g, "\\'").replace(/"/g, '&quot;');
     const isNested = !!r.replyToId;
     const mentionHtml = r.replyToName
@@ -4380,25 +4412,41 @@
     const replyToReplyBtn = currentUser
       ? `<button class="reply-to-reply-btn" onclick="setReplyTarget('${commentId}','${r.id}','${safeReplyName}')">ตอบกลับ</button>`
       : '';
+    // ⋮ dropdown menu สำหรับ reply
+    let replyMenuHtml = '';
+    if (canManage) {
+      let menuItems = '';
+      if (canEdit) {
+        menuItems += `<div class="reply-dropdown-item" onclick="startEditReply('${commentId}','${r.id}');closeAllReplyMenus()">✏️ แก้ไข</div>`;
+      } else if (isAdmin) {
+        menuItems += `<div class="reply-dropdown-item" onclick="startEditReply('${commentId}','${r.id}');closeAllReplyMenus()">✏️ แก้ไข</div>`;
+      }
+      menuItems += `<div class="reply-dropdown-item danger" onclick="deleteReply('${commentId}','${r.id}')">🗑️ ลบ</div>`;
+      replyMenuHtml = `
+        <div class="reply-menu-wrap" id="reply-menu-wrap-${r.id}">
+          <button class="reply-menu-btn" onclick="toggleReplyMenu('${r.id}',event)">⋮</button>
+          <div class="reply-dropdown" id="reply-menu-${r.id}">${menuItems}</div>
+        </div>`;
+    }
     const itemHtml = `
-      <div class="reply-item${isNested ? ' reply-nested' : ''}">
+      <div class="reply-item${isNested ? ' reply-nested' : ''}" id="reply-item-${r.id}">
         <div class="reply-avatar">${avatarHtml}</div>
         <div class="reply-body">
-          <div class="reply-bubble">
+          <div class="reply-bubble" id="reply-bubble-${r.id}">
             <div class="reply-author-row">
               <span class="reply-author-name">${r.name || 'ไม่ระบุ'}</span>
-              ${(r.isAdmin && !r.isAnon) ? '<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>' : ''}
+              ${(r.isAdmin && !r.isAnon) ? '<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.65rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.1rem 0.5rem;border-radius:20px">สภานักเรียน</span>' : ''}
             </div>
-            <div class="reply-text">${mentionHtml}${(r.text || '').replace(/\n/g,'<br/>')}</div>
+            <div class="reply-text" id="reply-text-${r.id}">${mentionHtml}${(r.text || '').replace(/\n/g,'<br/>')}</div>
           </div>
           <div class="reply-footer">
             <span class="reply-time">${r.time || ''}</span>
             <button class="reply-like-btn${myLiked ? ' liked' : ''}" onclick="toggleReplyLike('${commentId}','${r.id}',this)">ถูกใจ</button>
             ${replyToReplyBtn}
             ${likeBadgeHtml}
-            ${canDelete ? `<button class="reply-delete-btn" onclick="deleteReply('${commentId}','${r.id}')" title="ลบ">🗑️</button>` : ''}
           </div>
         </div>
+        ${replyMenuHtml}
       </div>`;
     return isNested ? `<div class="reply-nested-wrap">${itemHtml}</div>` : itemHtml;
   }
@@ -4416,17 +4464,127 @@
     const visible = showAll ? replies : replies.slice(0, REPLIES_PREVIEW);
 
     let inner = '';
-    inner += visible.map(r => buildReplyItem(r, commentId, myUid)).join('');
+    // ถ้ายังไม่ expand และมี reply เกิน preview — แสดงปุ่ม "ดูทั้งหมด" ก่อน
     if (!showAll) {
-      inner += `<button class="replies-show-more-btn" onclick="expandReplies('${commentId}')">💬 ดูการตอบกลับทั้ง ${replies.length} รายการ</button>`;
+      inner += `<button class="replies-show-more-btn" onclick="expandReplies('${commentId}')">↩ ดูการตอบกลับทั้ง ${replies.length} รายการ</button>`;
     }
-    // ห่อทั้งหมดใน fb-replies-wrap (เส้นซ้าย)
+    inner += visible.map(r => buildReplyItem(r, commentId, myUid)).join('');
+    // ถ้า expand แล้วและมีมากกว่า preview — แสดงปุ่ม "ซ่อน"
+    if (showAll && replies.length > REPLIES_PREVIEW) {
+      inner += `<button class="replies-hide-btn" onclick="collapseReplies('${commentId}')">↑ ซ่อนการตอบกลับ</button>`;
+    }
     list.innerHTML = `<div class="fb-replies-wrap">${inner}</div>`;
   }
 
   window.expandReplies = function(commentId) {
     window._repliesExpanded[commentId] = true;
     renderReplies(commentId);
+  };
+  window.collapseReplies = function(commentId) {
+    window._repliesExpanded[commentId] = false;
+    renderReplies(commentId);
+  };
+
+  /* ===== REPLY MENU ===== */
+  window.toggleReplyMenu = function(replyId, e) {
+    e.stopPropagation();
+    const menu = document.getElementById('reply-menu-' + replyId);
+    if (!menu) return;
+    const isOpen = menu.classList.contains('open');
+    closeAllReplyMenus();
+    if (!isOpen) menu.classList.add('open');
+  };
+  window.closeAllReplyMenus = function() {
+    document.querySelectorAll('.reply-dropdown.open').forEach(m => m.classList.remove('open'));
+  };
+  document.addEventListener('click', function() { window.closeAllReplyMenus(); });
+
+  /* ===== EDIT REPLY ===== */
+  window.startEditReply = function(commentId, replyId) {
+    const textEl = document.getElementById('reply-text-' + replyId);
+    const bubbleEl = document.getElementById('reply-bubble-' + replyId);
+    if (!textEl || !bubbleEl) return;
+    // หา original text จาก cache
+    const reply = (repliesCache[commentId] || []).find(r => r.id === replyId);
+    const originalText = reply ? (reply.text || '') : textEl.innerText;
+    // ซ่อน text เดิม แสดง textarea
+    textEl.style.display = 'none';
+    // ลบ edit form เก่าถ้ามี
+    const oldForm = bubbleEl.querySelector('.reply-edit-form');
+    if (oldForm) oldForm.remove();
+    const form = document.createElement('div');
+    form.className = 'reply-edit-form';
+    form.innerHTML = `
+      <textarea class="reply-edit-textarea" id="reply-edit-ta-${replyId}" rows="2">${originalText}</textarea>
+      <div class="reply-edit-actions">
+        <button class="reply-edit-save" onclick="saveEditReply('${commentId}','${replyId}')">บันทึก</button>
+        <button class="reply-edit-cancel" onclick="cancelEditReply('${replyId}')">ยกเลิก</button>
+      </div>`;
+    bubbleEl.appendChild(form);
+    const ta = document.getElementById('reply-edit-ta-' + replyId);
+    if (ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; ta.focus(); ta.select(); }
+  };
+  window.cancelEditReply = function(replyId) {
+    const textEl = document.getElementById('reply-text-' + replyId);
+    const bubbleEl = document.getElementById('reply-bubble-' + replyId);
+    if (textEl) textEl.style.display = '';
+    const form = bubbleEl ? bubbleEl.querySelector('.reply-edit-form') : null;
+    if (form) form.remove();
+  };
+  window.saveEditReply = async function(commentId, replyId) {
+    const ta = document.getElementById('reply-edit-ta-' + replyId);
+    if (!ta) return;
+    const newText = ta.value.trim();
+    if (!newText) { ta.focus(); return; }
+    const { doc: d, updateDoc: upd } = window._fbWrite || window._fbImports;
+    try {
+      await upd(d(db, 'comments', commentId, 'replies', replyId), { text: newText });
+      showToast('✅ แก้ไขสำเร็จ', '#27ae60');
+    } catch(e) { alert('แก้ไขไม่สำเร็จ'); console.error(e); }
+  };
+
+  /* ===== EDIT COMMENT ===== */
+  window.startEditComment = function(commentId) {
+    // ปิด dropdown ก่อน
+    const menu = document.getElementById('menu-' + commentId);
+    if (menu) menu.classList.remove('open');
+    const comment = allComments.find(c => c.id === commentId);
+    if (!comment) return;
+    const textEl = document.getElementById('comment-text-' + commentId);
+    if (!textEl) return;
+    // ลบ form เก่าถ้ามี
+    const existing = document.getElementById('comment-edit-form-' + commentId);
+    if (existing) existing.remove();
+    textEl.style.display = 'none';
+    const form = document.createElement('div');
+    form.id = 'comment-edit-form-' + commentId;
+    form.innerHTML = `
+      <textarea class="comment-edit-textarea" id="comment-edit-ta-${commentId}" rows="3">${comment.text || ''}</textarea>
+      <div class="comment-edit-actions">
+        <button class="comment-edit-save" onclick="saveEditComment('${commentId}')">บันทึก</button>
+        <button class="comment-edit-cancel" onclick="cancelEditComment('${commentId}')">ยกเลิก</button>
+      </div>`;
+    textEl.parentNode.insertBefore(form, textEl.nextSibling);
+    const ta = document.getElementById('comment-edit-ta-' + commentId);
+    if (ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; ta.focus(); ta.select(); }
+  };
+  window.cancelEditComment = function(commentId) {
+    const textEl = document.getElementById('comment-text-' + commentId);
+    const form = document.getElementById('comment-edit-form-' + commentId);
+    if (textEl) textEl.style.display = '';
+    if (form) form.remove();
+  };
+  window.saveEditComment = async function(commentId) {
+    const ta = document.getElementById('comment-edit-ta-' + commentId);
+    if (!ta) return;
+    const newText = ta.value.trim();
+    if (!newText) { ta.focus(); return; }
+    const { doc: d, updateDoc: upd } = window._fbWrite || window._fbImports;
+    try {
+      await upd(d(db, 'comments', commentId), { text: newText });
+      showToast('✅ แก้ไขสำเร็จ', '#27ae60');
+      cancelEditComment(commentId);
+    } catch(e) { alert('แก้ไขไม่สำเร็จ'); console.error(e); }
   };
   window.toggleReplies = function(commentId, btn) {
     const container = document.getElementById('replies-' + commentId);
@@ -4534,7 +4692,7 @@
       alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
       console.error(e);
     }
-    sendBtn.disabled = false; sendBtn.textContent = 'ส่ง';
+    sendBtn.disabled = false; sendBtn.textContent = '➤';
   };
   window.deleteReply = async function(commentId, replyId) {
     if (!currentUser) return;
@@ -4694,6 +4852,7 @@
             <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
             <div class="comment-dropdown" id="menu-${c.id}">
               <div class="dropdown-item" onclick="revealIdentity('${c.id}')">🔍 ดูตัวจริง</div>
+              <div class="dropdown-item" onclick="startEditComment('${c.id}')">✏️ แก้ไขข้อความ</div>
               ${banBtn}
               <div class="dropdown-item danger" onclick="deleteComment('${c.id}')">🗑️ ลบข้อความ</div>
             </div>
@@ -4726,6 +4885,7 @@
           <div class="comment-menu-wrap" id="menu-wrap-${c.id}">
             <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
             <div class="comment-dropdown" id="menu-${c.id}">
+              <div class="dropdown-item" onclick="startEditComment('${c.id}')">✏️ แก้ไขข้อความ</div>
               <div class="dropdown-item danger" onclick="deleteComment('${c.id}')">🗑️ ลบโพสของฉัน</div>
             </div>
           </div>`;
@@ -4778,7 +4938,7 @@
             </div>
             ${dropdownHtml}
           </div>
-          ${!c.isBanOnly ? `<div class="comment-text">${c.text.replace(/\n/g,'<br/>')}</div>` : ''}
+          ${!c.isBanOnly ? `<div class="comment-text" id="comment-text-${c.id}">${c.text.replace(/\n/g,'<br/>')}</div>` : ''}
           ${!c.isBanOnly && !isBanView ? `<div class="comment-likes">
             <button class="like-btn ${hasLiked ? 'liked' : ''}" onclick="toggleLike('${c.id}')">
               👍 ${c.likes > 0 ? c.likes : ''} เห็นด้วย${hasLiked ? ' ✓' : ''}
