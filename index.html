@@ -4444,10 +4444,18 @@
       setTimeout(() => { btn.disabled = false; btn.style.opacity = '1'; refreshButtonState(); }, backoff);
     }
   };
+  const _likeCooldown = new Map(); // cooldown timer ต่อ comment
+  const LIKE_COOLDOWN_MS = 1500; // ล็อก 1.5 วินาทีหลังกดแต่ละครั้ง
+
   window.toggleLike = async function(docId) {
     if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
-    if (_likeInProgress.has(docId)) return; // กัน spam click ขณะ request ยังไม่เสร็จ
+    // กัน spam: ล็อกถ้ายัง cooldown อยู่ หรือ request ยังไม่เสร็จ
+    if (_likeInProgress.has(docId)) return;
+    if (_likeCooldown.has(docId)) return;
     _likeInProgress.add(docId);
+
+    // ตั้ง cooldown ทันที ก่อนส่ง request
+    _likeCooldown.set(docId, setTimeout(() => _likeCooldown.delete(docId), LIKE_COOLDOWN_MS));
 
     const uid = currentUser.uid;
     const ref = doc(db, 'comments', docId);
@@ -4460,6 +4468,7 @@
     // Optimistic UI — อัปเดต DOM ก่อนรอ Firestore
     const badge = document.getElementById('comment-like-badge-' + docId);
     const btn = document.querySelector(`button.like-btn[onclick="toggleLike('${docId}')"]`);
+    if (btn) btn.disabled = true; // disable ปุ่มระหว่าง cooldown
     if (badge) {
       if (newCount > 0) { badge.textContent = '👍 ' + newCount; badge.classList.remove('hidden'); }
       else { badge.classList.add('hidden'); }
@@ -4483,7 +4492,12 @@
         else { btn.classList.remove('liked'); btn.innerHTML = '👍 ถูกใจ'; }
       }
     } finally {
-      _likeInProgress.delete(docId); // ปลดล็อกหลัง request เสร็จ
+      _likeInProgress.delete(docId);
+      // re-enable ปุ่มหลัง cooldown หมด
+      setTimeout(() => {
+        const b = document.querySelector(`button.like-btn[onclick="toggleLike('${docId}')"]`);
+        if (b) b.disabled = false;
+      }, LIKE_COOLDOWN_MS);
     }
   };
   window._revealComment = function(docId) {
