@@ -1597,13 +1597,13 @@
     }
     .reply-to-reply-btn:hover { color: var(--crimson); }
 
-    /* like badge */
+    /* like badge — อยู่ข้างๆปุ่มถูกใจ ไม่ push ไปขวา */
     .reply-like-badge {
       display: inline-flex; align-items: center; gap: 2px;
       background: #fff; border: 1px solid rgba(0,0,0,0.1);
       border-radius: 20px; padding: 1px 7px;
       font-size: 0.71rem; color: var(--text-muted);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.07); margin-left: auto;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
     }
     .reply-like-badge.hidden { display: none; }
 
@@ -1767,14 +1767,34 @@
       color: var(--text-faint); font-family: 'Sarabun', sans-serif;
       border-top: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
     }
-    .comment-edit-textarea {
-      width: 100%; background: #fff; border: 1.5px solid rgba(192,57,43,0.4);
-      border-radius: 10px; padding: 8px 12px; margin-top: 6px;
-      font-family: 'Sarabun', sans-serif; font-size: 0.95rem;
-      color: #111; resize: none; outline: none; line-height: 1.6;
-      min-height: 60px; max-height: 200px;
+    /* ===== COMMENT EDIT MODE ===== */
+    .comment-edit-wrap {
+      display: flex; gap: 10px; align-items: flex-start;
+      margin-top: 8px;
     }
-    .comment-edit-actions { display: flex; gap: 8px; margin-top: 6px; }
+    .comment-edit-avatar {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--royal), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; overflow: hidden;
+    }
+    .comment-edit-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+    .comment-edit-bubble {
+      flex: 1; background: #f0f2f5; border-radius: 18px;
+      padding: 10px 14px 8px;
+      border: 1.5px solid rgba(192,57,43,0.3);
+    }
+    .comment-edit-textarea {
+      width: 100%; background: transparent; border: none; outline: none;
+      font-family: 'Sarabun', sans-serif; font-size: 0.95rem;
+      color: #111; resize: none; line-height: 1.6;
+      min-height: 48px; max-height: 300px;
+      display: block;
+    }
+    .comment-edit-actions {
+      display: flex; gap: 8px; margin-top: 8px;
+      border-top: 1px solid rgba(0,0,0,0.08); padding-top: 8px;
+    }
     .comment-edit-save {
       background: var(--crimson); color: #fff; border: none;
       border-radius: 8px; padding: 5px 18px;
@@ -1789,6 +1809,10 @@
       cursor: pointer; transition: all 0.15s;
     }
     .comment-edit-cancel:hover { border-color: rgba(0,0,0,0.4); color: #333; }
+    .comment-edit-hint {
+      font-size: 0.72rem; color: var(--text-faint);
+      font-family: 'Sarabun', sans-serif; margin-top: 4px;
+    }
 
     /* reply-target bar */
     .reply-target-bar {
@@ -4550,9 +4574,9 @@
           <div class="reply-footer">
             <span class="reply-time">${r.time || ''}</span>
             <button class="reply-like-btn${myLiked ? ' liked' : ''}" onclick="toggleReplyLike('${commentId}','${r.id}',this)">ถูกใจ</button>
+            ${likeBadgeHtml}
             ${replyToReplyBtn}
             ${r.editedAt ? `<button class="edited-label" onclick="window.openEditHistory('${encodeURIComponent(JSON.stringify(Array.isArray(r.editHistory) ? r.editHistory : [{text:r.text,editedAt:r.editedAt}]))}')">แก้ไขแล้ว</button>` : ''}
-            ${likeBadgeHtml}
           </div>
         </div>
         ${replyMenuHtml}
@@ -4750,17 +4774,40 @@
     const existing = document.getElementById('comment-edit-form-' + commentId);
     if (existing) existing.remove();
     textEl.style.display = 'none';
+    const avatarHtml = (currentUser.photoURL && !comment.isAnon)
+      ? `<img src="${currentUser.photoURL}" onerror="this.style.display='none'" />`
+      : `<span style="font-size:0.8rem">${comment.avatar || '😊'}</span>`;
     const form = document.createElement('div');
     form.id = 'comment-edit-form-' + commentId;
     form.innerHTML = `
-      <textarea class="comment-edit-textarea" id="comment-edit-ta-${commentId}" rows="3">${comment.text || ''}</textarea>
-      <div class="comment-edit-actions">
-        <button class="comment-edit-save" onclick="saveEditComment('${commentId}')">บันทึก</button>
-        <button class="comment-edit-cancel" onclick="cancelEditComment('${commentId}')">ยกเลิก</button>
+      <div class="comment-edit-wrap">
+        <div class="comment-edit-avatar">${avatarHtml}</div>
+        <div style="flex:1">
+          <div class="comment-edit-bubble">
+            <textarea class="comment-edit-textarea" id="comment-edit-ta-${commentId}" rows="3" placeholder="แก้ไขข้อความ...">${comment.text || ''}</textarea>
+            <div class="comment-edit-actions">
+              <button class="comment-edit-save" onclick="saveEditComment('${commentId}')">บันทึก</button>
+              <button class="comment-edit-cancel" onclick="cancelEditComment('${commentId}')">ยกเลิก</button>
+            </div>
+          </div>
+          <div class="comment-edit-hint">กด Esc หรือ "ยกเลิก" เพื่อยกเลิกการแก้ไข</div>
+        </div>
       </div>`;
     textEl.parentNode.insertBefore(form, textEl.nextSibling);
     const ta = document.getElementById('comment-edit-ta-' + commentId);
-    if (ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; ta.focus(); ta.select(); }
+    if (ta) {
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+      ta.focus();
+      ta.select();
+      // กด Esc เพื่อยกเลิก
+      ta.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') cancelEditComment(commentId);
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) saveEditComment(commentId);
+        // auto-resize
+        setTimeout(() => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }, 0);
+      });
+    }
   };
   window.cancelEditComment = function(commentId) {
     const textEl = document.getElementById('comment-text-' + commentId);
