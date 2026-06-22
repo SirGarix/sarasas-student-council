@@ -1555,10 +1555,22 @@
       animation: slideIn 0.3s ease;
       align-items: flex-start;
     }
+    /* nested reply — เยื้องเข้าไปใต้ parent */
     .reply-item.reply-nested {
-      margin-left: 1.8rem;
-      padding-left: 0.75rem;
-      border-left: 2px solid rgba(0,0,0,0.13);
+      margin-left: 2.2rem;
+    }
+    /* เส้นแนวตั้งซ้าย bubble แบบ Facebook */
+    .reply-item.reply-nested .reply-body {
+      position: relative;
+      padding-left: 0.85rem;
+    }
+    .reply-item.reply-nested .reply-body::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 2px;
     }
     .reply-avatar {
       width: 28px; height: 28px; border-radius: 50%;
@@ -4294,6 +4306,7 @@
     catch(e) { alert('ลบไม่สำเร็จ'); console.error(e); }
   };
   const repliesCache = {};
+  window.repliesCache = repliesCache; // expose for toggleReplyLike
   const replyListeners = {};
   function subscribeReplies(commentId) {
     if (replyListeners[commentId]) return;
@@ -4478,19 +4491,20 @@
   window.toggleReplyLike = async function(commentId, replyId, btn) {
     if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
     const myUid = currentUser.uid;
-    const { doc: d, updateDoc: upd, getDoc: getD } = window._fbImports;
+    const { updateDoc: upd, doc: d, increment: inc, arrayUnion, arrayRemove } = window._fbWrite;
     const replyRef = d(db, 'comments', commentId, 'replies', replyId);
     try {
-      const snap = await getD(replyRef);
-      if (!snap.exists()) return;
-      const data = snap.data();
-      const likedBy = data.likedBy || {};
-      const liked = !!likedBy[myUid];
-      const newLikedBy = { ...likedBy };
-      if (liked) { delete newLikedBy[myUid]; } else { newLikedBy[myUid] = true; }
-      const newCount = Object.keys(newLikedBy).length;
-      await upd(replyRef, { likedBy: newLikedBy, likes: newCount });
+      // ดูสถานะปัจจุบันจาก cache แทนการ getDoc (เร็วกว่า)
+      const cached = (window.repliesCache && window.repliesCache[commentId] || []).find(r => r.id === replyId);
+      const likedBy = (cached && cached.likedBy) || [];
+      const liked = Array.isArray(likedBy) ? likedBy.includes(myUid) : !!likedBy[myUid];
+      if (liked) {
+        await upd(replyRef, { likes: inc(-1), likedBy: arrayRemove(myUid) });
+      } else {
+        await upd(replyRef, { likes: inc(1), likedBy: arrayUnion(myUid) });
+      }
       btn.classList.toggle('liked', !liked);
+      const newCount = (cached ? (cached.likes || 0) : 0) + (liked ? -1 : 1);
       const badge = document.getElementById('reply-like-badge-' + replyId);
       if (badge) {
         if (newCount > 0) {
