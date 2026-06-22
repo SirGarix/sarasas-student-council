@@ -4172,42 +4172,49 @@
   const q = query(commentsCol, orderBy('createdAt', 'desc'));
   const _likeInProgress = new Set();
 
+  // snapshot ครั้งก่อน สำหรับ diff
+  let _prevSnapshotMap = {};
+
   onSnapshot(q, (snapshot) => {
     const newComments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    // ตรวจว่า snapshot เปลี่ยนแค่ likes/likedBy หรือเปล่า
-    const isLikeOnlyChange = allComments.length === newComments.length &&
-      newComments.every((nc, i) => {
-        const oc = allComments[i];
-        if (!oc || oc.id !== nc.id) return false;
-        const { likes: nl, likedBy: nlb, ...nRest } = nc;
-        const { likes: ol, likedBy: olb, ...oRest } = oc;
-        return JSON.stringify(nRest) === JSON.stringify(oRest);
-      });
+    // สร้าง map ใหม่เพื่อ diff
+    const newMap = {};
+    newComments.forEach(nc => { newMap[nc.id] = nc; });
 
+    // field ที่ถ้าเปลี่ยนต้อง re-render จริงๆ (ไม่นับ likes/likedBy)
+    const RENDER_FIELDS = ['text', 'name', 'uid', 'isAnon', 'isPrivate', 'isAdmin', 'level', 'type', 'editedAt', 'editHistory', 'photoURL', 'realName', 'realPhotoURL'];
+
+    let needsFullRender = false;
+    const prevIds = Object.keys(_prevSnapshotMap);
+    const newIds = newComments.map(c => c.id);
+
+    // มี comment เพิ่ม/ลด → re-render
+    if (prevIds.length !== newIds.length || prevIds.some((id, i) => id !== newIds[i])) {
+      needsFullRender = true;
+    } else {
+      // ตรวจแค่ field ที่กระทบ UI จริงๆ
+      for (const nc of newComments) {
+        const oc = _prevSnapshotMap[nc.id];
+        if (!oc) { needsFullRender = true; break; }
+        for (const f of RENDER_FIELDS) {
+          if (JSON.stringify(oc[f]) !== JSON.stringify(nc[f])) {
+            needsFullRender = true;
+            break;
+          }
+        }
+        if (needsFullRender) break;
+      }
+    }
+
+    _prevSnapshotMap = newMap;
     allComments = newComments;
     window._allComments = allComments;
     window._renderComments = renderComments;
 
-    if (isLikeOnlyChange) {
-      // อัปเดตเฉพาะ badge และปุ่ม like โดยไม่ re-render ทั้งหน้า
-      const myUid = currentUser ? currentUser.uid : null;
-      newComments.forEach(nc => {
-        const badge = document.getElementById('comment-like-badge-' + nc.id);
-        if (badge) {
-          if ((nc.likes || 0) > 0) { badge.textContent = '👍 ' + nc.likes; badge.classList.remove('hidden'); }
-          else { badge.classList.add('hidden'); }
-        }
-        // อัปเดตปุ่มเฉพาะ comment ที่ไม่ได้กำลัง like อยู่ (ไม่งั้นจะชน optimistic UI)
-        if (!_likeInProgress.has(nc.id)) {
-          const btn = document.querySelector(`button.like-btn[onclick="toggleLike('${nc.id}')"]`);
-          if (btn) {
-            const hasLiked = myUid && Array.isArray(nc.likedBy) && nc.likedBy.includes(myUid);
-            if (hasLiked) { btn.classList.add('liked'); btn.innerHTML = '👍 ถูกใจ ✓'; }
-            else { btn.classList.remove('liked'); btn.innerHTML = '👍 ถูกใจ'; }
-          }
-        }
-      });
+    if (!needsFullRender) {
+      // เปลี่ยนแค่ likes/likedBy → patch เฉพาะจุด ไม่ re-render ทั้งหน้า
+      patchLikesOnly(newComments);
       return;
     }
 
@@ -5112,6 +5119,26 @@
       }
     } catch(e) { console.error('toggleReplyLike error', e); }
   };
+  // patch เฉพาะ like badge + ปุ่ม โดยไม่แตะ DOM อื่น
+  function patchLikesOnly(comments) {
+    const myUid = currentUser ? currentUser.uid : null;
+    comments.forEach(nc => {
+      const badge = document.getElementById('comment-like-badge-' + nc.id);
+      if (badge) {
+        if ((nc.likes || 0) > 0) { badge.textContent = '👍 ' + nc.likes; badge.classList.remove('hidden'); }
+        else { badge.classList.add('hidden'); }
+      }
+      if (!_likeInProgress.has(nc.id)) {
+        const btn = document.querySelector(`button.like-btn[onclick="toggleLike('${nc.id}')"]`);
+        if (btn) {
+          const hasLiked = myUid && Array.isArray(nc.likedBy) && nc.likedBy.includes(myUid);
+          if (hasLiked) { btn.classList.add('liked'); btn.innerHTML = '👍 ถูกใจ ✓'; }
+          else { btn.classList.remove('liked'); btn.innerHTML = '👍 ถูกใจ'; }
+        }
+      }
+    });
+  }
+
   function renderComments(comments) {
     const list = document.getElementById('commentsList');
     const filterType = window._filterType || 'ทั้งหมด';
