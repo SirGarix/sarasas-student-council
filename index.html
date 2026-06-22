@@ -1555,22 +1555,34 @@
       animation: slideIn 0.3s ease;
       align-items: flex-start;
     }
-    /* nested reply — เยื้องเข้าไปใต้ parent */
-    .reply-item.reply-nested {
-      margin-left: 2.2rem;
-    }
-    /* เส้นแนวตั้งซ้าย bubble แบบ Facebook */
-    .reply-item.reply-nested .reply-body {
+    /* nested reply wrapper — ใช้ position relative เพื่อวางเส้น */
+    .reply-nested-wrap {
       position: relative;
-      padding-left: 0.85rem;
+      margin-left: 2.0rem;
+      padding-left: 1.1rem;
     }
-    .reply-item.reply-nested .reply-body::before {
+    /* เส้นแนวตั้งด้านซ้าย */
+    .reply-nested-wrap::before {
       content: '';
       position: absolute;
-      left: 0; top: 0; bottom: 0;
+      left: 13px; top: 0; bottom: 16px;
       width: 2px;
       background: rgba(0,0,0,0.15);
       border-radius: 2px;
+    }
+    /* เส้นโค้งแนวนอนเข้าหา avatar */
+    .reply-nested-wrap::after {
+      content: '';
+      position: absolute;
+      left: 13px; bottom: 16px;
+      width: 14px; height: 14px;
+      border-left: 2px solid rgba(0,0,0,0.15);
+      border-bottom: 2px solid rgba(0,0,0,0.15);
+      border-radius: 0 0 0 8px;
+      background: transparent;
+    }
+    .reply-item.reply-nested {
+      margin-left: 0;
     }
     .reply-avatar {
       width: 28px; height: 28px; border-radius: 50%;
@@ -4322,56 +4334,75 @@
       });
     });
   }
+  const REPLIES_PREVIEW = 3;
+  window._repliesExpanded = window._repliesExpanded || {};
+
+  function buildReplyItem(r, commentId, myUid) {
+    const avatarHtml = (r.photoURL && !r.isAnon)
+      ? `<img src="${r.photoURL}" alt="" onerror="this.style.display='none'" />`
+      : `<span style="font-size:0.75rem">${r.avatar || '😊'}</span>`;
+    const canDelete = isAdmin || (myUid && myUid === r.uid);
+    const safeReplyName = (r.name || 'ไม่ระบุ').replace(/'/g, "\'").replace(/"/g, '&quot;');
+    const isNested = !!r.replyToId;
+    const mentionHtml = r.replyToName
+      ? `<span class="reply-mention-inline">@${r.replyToName}</span> `
+      : '';
+    const likeCount = r.likes || 0;
+    const likedBy = r.likedBy || [];
+    const myLiked = currentUser && (
+      Array.isArray(likedBy) ? likedBy.includes(currentUser.uid) : !!likedBy[currentUser.uid]
+    );
+    const likeBadgeHtml = likeCount > 0
+      ? `<span class="reply-like-badge" id="reply-like-badge-${r.id}">👍 ${likeCount}</span>`
+      : `<span class="reply-like-badge hidden" id="reply-like-badge-${r.id}">👍 0</span>`;
+    const replyToReplyBtn = currentUser
+      ? `<button class="reply-to-reply-btn" onclick="setReplyTarget('${commentId}','${r.id}','${safeReplyName}')">ตอบกลับ</button>`
+      : '';
+    const itemHtml = `
+      <div class="reply-item${isNested ? ' reply-nested' : ''}">
+        <div class="reply-avatar">${avatarHtml}</div>
+        <div class="reply-body">
+          <div class="reply-bubble">
+            <div class="reply-author-row">
+              <span class="reply-author-name">${r.name || 'ไม่ระบุ'}</span>
+              ${(r.isAdmin && !r.isAnon) ? '<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>' : ''}
+            </div>
+            <div class="reply-text">${mentionHtml}${(r.text || '').replace(/\n/g,'<br/>')}</div>
+          </div>
+          <div class="reply-footer">
+            <span class="reply-time">${r.time || ''}</span>
+            <button class="reply-like-btn${myLiked ? ' liked' : ''}" onclick="toggleReplyLike('${commentId}','${r.id}',this)">ถูกใจ</button>
+            ${replyToReplyBtn}
+            ${likeBadgeHtml}
+            ${canDelete ? `<button class="reply-delete-btn" onclick="deleteReply('${commentId}','${r.id}')" title="ลบ">🗑️</button>` : ''}
+          </div>
+        </div>
+      </div>`;
+    return isNested ? `<div class="reply-nested-wrap">${itemHtml}</div>` : itemHtml;
+  }
+
   function renderReplies(commentId) {
     const list = document.getElementById('replies-list-' + commentId);
     if (!list) return;
     const replies = repliesCache[commentId] || [];
-    if (replies.length === 0) {
-      list.innerHTML = '';
-      return;
-    }
+    if (replies.length === 0) { list.innerHTML = ''; return; }
     const myUid = currentUser ? currentUser.uid : null;
-    list.innerHTML = replies.map(r => {
-      const avatarHtml = (r.photoURL && !r.isAnon)
-        ? `<img src="${r.photoURL}" alt="" onerror="this.style.display='none'" />`
-        : `<span style="font-size:0.75rem">${r.avatar || '😊'}</span>`;
-      const canDelete = isAdmin || (myUid && myUid === r.uid);
-      const safeReplyName = (r.name || 'ไม่ระบุ').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-      const isNested = !!r.replyToId;
-      const mentionHtml = r.replyToName
-        ? `<span class="reply-mention-inline">@${r.replyToName}</span> `
-        : '';
-      const likeCount = r.likes || 0;
-      const myLiked = r.likedBy && currentUser && r.likedBy[currentUser.uid];
-      const likeBadgeHtml = likeCount > 0
-        ? `<span class="reply-like-badge" id="reply-like-badge-${r.id}">👍 ${likeCount}</span>`
-        : `<span class="reply-like-badge hidden" id="reply-like-badge-${r.id}">👍 0</span>`;
-      const replyToReplyBtn = currentUser
-        ? `<button class="reply-to-reply-btn" onclick="setReplyTarget('${commentId}','${r.id}','${safeReplyName}')">ตอบกลับ</button>`
-        : '';
-      return `
-        <div class="reply-item${isNested ? ' reply-nested' : ''}">
-          <div class="reply-avatar">${avatarHtml}</div>
-          <div class="reply-body">
-            <div class="reply-bubble">
-              <div class="reply-author-row">
-                <span class="reply-author-name">${r.name || 'ไม่ระบุ'}</span>
-                ${(r.isAdmin && !r.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>` : ''}
-              </div>
-              <div class="reply-text">${mentionHtml}${(r.text || '').replace(/\n/g,'<br/>')}</div>
-            </div>
-            <div class="reply-footer">
-              <span class="reply-time">${r.time || ''}</span>
-              <button class="reply-like-btn${myLiked ? ' liked' : ''}" onclick="toggleReplyLike('${commentId}','${r.id}',this)">ถูกใจ</button>
-              ${replyToReplyBtn}
-              ${likeBadgeHtml}
-              ${canDelete ? `<button class="reply-delete-btn" onclick="deleteReply('${commentId}','${r.id}')" title="ลบ">🗑️</button>` : ''}
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
+    const expanded = !!window._repliesExpanded[commentId];
+    const showAll = expanded || replies.length <= REPLIES_PREVIEW;
+    const visible = showAll ? replies : replies.slice(0, REPLIES_PREVIEW);
+
+    let html = '';
+    if (!showAll) {
+      html += `<button class="replies-show-more-btn" onclick="expandReplies('${commentId}')">💬 ดูการตอบกลับทั้ง ${replies.length} รายการ</button>`;
+    }
+    html += visible.map(r => buildReplyItem(r, commentId, myUid)).join('');
+    list.innerHTML = html;
   }
+
+  window.expandReplies = function(commentId) {
+    window._repliesExpanded[commentId] = true;
+    renderReplies(commentId);
+  };
   window.toggleReplies = function(commentId, btn) {
     const container = document.getElementById('replies-' + commentId);
     if (!container) return;
