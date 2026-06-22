@@ -788,7 +788,6 @@
       border-radius: 16px; padding: 1.2rem 1.5rem;
       margin-bottom: 1rem; transition: border-color 0.2s;
       animation: slideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-      contain: layout style;
       box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
     @keyframes slideIn {
@@ -1124,11 +1123,11 @@
     }
     .comment-menu-btn:hover { background: rgba(0,0,0,0.06); color: rgba(30,30,30,0.9); }
     .comment-dropdown {
-      position: absolute; right: 0; top: 110%;
+      position: fixed;
       background: var(--dark-mid); border: 1px solid rgba(192,57,43,0.18);
       border-radius: 10px; min-width: 160px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-      z-index: 200; overflow: hidden;
+      z-index: 9999; overflow: hidden;
       display: none;
     }
     .comment-dropdown.open { display: block; }
@@ -1618,11 +1617,11 @@
     }
     .reply-menu-btn:hover { background: rgba(0,0,0,0.06); color: rgba(30,30,30,0.7); }
     .reply-dropdown {
-      position: absolute; right: 0; top: 110%;
+      position: fixed;
       background: #fff; border: 1px solid rgba(0,0,0,0.1);
       border-radius: 10px; min-width: 150px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.14);
-      z-index: 250; overflow: hidden; display: none;
+      z-index: 9999; overflow: hidden; display: none;
     }
     .reply-dropdown.open { display: block; }
     .reply-dropdown-item {
@@ -1706,7 +1705,68 @@
     .reply-send-btn:hover { opacity: 0.7; }
     .reply-send-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 
-    /* ===== COMMENT EDIT MODE ===== */
+    /* ===== EDIT HISTORY POPUP ===== */
+    .edited-label {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.72rem; color: var(--text-faint);
+      font-family: 'Sarabun', sans-serif;
+      padding: 0; transition: color 0.15s;
+      text-decoration: underline dotted;
+    }
+    .edited-label:hover { color: var(--crimson); }
+    .edit-history-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+      z-index: 10000; display: flex; align-items: center; justify-content: center;
+      padding: 1rem; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .edit-history-overlay.open { opacity: 1; pointer-events: all; }
+    .edit-history-box {
+      background: #fff; border-radius: 18px;
+      max-width: 420px; width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      overflow: hidden;
+      transform: scale(0.92) translateY(16px);
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
+      opacity: 0;
+      max-height: 80vh; display: flex; flex-direction: column;
+    }
+    .edit-history-overlay.open .edit-history-box { transform: scale(1) translateY(0); opacity: 1; }
+    .edit-history-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.2rem 0.8rem;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      font-family: 'Kanit', sans-serif; font-size: 1rem; font-weight: 700;
+      color: #111; flex-shrink: 0;
+    }
+    .edit-history-close {
+      background: rgba(0,0,0,0.06); border: none; border-radius: 50%;
+      width: 30px; height: 30px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: #555; transition: background 0.15s;
+    }
+    .edit-history-close:hover { background: rgba(0,0,0,0.12); }
+    .edit-history-list { overflow-y: auto; padding: 0.8rem 1.2rem 1.2rem; flex: 1; }
+    .edit-history-entry {
+      background: #f5f5f7; border-radius: 12px; padding: 0.75rem 1rem;
+      margin-bottom: 0.6rem;
+    }
+    .edit-history-entry:last-child { margin-bottom: 0; }
+    .edit-history-meta {
+      font-size: 0.72rem; color: var(--text-faint);
+      font-family: 'Sarabun', sans-serif; margin-bottom: 0.3rem;
+    }
+    .edit-history-text {
+      font-size: 0.88rem; color: #222; line-height: 1.55;
+      font-family: 'Sarabun', sans-serif; white-space: pre-wrap; word-break: break-word;
+    }
+    .edit-history-footer {
+      padding: 0.5rem 1.2rem 0.8rem;
+      font-size: 0.72rem; text-align: center;
+      color: var(--text-faint); font-family: 'Sarabun', sans-serif;
+      border-top: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
+    }
     .comment-edit-textarea {
       width: 100%; background: #fff; border: 1.5px solid rgba(192,57,43,0.4);
       border-radius: 10px; padding: 8px 12px; margin-top: 6px;
@@ -3159,7 +3219,28 @@
       if (d.id !== 'menu-' + id) d.classList.remove('open');
     });
     const menu = document.getElementById('menu-' + id);
-    if (menu) menu.classList.toggle('open');
+    if (!menu) return;
+    const wasOpen = menu.classList.contains('open');
+    if (wasOpen) {
+      menu.classList.remove('open');
+    } else {
+      // คำนวณตำแหน่ง fixed จาก button
+      const btn = e.currentTarget || e.target;
+      const rect = btn.getBoundingClientRect();
+      const menuW = 170;
+      let left = rect.right - menuW;
+      if (left < 4) left = 4;
+      let top = rect.bottom + 4;
+      // ถ้า dropdown จะหลุดออกนอกหน้าจอด้านล่าง ให้แสดงด้านบน
+      const estimatedH = 200;
+      if (top + estimatedH > window.innerHeight) {
+        top = rect.top - estimatedH - 4;
+        if (top < 4) top = 4;
+      }
+      menu.style.left = left + 'px';
+      menu.style.top = top + 'px';
+      menu.classList.add('open');
+    }
   };
   document.addEventListener('mousedown', (e) => {
     if (!e.target.closest('.comment-menu-wrap')) {
@@ -4418,10 +4499,11 @@
       let menuItems = '';
       if (canEdit) {
         menuItems += `<div class="reply-dropdown-item" onclick="startEditReply('${commentId}','${r.id}');closeAllReplyMenus()">✏️ แก้ไข</div>`;
-      } else if (isAdmin) {
-        menuItems += `<div class="reply-dropdown-item" onclick="startEditReply('${commentId}','${r.id}');closeAllReplyMenus()">✏️ แก้ไข</div>`;
       }
-      menuItems += `<div class="reply-dropdown-item danger" onclick="deleteReply('${commentId}','${r.id}')">🗑️ ลบ</div>`;
+      // admin ลบได้แต่แก้ไขไม่ได้ (เฉพาะเจ้าของเท่านั้น)
+      if (isAdmin || canEdit) {
+        menuItems += `<div class="reply-dropdown-item danger" onclick="deleteReply('${commentId}','${r.id}')">🗑️ ลบ</div>`;
+      }
       replyMenuHtml = `
         <div class="reply-menu-wrap" id="reply-menu-wrap-${r.id}">
           <button class="reply-menu-btn" onclick="toggleReplyMenu('${r.id}',event)">⋮</button>
@@ -4443,6 +4525,7 @@
             <span class="reply-time">${r.time || ''}</span>
             <button class="reply-like-btn${myLiked ? ' liked' : ''}" onclick="toggleReplyLike('${commentId}','${r.id}',this)">ถูกใจ</button>
             ${replyToReplyBtn}
+            ${r.editedAt ? `<button class="edited-label" onclick="window.openEditHistory('${encodeURIComponent(JSON.stringify(Array.isArray(r.editHistory) ? r.editHistory : [{text:r.text,editedAt:r.editedAt}]))}')">แก้ไขแล้ว</button>` : ''}
             ${likeBadgeHtml}
           </div>
         </div>
@@ -4494,24 +4577,83 @@
     if (!menu) return;
     const isOpen = menu.classList.contains('open');
     closeAllReplyMenus();
-    if (!isOpen) menu.classList.add('open');
+    if (!isOpen) {
+      const btn = e.currentTarget || e.target;
+      const rect = btn.getBoundingClientRect();
+      const menuW = 160;
+      let left = rect.right - menuW;
+      if (left < 4) left = 4;
+      let top = rect.bottom + 4;
+      const estimatedH = 100;
+      if (top + estimatedH > window.innerHeight) {
+        top = rect.top - estimatedH - 4;
+        if (top < 4) top = 4;
+      }
+      menu.style.left = left + 'px';
+      menu.style.top = top + 'px';
+      menu.classList.add('open');
+    }
   };
   window.closeAllReplyMenus = function() {
     document.querySelectorAll('.reply-dropdown.open').forEach(m => m.classList.remove('open'));
   };
   document.addEventListener('click', function() { window.closeAllReplyMenus(); });
 
-  /* ===== EDIT REPLY ===== */
+  /* ===== EDIT HISTORY POPUP ===== */
+  // inject HTML ครั้งเดียว
+  (function() {
+    const overlay = document.createElement('div');
+    overlay.className = 'edit-history-overlay';
+    overlay.id = 'editHistoryOverlay';
+    overlay.onclick = function(e) { if (e.target === overlay) window.closeEditHistory(); };
+    overlay.innerHTML = `
+      <div class="edit-history-box" id="editHistoryBox">
+        <div class="edit-history-header">
+          <span>ประวัติการแก้ไข</span>
+          <button class="edit-history-close" onclick="window.closeEditHistory()">✕</button>
+        </div>
+        <div class="edit-history-list" id="editHistoryList"></div>
+        <div class="edit-history-footer">การแก้ไขความคิดเห็นจะสามารถเห็นได้ทุกคนที่สามารถเห็นความคิดเห็นนี้ได้</div>
+      </div>`;
+    document.body.appendChild(overlay);
+  })();
+
+  window.closeEditHistory = function() {
+    document.getElementById('editHistoryOverlay').classList.remove('open');
+  };
+
+  window.openEditHistory = function(historyJson) {
+    let history;
+    try { history = JSON.parse(decodeURIComponent(historyJson)); } catch(e) { return; }
+    const list = document.getElementById('editHistoryList');
+    if (!list) return;
+    // เรียงจากใหม่ไปเก่า
+    const sorted = [...history].reverse();
+    list.innerHTML = sorted.map((entry, i) => {
+      const dateStr = entry.editedAt
+        ? new Date(entry.editedAt).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit', day:'numeric', month:'short', year:'2-digit' })
+        : 'ไม่ทราบเวลา';
+      return `<div class="edit-history-entry">
+        <div class="edit-history-meta">${i === 0 ? '🕐 เวอร์ชันปัจจุบัน · ' : ''}${dateStr}</div>
+        <div class="edit-history-text">${(entry.text || '').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      </div>`;
+    }).join('');
+    document.getElementById('editHistoryOverlay').classList.add('open');
+  };
+
+
   window.startEditReply = function(commentId, replyId) {
     const textEl = document.getElementById('reply-text-' + replyId);
     const bubbleEl = document.getElementById('reply-bubble-' + replyId);
     if (!textEl || !bubbleEl) return;
-    // หา original text จาก cache
     const reply = (repliesCache[commentId] || []).find(r => r.id === replyId);
-    const originalText = reply ? (reply.text || '') : textEl.innerText;
-    // ซ่อน text เดิม แสดง textarea
+    // เฉพาะเจ้าของเท่านั้นที่แก้ไขได้
+    if (!reply || !currentUser || currentUser.uid !== reply.uid) {
+      showToast('⚠️ คุณไม่มีสิทธิ์แก้ไขข้อความนี้', '#c0392b');
+      return;
+    }
+    const originalText = reply.text || '';
     textEl.style.display = 'none';
-    // ลบ edit form เก่าถ้ามี
     const oldForm = bubbleEl.querySelector('.reply-edit-form');
     if (oldForm) oldForm.remove();
     const form = document.createElement('div');
@@ -4536,24 +4678,36 @@
   window.saveEditReply = async function(commentId, replyId) {
     const ta = document.getElementById('reply-edit-ta-' + replyId);
     if (!ta) return;
+    // ตรวจสอบสิทธิ์ — เฉพาะเจ้าของเท่านั้น
+    const reply = (repliesCache[commentId] || []).find(r => r.id === replyId);
+    if (!reply || !currentUser || currentUser.uid !== reply.uid) {
+      showToast('⚠️ คุณไม่มีสิทธิ์แก้ไขข้อความนี้', '#c0392b');
+      return;
+    }
     const newText = ta.value.trim();
     if (!newText) { ta.focus(); return; }
+    const now = Date.now();
+    const existingHistory = Array.isArray(reply.editHistory) ? reply.editHistory : [];
+    const newHistory = [...existingHistory, { text: newText, editedAt: now }];
     const { doc: d, updateDoc: upd } = window._fbWrite || window._fbImports;
     try {
-      await upd(d(db, 'comments', commentId, 'replies', replyId), { text: newText });
+      await upd(d(db, 'comments', commentId, 'replies', replyId), {
+        text: newText,
+        editedAt: now,
+        editHistory: newHistory
+      });
       showToast('✅ แก้ไขสำเร็จ', '#27ae60');
     } catch(e) { alert('แก้ไขไม่สำเร็จ'); console.error(e); }
   };
 
   /* ===== EDIT COMMENT ===== */
   window.startEditComment = function(commentId) {
-    // ปิด dropdown ก่อน
     const menu = document.getElementById('menu-' + commentId);
     if (menu) menu.classList.remove('open');
     const comment = allComments.find(c => c.id === commentId);
     if (!comment) return;
-    // ตรวจสอบสิทธิ์: ต้องเป็น admin หรือเจ้าของ comment เท่านั้น
-    if (!isAdmin && (!currentUser || currentUser.uid !== comment.uid)) {
+    // เฉพาะเจ้าของเท่านั้นที่แก้ไขได้ แม้แต่ admin ก็ไม่ได้
+    if (!currentUser || currentUser.uid !== comment.uid) {
       showToast('⚠️ คุณไม่มีสิทธิ์แก้ไขข้อความนี้', '#c0392b');
       return;
     }
@@ -4584,18 +4738,26 @@
   window.saveEditComment = async function(commentId) {
     const ta = document.getElementById('comment-edit-ta-' + commentId);
     if (!ta) return;
-    // ตรวจสอบสิทธิ์อีกครั้งก่อนบันทึก
+    // ตรวจสอบสิทธิ์ — เฉพาะเจ้าของเท่านั้น
     const comment = allComments.find(c => c.id === commentId);
     if (!comment) return;
-    if (!isAdmin && (!currentUser || currentUser.uid !== comment.uid)) {
+    if (!currentUser || currentUser.uid !== comment.uid) {
       showToast('⚠️ คุณไม่มีสิทธิ์แก้ไขข้อความนี้', '#c0392b');
       return;
     }
     const newText = ta.value.trim();
     if (!newText) { ta.focus(); return; }
-    const { doc: d, updateDoc: upd } = window._fbWrite || window._fbImports;
+    const now = Date.now();
+    // สร้าง editHistory entry ใหม่ (เพิ่ม version เก่าก่อน save)
+    const existingHistory = Array.isArray(comment.editHistory) ? comment.editHistory : [];
+    const newHistory = [...existingHistory, { text: newText, editedAt: now }];
+    const { doc: d, updateDoc: upd, arrayUnion } = window._fbWrite || window._fbImports;
     try {
-      await upd(d(db, 'comments', commentId), { text: newText });
+      await upd(d(db, 'comments', commentId), {
+        text: newText,
+        editedAt: now,
+        editHistory: newHistory
+      });
       showToast('✅ แก้ไขสำเร็จ', '#27ae60');
       cancelEditComment(commentId);
     } catch(e) { alert('แก้ไขไม่สำเร็จ'); console.error(e); }
@@ -4866,7 +5028,6 @@
             <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
             <div class="comment-dropdown" id="menu-${c.id}">
               <div class="dropdown-item" onclick="revealIdentity('${c.id}')">🔍 ดูตัวจริง</div>
-              <div class="dropdown-item" onclick="startEditComment('${c.id}')">✏️ แก้ไขข้อความ</div>
               ${banBtn}
               <div class="dropdown-item danger" onclick="deleteComment('${c.id}')">🗑️ ลบข้อความ</div>
             </div>
@@ -4953,10 +5114,11 @@
             ${dropdownHtml}
           </div>
           ${!c.isBanOnly ? `<div class="comment-text" id="comment-text-${c.id}">${c.text.replace(/\n/g,'<br/>')}</div>` : ''}
-          ${!c.isBanOnly && !isBanView ? `<div class="comment-likes">
+          ${!c.isBanOnly && !isBanView ? `<div class="comment-likes" style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
             <button class="like-btn ${hasLiked ? 'liked' : ''}" onclick="toggleLike('${c.id}')">
               👍 ${c.likes > 0 ? c.likes : ''} เห็นด้วย${hasLiked ? ' ✓' : ''}
             </button>
+            ${c.editedAt ? `<button class="edited-label" onclick="window.openEditHistory('${encodeURIComponent(JSON.stringify(Array.isArray(c.editHistory) ? c.editHistory : [{text:c.text,editedAt:c.editedAt}]))}')">แก้ไขแล้ว</button>` : ''}
           </div>
           <div class="reply-section">
             <button class="reply-toggle-btn" onclick="toggleReplies('${c.id}', this)">
