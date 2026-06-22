@@ -5247,7 +5247,7 @@
             <button class="like-btn ${hasLiked ? 'liked' : ''}" onclick="toggleLike('${c.id}')">👍 ถูกใจ${hasLiked ? ' ✓' : ''}</button>
             <button class="reply-toggle-btn" onclick="toggleReplies('${c.id}', this)">💬 ตอบกลับ <span class="reply-count-chip" id="reply-count-${c.id}">${replyCountCache[c.id] || 0}</span></button>
             ${c.editedAt ? `<button class="edited-label" onclick="window.openEditHistory('${encodeURIComponent(JSON.stringify(Array.isArray(c.editHistory) ? c.editHistory : [{text:c.text,editedAt:c.editedAt}]))}')">แก้ไขแล้ว</button>` : ''}
-            ${c.likes > 0 ? `<span class="comment-like-badge" id="comment-like-badge-${c.id}">👍 ${c.likes}</span>` : `<span class="comment-like-badge hidden" id="comment-like-badge-${c.id}">👍 0</span>`}
+            ${c.likes > 0 ? `<span class="comment-like-badge" id="comment-like-badge-${c.id}">👍 ${c.likes}</span>` : `<span class="comment-like-badge hidden" id="comment-like-badge-${c.id}"></span>`}
           </div>
           <div class="reply-section">
             <div class="replies-container" id="replies-${c.id}">
