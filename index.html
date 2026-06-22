@@ -1636,11 +1636,12 @@
 
     /* edit mode inside bubble */
     .reply-edit-textarea {
-      width: 100%; background: #fff; border: 1.5px solid rgba(192,57,43,0.4);
-      border-radius: 10px; padding: 6px 10px; margin-top: 4px;
-      font-family: 'Sarabun', sans-serif; font-size: 0.88rem;
-      color: #111; resize: none; outline: none; line-height: 1.5;
-      min-height: 40px; max-height: 140px; display: block; width: 100%;
+      width: 100%; background: #fff; border: 2px solid rgba(192,57,43,0.45);
+      border-radius: 10px; padding: 8px 12px; margin-top: 4px;
+      font-family: 'Sarabun', sans-serif; font-size: 0.9rem;
+      color: #111; resize: none; outline: none; line-height: 1.55;
+      min-height: 72px; max-height: 400px; display: block; width: 100%;
+      box-shadow: 0 2px 8px rgba(192,57,43,0.07);
     }
     .reply-edit-actions {
       display: flex; gap: 6px; margin-top: 5px;
@@ -1780,16 +1781,18 @@
     }
     .comment-edit-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
     .comment-edit-bubble {
-      flex: 1; background: #f0f2f5; border-radius: 18px;
-      padding: 10px 14px 8px;
-      border: 1.5px solid rgba(192,57,43,0.3);
+      flex: 1; background: #fff; border-radius: 14px;
+      padding: 12px 14px 10px;
+      border: 2px solid rgba(192,57,43,0.45);
+      box-shadow: 0 2px 12px rgba(192,57,43,0.08), 0 1px 4px rgba(0,0,0,0.06);
     }
     .comment-edit-textarea {
       width: 100%; background: transparent; border: none; outline: none;
-      font-family: 'Sarabun', sans-serif; font-size: 0.95rem;
-      color: #111; resize: none; line-height: 1.6;
-      min-height: 48px; max-height: 300px;
-      display: block;
+      font-family: 'Sarabun', sans-serif; font-size: 0.97rem;
+      color: #111; resize: none; line-height: 1.65;
+      min-height: 90px; max-height: 500px;
+      display: block; overflow-y: auto;
+      transition: min-height 0.15s;
     }
     .comment-edit-actions {
       display: flex; gap: 8px; margin-top: 8px;
@@ -4716,14 +4719,21 @@
     const form = document.createElement('div');
     form.className = 'reply-edit-form';
     form.innerHTML = `
-      <textarea class="reply-edit-textarea" id="reply-edit-ta-${replyId}" rows="2">${originalText}</textarea>
+      <textarea class="reply-edit-textarea" id="reply-edit-ta-${replyId}"
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,400)+'px'"
+      >${originalText}</textarea>
       <div class="reply-edit-actions">
         <button class="reply-edit-save" onclick="saveEditReply('${commentId}','${replyId}')">บันทึก</button>
         <button class="reply-edit-cancel" onclick="cancelEditReply('${replyId}')">ยกเลิก</button>
       </div>`;
     bubbleEl.appendChild(form);
     const ta = document.getElementById('reply-edit-ta-' + replyId);
-    if (ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; ta.focus(); ta.select(); }
+    if (ta) {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 400) + 'px';
+      ta.focus();
+      ta.setSelectionRange(ta.value.length, ta.value.length);
+    }
   };
   window.cancelEditReply = function(replyId) {
     const textEl = document.getElementById('reply-text-' + replyId);
@@ -4784,28 +4794,29 @@
         <div class="comment-edit-avatar">${avatarHtml}</div>
         <div style="flex:1">
           <div class="comment-edit-bubble">
-            <textarea class="comment-edit-textarea" id="comment-edit-ta-${commentId}" rows="3" placeholder="แก้ไขข้อความ...">${comment.text || ''}</textarea>
+            <textarea class="comment-edit-textarea" id="comment-edit-ta-${commentId}" placeholder="แก้ไขข้อความ..."
+              oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,500)+'px'"
+            >${comment.text || ''}</textarea>
             <div class="comment-edit-actions">
               <button class="comment-edit-save" onclick="saveEditComment('${commentId}')">บันทึก</button>
               <button class="comment-edit-cancel" onclick="cancelEditComment('${commentId}')">ยกเลิก</button>
             </div>
           </div>
-          <div class="comment-edit-hint">กด Esc หรือ "ยกเลิก" เพื่อยกเลิกการแก้ไข</div>
+          <div class="comment-edit-hint">Ctrl+Enter บันทึก · Esc ยกเลิก</div>
         </div>
       </div>`;
     textEl.parentNode.insertBefore(form, textEl.nextSibling);
     const ta = document.getElementById('comment-edit-ta-' + commentId);
     if (ta) {
+      // auto-resize ทันทีตามเนื้อหาเดิม
       ta.style.height = 'auto';
-      ta.style.height = ta.scrollHeight + 'px';
+      ta.style.height = Math.min(ta.scrollHeight, 500) + 'px';
       ta.focus();
-      ta.select();
+      ta.setSelectionRange(ta.value.length, ta.value.length);
       // กด Esc เพื่อยกเลิก
       ta.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') cancelEditComment(commentId);
         if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) saveEditComment(commentId);
-        // auto-resize
-        setTimeout(() => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }, 0);
       });
     }
   };
@@ -5108,6 +5119,7 @@
             <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
             <div class="comment-dropdown" id="menu-${c.id}">
               <div class="dropdown-item" onclick="revealIdentity('${c.id}')">🔍 ดูตัวจริง</div>
+              ${isOwner ? `<div class="dropdown-item" onclick="startEditComment('${c.id}')">✏️ แก้ไขข้อความ</div>` : ''}
               ${banBtn}
               <div class="dropdown-item danger" onclick="deleteComment('${c.id}')">🗑️ ลบข้อความ</div>
             </div>
