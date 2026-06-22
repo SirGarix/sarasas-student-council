@@ -1649,6 +1649,13 @@
     .reply-dropdown-item.danger:hover { background: rgba(229,57,53,0.08); }
 
     /* edit mode inside bubble */
+    .reply-bubble.editing {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      background: #f0f2f5;
+    }
+    .reply-edit-form { width: 100%; }
     .reply-edit-textarea {
       width: 100%; background: #fff; border: 2px solid rgba(192,57,43,0.45);
       border-radius: 10px; padding: 8px 12px; margin-top: 4px;
@@ -4758,6 +4765,7 @@
         <button class="reply-edit-cancel" onclick="cancelEditReply('${replyId}')">ยกเลิก</button>
       </div>`;
     bubbleEl.appendChild(form);
+    bubbleEl.classList.add('editing');
     const ta = document.getElementById('reply-edit-ta-' + replyId);
     if (ta) {
       ta.style.height = 'auto';
@@ -4770,6 +4778,7 @@
     const textEl = document.getElementById('reply-text-' + replyId);
     const bubbleEl = document.getElementById('reply-bubble-' + replyId);
     if (textEl) textEl.style.display = '';
+    if (bubbleEl) bubbleEl.classList.remove('editing');
     const form = bubbleEl ? bubbleEl.querySelector('.reply-edit-form') : null;
     if (form) form.remove();
   };
