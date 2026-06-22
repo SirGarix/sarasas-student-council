@@ -1520,187 +1520,209 @@
       background: linear-gradient(90deg, #27ae60, #2ecc71, #27ae60);
     }
     .ban-wall-lifted-title { color: #1a7a40; }
+    /* ===== REPLY SECTION — Facebook style ===== */
     .reply-section {
-      margin-top: 0.8rem;
-      border-top: 1px solid rgba(0,0,0,0.07);
-      padding-top: 0.8rem;
+      margin-top: 0.5rem;
+      padding-left: 0.2rem;
     }
+    /* ปุ่ม "💬 ตอบกลับ N" — plain text link แบบ FB */
     .reply-toggle-btn {
-      color: var(--crimson);
+      background: none; border: none; outline: none;
+      color: var(--text-faint);
       font-family: 'Sarabun', sans-serif;
-      font-size: 0.8rem; cursor: pointer;
-      padding: 0.25rem 0.75rem; transition: all 0.2s;
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      background: rgba(192,57,43,0.06);
-      border: 1.5px solid rgba(192,57,43,0.3);
-      border-radius: 50px;
-      outline: none;
+      font-size: 0.8rem; font-weight: 700;
+      cursor: pointer;
+      padding: 0.2rem 0; margin: 0;
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      transition: color 0.15s;
     }
-    .reply-toggle-btn:hover {
-      background: rgba(192,57,43,0.12);
-      border-color: rgba(192,57,43,0.6);
-      color: var(--crimson-dark);
-    }
+    .reply-toggle-btn:hover { color: var(--crimson); }
     .reply-toggle-btn .reply-count-chip {
-      background: rgba(0,0,0,0.06);
-      border: 1px solid rgba(0,0,0,0.1);
-      padding: 0.05rem 0.45rem; border-radius: 10px;
-      font-size: 0.72rem; color: rgba(30,30,30,0.55);
+      font-size: 0.78rem; color: inherit; font-weight: 700;
     }
-    .replies-container { display: none; margin-top: 0.8rem; }
+
+    /* replies container */
+    .replies-container { display: none; margin-top: 0.5rem; }
     .replies-container.open { display: block; }
+
+    /* ===== ทุก reply thread อยู่ใน fb-replies-wrap มีเส้นซ้ายเดียว ===== */
+    .fb-replies-wrap {
+      position: relative;
+      margin-left: 20px;
+      padding-left: 20px;
+      border-left: 2px solid rgba(0,0,0,0.1);
+    }
+
+    /* reply item หลัก */
     .reply-item {
-      display: flex; gap: 0.5rem;
-      margin-bottom: 0.6rem;
-      animation: slideIn 0.3s ease;
+      display: flex; gap: 8px;
+      margin-bottom: 6px;
+      animation: slideIn 0.25s ease;
       align-items: flex-start;
     }
-    /* nested reply wrapper — ใช้ position relative เพื่อวางเส้น */
+    /* nested (reply ต่อ reply) — indent เพิ่มอีก 28px */
     .reply-nested-wrap {
-      position: relative;
-      margin-left: 2.0rem;
-      padding-left: 1.1rem;
+      margin-left: 28px;
+      margin-bottom: 6px;
     }
-    /* เส้นแนวตั้งด้านซ้าย */
-    .reply-nested-wrap::before {
-      content: '';
-      position: absolute;
-      left: 13px; top: 0; bottom: 16px;
-      width: 2px;
-      background: rgba(0,0,0,0.15);
-      border-radius: 2px;
-    }
-    /* เส้นโค้งแนวนอนเข้าหา avatar */
-    .reply-nested-wrap::after {
-      content: '';
-      position: absolute;
-      left: 13px; bottom: 16px;
-      width: 14px; height: 14px;
-      border-left: 2px solid rgba(0,0,0,0.15);
-      border-bottom: 2px solid rgba(0,0,0,0.15);
-      border-radius: 0 0 0 8px;
-      background: transparent;
-    }
-    .reply-item.reply-nested {
-      margin-left: 0;
-    }
+    .reply-item.reply-nested { margin-bottom: 0; }
+
+    /* avatar */
     .reply-avatar {
-      width: 28px; height: 28px; border-radius: 50%;
+      width: 32px; height: 32px; border-radius: 50%;
       background: linear-gradient(135deg, var(--royal), var(--accent));
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; flex-shrink: 0;
-      overflow: hidden; border: 1.5px solid rgba(0,0,0,0.08);
-      margin-top: 2px;
+      font-size: 0.8rem; flex-shrink: 0;
+      overflow: hidden;
     }
+    .reply-nested-wrap .reply-avatar { width: 28px; height: 28px; }
     .reply-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
-    .reply-body { flex: 1; }
+
+    /* bubble */
+    .reply-body { flex: 1; min-width: 0; }
     .reply-bubble {
       display: inline-block;
       background: #f0f2f5;
       border-radius: 18px;
-      padding: 0.45rem 0.85rem 0.5rem;
+      padding: 6px 12px 7px;
       max-width: 100%;
+      word-break: break-word;
     }
     .reply-author-row {
       display: flex; align-items: center; gap: 0.4rem;
-      margin-bottom: 0.1rem; flex-wrap: wrap;
+      flex-wrap: wrap;
     }
-    .reply-author-name { font-size: 0.82rem; font-weight: 700; color: var(--text-main); }
-    .reply-text { font-size: 0.88rem; color: rgba(30,30,30,0.85); line-height: 1.5; }
+    .reply-author-name {
+      font-size: 0.82rem; font-weight: 700; color: var(--text-main);
+      line-height: 1.3;
+    }
+    .reply-text {
+      font-size: 0.88rem; color: rgba(30,30,30,0.88); line-height: 1.45;
+      margin-top: 1px;
+    }
     .reply-mention-inline {
       color: #1877f2; font-weight: 700; font-size: 0.88rem;
     }
+
+    /* footer actions — เหมือน FB: เวลา · ถูกใจ · ตอบกลับ */
     .reply-footer {
-      display: flex; align-items: center; gap: 0.8rem;
-      margin-top: 0.25rem; padding-left: 0.3rem;
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 4px; padding-left: 4px;
     }
     .reply-time { font-size: 0.72rem; color: var(--text-faint); }
     .reply-like-btn {
       background: none; border: none; cursor: pointer;
-      font-size: 0.72rem; font-weight: 700; color: var(--text-faint);
+      font-size: 0.75rem; font-weight: 700; color: var(--text-faint);
       padding: 0; font-family: 'Sarabun', sans-serif;
-      transition: color 0.2s;
+      transition: color 0.15s;
     }
     .reply-like-btn:hover, .reply-like-btn.liked { color: var(--red); }
+    .reply-to-reply-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.75rem; font-weight: 700; color: var(--text-faint);
+      padding: 0; font-family: 'Sarabun', sans-serif;
+      transition: color 0.15s;
+      display: inline-flex; align-items: center;
+    }
+    .reply-to-reply-btn:hover { color: var(--crimson); }
+
+    /* like badge (ลูกกลมเล็กๆ ขวา bubble แบบ FB) */
     .reply-like-badge {
-      display: inline-flex; align-items: center; gap: 0.15rem;
-      background: #fff; border: 1px solid rgba(0,0,0,0.1);
-      border-radius: 20px; padding: 0.05rem 0.45rem;
+      display: inline-flex; align-items: center; gap: 2px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 20px; padding: 1px 6px;
       font-size: 0.72rem; color: var(--text-muted);
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      margin-left: auto;
+      margin-left: 4px;
+      vertical-align: middle;
     }
     .reply-like-badge.hidden { display: none; }
+
+    /* ปุ่มลบ */
     .reply-delete-btn {
       background: none; border: none; cursor: pointer;
-      color: rgba(0,0,0,0.12); font-size: 0.85rem;
-      padding: 0.1rem 0.3rem; border-radius: 4px;
-      transition: all 0.2s; margin-left: auto; flex-shrink: 0;
-      align-self: flex-start;
+      color: rgba(0,0,0,0.18); font-size: 0.85rem;
+      padding: 2px 4px; border-radius: 4px;
+      transition: all 0.2s; flex-shrink: 0;
     }
     .reply-delete-btn:hover { color: #ff6b6b; background: rgba(255,50,50,0.1); }
-    .reply-input-row {
-      display: flex; gap: 0.5rem; align-items: flex-end;
-      margin-top: 0.6rem;
+
+    /* "ดูการตอบกลับทั้ง N รายการ" — FB style text link */
+    .replies-show-more-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: none; border: none; outline: none;
+      color: var(--text-faint);
+      font-family: 'Sarabun', sans-serif;
+      font-size: 0.8rem; font-weight: 700;
+      cursor: pointer; padding: 4px 0; margin-bottom: 6px;
+      transition: color 0.15s;
     }
-    .reply-input {
-      flex: 1;
-      background: #f7f7fa;
-      border: 1px solid rgba(0,0,0,0.1);
-      border-radius: 10px; padding: 0.55rem 0.9rem;
-      color: var(--text-main); font-family: 'Sarabun', sans-serif;
-      font-size: 0.88rem; resize: none; outline: none;
-      transition: border 0.2s; min-height: 38px; max-height: 120px;
+    .replies-show-more-btn:hover { color: var(--crimson); }
+
+    /* Input row — FB style: avatar กลม + input pill กลม */
+    .reply-input-outer {
+      display: flex; align-items: flex-end; gap: 8px;
+      margin-top: 8px; padding-left: 2px;
     }
-    .reply-input:focus { border-color: var(--red); }
-    .reply-input::placeholder { color: rgba(30,30,30,0.25); }
-    .reply-send-btn {
+    .reply-input-avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
       background: linear-gradient(135deg, var(--royal), var(--accent));
-      color: white; border: none; border-radius: 10px;
-      padding: 0.55rem 1rem; font-family: 'Kanit', sans-serif;
-      font-size: 0.82rem; font-weight: 700; cursor: pointer;
-      transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; overflow: hidden;
     }
-    .reply-send-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(192,57,43,0.45); }
-    .reply-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .reply-input-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+    .reply-input-pill {
+      flex: 1; display: flex; align-items: flex-end; gap: 4px;
+      background: #f0f2f5;
+      border-radius: 20px;
+      padding: 6px 8px 6px 14px;
+      border: 1.5px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .reply-input-pill:focus-within { border-color: rgba(192,57,43,0.4); background: #fff; }
+    .reply-input {
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--text-main); font-family: 'Sarabun', sans-serif;
+      font-size: 0.88rem; resize: none;
+      min-height: 24px; max-height: 120px;
+      line-height: 1.4; padding: 0;
+    }
+    .reply-input::placeholder { color: rgba(30,30,30,0.35); }
+    .reply-send-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--crimson); font-size: 1.15rem;
+      padding: 2px 4px; flex-shrink: 0;
+      transition: opacity 0.2s; line-height: 1;
+      display: flex; align-items: center;
+    }
+    .reply-send-btn:hover { opacity: 0.75; }
+    .reply-send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* reply-target bar (กำลังตอบ X) */
     .reply-target-bar {
       display: none; align-items: center; justify-content: space-between;
-      background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.25);
-      border-radius: 8px; padding: 0.45rem 0.7rem; margin-top: 0.6rem;
+      background: rgba(192,57,43,0.06); border: 1px solid rgba(192,57,43,0.2);
+      border-radius: 8px; padding: 4px 10px; margin-bottom: 4px; margin-left: 40px;
       font-size: 0.78rem; color: var(--crimson-dark); font-family: 'Sarabun', sans-serif;
     }
     .reply-target-bar span b { font-weight: 700; }
     .reply-target-bar .reply-target-cancel {
       background: none; border: none; cursor: pointer; color: var(--text-faint);
-      font-size: 0.95rem; padding: 0 0.3rem; line-height: 1; transition: color 0.2s;
+      font-size: 0.95rem; padding: 0 0.2rem; line-height: 1; transition: color 0.2s;
     }
     .reply-target-bar .reply-target-cancel:hover { color: #ff6b6b; }
     .reply-mention-tag {
       font-size: 0.76rem; color: var(--crimson);
-      background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.2);
-      border-radius: 6px; padding: 0.15rem 0.55rem; display: inline-block;
-      margin-bottom: 0.35rem; font-family: 'Sarabun', sans-serif;
+      background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.18);
+      border-radius: 6px; padding: 0.12rem 0.5rem; display: inline-block;
+      margin-bottom: 2px; font-family: 'Sarabun', sans-serif;
     }
     .reply-mention-tag b { font-weight: 700; }
     .reply-actions-row { margin-top: 0; display: flex; gap: 0; }
-    .reply-to-reply-btn {
-      background: none;
-      border: none;
-      color: var(--text-faint);
-      cursor: pointer;
-      font-size: 0.72rem;
-      font-family: 'Sarabun', sans-serif; font-weight: 700;
-      padding: 0;
-      border-radius: 0;
-      display: inline-flex; align-items: center; gap: 0;
-      transition: color 0.2s;
-    }
-    .reply-to-reply-btn::before { content: ''; }
-    .reply-to-reply-btn:hover {
-      color: var(--crimson);
-      background: none;
-      border-color: transparent;
-      transform: none;
+    .reply-login-hint {
+      font-size: 0.8rem; color: var(--text-faint);
+      padding: 6px 0; font-family: 'Sarabun', sans-serif;
     }
     #policy {
       background: linear-gradient(180deg, #f0f0f5 0%, #e8e8ed 60%, #f0f0f5 100%);
@@ -4340,9 +4362,9 @@
   function buildReplyItem(r, commentId, myUid) {
     const avatarHtml = (r.photoURL && !r.isAnon)
       ? `<img src="${r.photoURL}" alt="" onerror="this.style.display='none'" />`
-      : `<span style="font-size:0.75rem">${r.avatar || '😊'}</span>`;
+      : `<span style="font-size:0.8rem">${r.avatar || '😊'}</span>`;
     const canDelete = isAdmin || (myUid && myUid === r.uid);
-    const safeReplyName = (r.name || 'ไม่ระบุ').replace(/'/g, "\'").replace(/"/g, '&quot;');
+    const safeReplyName = (r.name || 'ไม่ระบุ').replace(/'/g, "\\'").replace(/"/g, '&quot;');
     const isNested = !!r.replyToId;
     const mentionHtml = r.replyToName
       ? `<span class="reply-mention-inline">@${r.replyToName}</span> `
@@ -4387,16 +4409,19 @@
     const replies = repliesCache[commentId] || [];
     if (replies.length === 0) { list.innerHTML = ''; return; }
     const myUid = currentUser ? currentUser.uid : null;
-    const expanded = !!window._repliesExpanded[commentId];
+    const container = document.getElementById('replies-' + commentId);
+    const isContainerOpen = container && container.classList.contains('open');
+    const expanded = !!window._repliesExpanded[commentId] || isContainerOpen;
     const showAll = expanded || replies.length <= REPLIES_PREVIEW;
     const visible = showAll ? replies : replies.slice(0, REPLIES_PREVIEW);
 
-    let html = '';
+    let inner = '';
+    inner += visible.map(r => buildReplyItem(r, commentId, myUid)).join('');
     if (!showAll) {
-      html += `<button class="replies-show-more-btn" onclick="expandReplies('${commentId}')">💬 ดูการตอบกลับทั้ง ${replies.length} รายการ</button>`;
+      inner += `<button class="replies-show-more-btn" onclick="expandReplies('${commentId}')">💬 ดูการตอบกลับทั้ง ${replies.length} รายการ</button>`;
     }
-    html += visible.map(r => buildReplyItem(r, commentId, myUid)).join('');
-    list.innerHTML = html;
+    // ห่อทั้งหมดใน fb-replies-wrap (เส้นซ้าย)
+    list.innerHTML = `<div class="fb-replies-wrap">${inner}</div>`;
   }
 
   window.expandReplies = function(commentId) {
@@ -4767,11 +4792,14 @@
               <div id="replies-list-${c.id}"></div>
               ${currentUser ? `
                 <div class="reply-target-bar" id="reply-target-${c.id}"></div>
-                <div class="reply-input-row">
-                  <textarea class="reply-input" id="reply-input-${c.id}" placeholder="พิมพ์ตอบกลับ..." rows="1"
-                    onkeydown="handleReplyKey(event,'${c.id}')"
-                    oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-                  <button class="reply-send-btn" id="reply-btn-${c.id}" onclick="submitReply('${c.id}')">ส่ง</button>
+                <div class="reply-input-outer">
+                  <div class="reply-input-avatar">${currentUser.photoURL ? `<img src="${currentUser.photoURL}" alt="" onerror="this.style.display='none'"/>` : `<span style="font-size:0.8rem">😊</span>`}</div>
+                  <div class="reply-input-pill">
+                    <textarea class="reply-input" id="reply-input-${c.id}" placeholder="ตอบกลับในชื่อ ${currentUser.displayName || 'คุณ'}..." rows="1"
+                      onkeydown="handleReplyKey(event,'${c.id}')"
+                      oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+                    <button class="reply-send-btn" id="reply-btn-${c.id}" onclick="submitReply('${c.id}')">➤</button>
+                  </div>
                 </div>
               ` : `<div class="reply-login-hint">🔑 เข้าสู่ระบบเพื่อตอบกลับ</div>`}
             </div>
