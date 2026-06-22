@@ -1316,7 +1316,7 @@
     }
     .banned-comment-item { background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.2); }
     .history-ban-expired-item { background: rgba(100,100,120,0.05); border: 1px solid rgba(100,100,120,0.15); opacity: 0.75; }
-    .private-comment-item { background: rgba(255,215,0,0.04); border: 1px solid rgba(255,215,0,0.18); }
+    .private-comment-item { background: rgba(192,57,43,0.06); border: 1px solid rgba(192,57,43,0.18); }
     .banned-badge { background: rgba(192,57,43,0.10); color: #922b21; border: 1px solid rgba(192,57,43,0.28); font-size: 0.7rem; font-family: 'Kanit', sans-serif; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 20px; }
     .banned-time-badge { font-size: 0.72rem; color: #7a5800; background: rgba(180,130,0,0.10); border: 1px solid rgba(180,130,0,0.22); padding: 0.15rem 0.6rem; border-radius: 20px; font-family: 'Kanit', sans-serif; }
     .banned-reason { font-size: 0.78rem; color: var(--text-muted); font-style: italic; }
@@ -2441,9 +2441,9 @@
         <span class="anon-label">🕵️ โหมดไม่ระบุตัวตน</span>
         <span class="anon-desc">ซ่อนชื่อจากทุกคน (ยกเว้นทีมเรา)</span>
       </label>
-      <label class="anon-row" for="privateCheck" style="border-color:rgba(255,215,0,0.2);background:rgba(255,215,0,0.04)">
+      <label class="anon-row" for="privateCheck" style="border-color:rgba(192,57,43,0.2);background:rgba(192,57,43,0.06)">
         <input type="checkbox" id="privateCheck" style="accent-color:#f1c40f" />
-        <span class="anon-label" style="color:rgba(255,215,0,0.9)">🔒 ส่งตรงถึงทีม</span>
+        <span class="anon-label" style="color:rgba(192,57,43,0.95)">🔒 ส่งตรงถึงทีม</span>
         <span class="anon-desc">มีแค่ทีมเราเท่านั้นที่เห็น คนอื่นมองไม่เห็น</span>
       </label>
       <div class="form-group" style="margin-bottom:1rem">
@@ -2469,7 +2469,7 @@
       <button class="filter-tab" onclick="setFilter('ขอสิ่งอำนวยความสะดวก', this)">🙏 ขอสิ่งอำนวยความสะดวก</button>
       <button class="filter-tab admin-only-tab" id="adminOnlyTab" style="display:none;background:rgba(192,57,43,0.15);border-color:rgba(192,57,43,0.35);color:#ff8080" onclick="setFilter('__banned__', this)">🚫 รายชื่อคนถูกระงับ</button>
       <button class="filter-tab admin-only-tab" id="adminHistoryTab" style="display:none;background:rgba(120,80,200,0.15);border-color:rgba(120,80,200,0.35);color:#c084fc" onclick="setFilter('__ban_history__', this)">📋 ประวัติรายชื่อคนโดนแบน</button>
-      <button class="filter-tab" id="councilOnlyTab" style="display:none;background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.25);color:rgba(255,215,0,0.85)" onclick="setFilter('__council__', this)">🔒 เฉพาะทีมเรา</button>
+      <button class="filter-tab" id="councilOnlyTab" style="display:none;background:rgba(192,57,43,0.08);border-color:rgba(192,57,43,0.30);color:rgba(192,57,43,0.90)" onclick="setFilter('__council__', this)">🔒 เฉพาะทีมเรา</button>
     </div>
     <div style="margin-bottom:1.5rem">
       <div style="font-family:Kanit,sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:2px;color:rgba(30,30,30,0.45);text-transform:uppercase;margin-bottom:0.6rem">🎓 แสดงเฉพาะระดับชั้น</div>
@@ -2886,7 +2886,7 @@
         // hover: glow เบาๆ ให้รู้ว่ากดได้
         hotspot.addEventListener('mouseenter', function() {
           this.style.background = 'rgba(255,255,255,0.08)';
-          this.style.boxShadow = '0 0 0 2px rgba(255,215,0,0.4)';
+          this.style.boxShadow = '0 0 0 2px rgba(192,57,43,0.45)';
         });
         hotspot.addEventListener('mouseleave', function() {
           this.style.background = 'transparent';
@@ -4608,7 +4608,7 @@
           <div class="reply-bubble" id="reply-bubble-${r.id}">
             <div class="reply-author-row">
               <span class="reply-author-name">${r.name || 'ไม่ระบุ'}</span>
-              ${(r.isAdmin && !r.isAnon) ? '<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.65rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.1rem 0.5rem;border-radius:20px">สภานักเรียน</span>' : ''}
+              ${(r.isAdmin && !r.isAnon) ? '<span style="background:rgba(192,57,43,0.18);color:rgba(192,57,43,1);border:1px solid rgba(192,57,43,0.45);font-size:0.65rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.1rem 0.5rem;border-radius:20px">สภานักเรียน</span>' : ''}
             </div>
             <div class="reply-text" id="reply-text-${r.id}">${mentionHtml}${(r.text || '').replace(/\n/g,'<br/>')}</div>
           </div>
@@ -5217,9 +5217,9 @@
       const privateBadgeHtml = c.isPrivate ? `
         <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem">
           ${isAdmin
-            ? `<span style="background:rgba(255,215,0,0.15);color:rgba(255,215,0,0.9);border:1px solid rgba(255,215,0,0.3);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 เฉพาะทีมของเราเห็น</span>`
+            ? `<span style="background:rgba(192,57,43,0.10);color:rgba(192,57,43,0.95);border:1px solid rgba(192,57,43,0.32);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 เฉพาะทีมของเราเห็น</span>`
             : isOwnerOfThisPost
-              ? `<span style="background:rgba(255,215,0,0.1);color:rgba(255,215,0,0.85);border:1px solid rgba(255,215,0,0.25);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 มีแค่คุณและทีมของเราที่เห็นคอมเม้นนี้</span>`
+              ? `<span style="background:rgba(192,57,43,0.08);color:rgba(192,57,43,0.90);border:1px solid rgba(192,57,43,0.30);font-size:0.7rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🔒 มีแค่คุณและทีมของเราที่เห็นคอมเม้นนี้</span>`
               : ''
           }
         </div>` : '';
@@ -5233,7 +5233,7 @@
             <div class="comment-meta">
               <div class="comment-author">
                 ${nameDisplay}
-                ${(c.isAdmin && !c.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>` : ''}
+                ${(c.isAdmin && !c.isAnon) ? `<span style="background:rgba(192,57,43,0.18);color:rgba(192,57,43,1);border:1px solid rgba(192,57,43,0.45);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>` : ''}
                 ${isBanView && cEmail ? `<span class="comment-level-badge" style="font-size:0.65rem">${cEmail}</span>` : ''}
                 ${c.level ? `<span class="comment-level-badge">${c.level}</span>` : ''}
                 ${c.type ? `<span class="comment-type-pill pill-${c.type}">${c.type}</span>` : ''}
