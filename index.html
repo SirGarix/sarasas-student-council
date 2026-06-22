@@ -6,8 +6,6 @@
   <title>SWSKPROMAX | สารสาสน์วิเทศสมุทรสาคร</title>
     <link rel="icon" type="image/png" href="https://pub-3d4ce6089b0d434591154a2f1344b9fb.r2.dev/topicon.webp">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&family=Kanit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-  <!-- EmailJS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     :root {
       /* Brand colors */
@@ -1608,50 +1606,9 @@
     }
     .reply-send-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(192,57,43,0.45); }
     .reply-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    /* Nested reply & quote styles */
-    .reply-quote-banner {
-      display: flex; align-items: center; gap: 0.4rem;
-      background: rgba(192,57,43,0.06);
-      border-left: 3px solid rgba(192,57,43,0.45);
-      border-radius: 0 8px 8px 0;
-      padding: 0.35rem 0.75rem;
-      margin-bottom: 0.5rem;
-      font-size: 0.78rem; color: rgba(30,30,30,0.55);
-      font-family: 'Sarabun', sans-serif;
+      font-size: 0.78rem; color: var(--text-faint);
+      font-family: 'Sarabun', sans-serif; margin-top: 0.5rem;
     }
-    .reply-quote-name { font-weight: 700; color: var(--crimson); }
-    .reply-quote-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px; }
-    .reply-reply-btn {
-      background: none; border: none; cursor: pointer;
-      color: rgba(30,30,30,0.3); font-size: 0.75rem;
-      padding: 0.1rem 0.35rem; border-radius: 4px;
-      transition: all 0.2s; flex-shrink: 0;
-      font-family: 'Sarabun', sans-serif;
-    }
-    .reply-reply-btn:hover { color: var(--crimson); background: rgba(192,57,43,0.08); }
-    .reply-input-quoting {
-      border-color: rgba(192,57,43,0.35) !important;
-      border-radius: 0 0 10px 10px !important;
-    }
-    .reply-input-quote-label {
-      font-size: 0.72rem; color: var(--crimson);
-      font-family: 'Kanit', sans-serif; font-weight: 600;
-      padding: 0.2rem 0.7rem;
-      background: rgba(192,57,43,0.07);
-      border-radius: 8px 8px 0 0;
-      display: flex; align-items: center; gap: 0.3rem;
-      border: 1px solid rgba(192,57,43,0.2); border-bottom: none;
-    }
-    .reply-input-quote-label button {
-      background: none; border: none; cursor: pointer;
-      color: rgba(30,30,30,0.4); font-size: 0.75rem;
-      padding: 0 0.2rem; margin-left: auto;
-      transition: color 0.2s;
-    }
-    .reply-input-quote-label button:hover { color: #c0392b; }
-    .reply-input-row-wrap { display: flex; flex-direction: column; flex: 1; min-width: 0; }
-    .reply-hint-unused { font-size: 0.78rem; color: var(--text-faint);
-      font-family: 'Sarabun', sans-serif; margin-top: 0.5rem; }
     #policy {
       background: linear-gradient(180deg, #f0f0f5 0%, #e8e8ed 60%, #f0f0f5 100%);
       min-height: 100vh;
@@ -3377,83 +3334,6 @@
   window.closeSupportOutside = function(e) {
     if (e.target === document.getElementById('supportModal')) window.closeSupportModal();
   };
-
-  // ===== EmailJS Configuration =====
-  // *** ตั้งค่า EmailJS ที่นี่ ***
-  // 1. สมัครที่ https://www.emailjs.com (ฟรี 200 อีเมล/เดือน)
-  // 2. สร้าง Service (Gmail), Template, แล้วคัดลอก ID มาใส่
-  const EMAILJS_CONFIG = {
-    publicKey: 'YOUR_EMAILJS_PUBLIC_KEY',    // ← ใส่ Public Key จาก EmailJS
-    serviceId: 'YOUR_SERVICE_ID',             // ← เช่น 'service_abc123'
-    templateId: 'YOUR_TEMPLATE_ID',           // ← เช่น 'template_xyz789'
-    // อีเมลแอดมินที่จะรับแจ้งเตือน (ใส่หลายอันคั่นด้วย comma ใน template ได้)
-    adminEmail: 'admin@example.com',          // ← อีเมล admin ของคุณ
-  };
-
-  // เริ่มต้น EmailJS
-  (function() {
-    try {
-      if (window.emailjs && EMAILJS_CONFIG.publicKey !== 'YOUR_EMAILJS_PUBLIC_KEY') {
-        window.emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-      }
-    } catch(e) { console.warn('EmailJS init failed:', e); }
-  })();
-
-  // ฟังก์ชันส่งอีเมลแจ้งเตือน
-  window._sendEmailNotification = async function(params) {
-    if (!window.emailjs) return;
-    if (EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
-      console.log('[EmailJS] ยังไม่ได้ตั้งค่า — notification params:', params);
-      return;
-    }
-    try {
-      await window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, params);
-    } catch(e) { console.warn('EmailJS send failed:', e); }
-  };
-
-  // แจ้งแอดมินเมื่อมีโพสใหม่จากคนทั่วไป
-  window._notifyAdminNewPost = async function(postData) {
-    await window._sendEmailNotification({
-      to_email: EMAILJS_CONFIG.adminEmail,
-      subject: '🔔 มีโพสใหม่บนเว็บไซต์ SWSKPROMAX',
-      notification_type: 'new_post',
-      poster_name: postData.name || 'ไม่ระบุ',
-      post_type: postData.type || '-',
-      post_level: postData.level || '-',
-      post_text: (postData.text || '').substring(0, 200),
-      post_time: postData.time || new Date().toLocaleString('th-TH'),
-      message: `มีนักเรียนโพสข้อความใหม่บนเว็บไซต์\nชื่อ: ${postData.name}\nระดับชั้น: ${postData.level}\nประเภท: ${postData.type}\nข้อความ: ${(postData.text||'').substring(0,200)}`,
-    });
-  };
-
-  // แจ้งเจ้าของโพสเมื่อมีคนคอมเมนต์
-  window._notifyPostOwnerNewReply = async function(ownerEmail, ownerName, postText, replierName, replyText) {
-    if (!ownerEmail) return;
-    await window._sendEmailNotification({
-      to_email: ownerEmail,
-      subject: '💬 มีคนตอบกลับโพสของคุณ',
-      notification_type: 'new_reply',
-      owner_name: ownerName || 'สมาชิก',
-      post_text: (postText || '').substring(0, 100),
-      replier_name: replierName || 'ผู้ใช้',
-      reply_text: (replyText || '').substring(0, 200),
-      message: `${replierName} ตอบกลับโพสของคุณ\nโพสของคุณ: "${(postText||'').substring(0,100)}"\nข้อความตอบกลับ: ${replyText}`,
-    });
-  };
-
-  // แจ้งเจ้าของโพสเมื่อมีคนกดเห็นด้วย
-  window._notifyPostOwnerLiked = async function(ownerEmail, ownerName, postText, likerName) {
-    if (!ownerEmail) return;
-    await window._sendEmailNotification({
-      to_email: ownerEmail,
-      subject: '👍 มีคนกดเห็นด้วยกับโพสของคุณ',
-      notification_type: 'new_like',
-      owner_name: ownerName || 'สมาชิก',
-      post_text: (postText || '').substring(0, 100),
-      liker_name: likerName || 'ผู้ใช้',
-      message: `${likerName} กดเห็นด้วยกับโพสของคุณ\nโพส: "${(postText||'').substring(0,100)}"`,
-    });
-  };
 </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
@@ -4193,16 +4073,6 @@
         isAdmin: isAdmin,
         likes: 0, likedBy: [], createdAt: Date.now()
       });
-      // แจ้งแอดมินเมื่อคนทั่วไปโพส
-      if (!isAdmin && window._notifyAdminNewPost) {
-        window._notifyAdminNewPost({
-          name: name,
-          level: level,
-          type: window._selectedType || '-',
-          text: cleanText,
-          time: new Date().toLocaleString('th-TH'),
-        });
-      }
       if (!isAdmin) await incrementUserTodayCount();
       document.getElementById('inputText').value = '';
       document.getElementById('inputLevel').value = '';
@@ -4234,21 +4104,8 @@
     const commentData = allComments.find(c => c.id === docId);
     const likedBy = (commentData && commentData.likedBy) || [];
     const alreadyLiked = likedBy.includes(uid);
-    if (alreadyLiked) {
-      await updateDoc(ref, { likes: increment(-1), likedBy: arrayRemove(uid) });
-    } else {
-      await updateDoc(ref, { likes: increment(1), likedBy: arrayUnion(uid) });
-      // แจ้งเจ้าของโพส (ยกเว้นกดเห็นด้วยโพสตัวเอง)
-      if (commentData && commentData.uid !== uid && commentData.realEmail && window._notifyPostOwnerLiked) {
-        const likerName = isAdmin ? 'สภานักเรียน' : (currentUser.displayName || 'ผู้ใช้');
-        window._notifyPostOwnerLiked(
-          commentData.realEmail,
-          commentData.realName || commentData.name,
-          commentData.text,
-          likerName
-        );
-      }
-    }
+    if (alreadyLiked) await updateDoc(ref, { likes: increment(-1), likedBy: arrayRemove(uid) });
+    else await updateDoc(ref, { likes: increment(1), likedBy: arrayUnion(uid) });
   };
   window._revealComment = function(docId) {
     const c = allComments.find(x => x.id === docId);
