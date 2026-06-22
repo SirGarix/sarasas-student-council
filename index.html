@@ -4170,10 +4170,47 @@
     } catch(e) {}
   }
   const q = query(commentsCol, orderBy('createdAt', 'desc'));
+  const _likeInProgress = new Set();
+
   onSnapshot(q, (snapshot) => {
-    allComments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    const newComments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // ตรวจว่า snapshot เปลี่ยนแค่ likes/likedBy หรือเปล่า
+    const isLikeOnlyChange = allComments.length === newComments.length &&
+      newComments.every((nc, i) => {
+        const oc = allComments[i];
+        if (!oc || oc.id !== nc.id) return false;
+        const { likes: nl, likedBy: nlb, ...nRest } = nc;
+        const { likes: ol, likedBy: olb, ...oRest } = oc;
+        return JSON.stringify(nRest) === JSON.stringify(oRest);
+      });
+
+    allComments = newComments;
     window._allComments = allComments;
     window._renderComments = renderComments;
+
+    if (isLikeOnlyChange) {
+      // อัปเดตเฉพาะ badge และปุ่ม like โดยไม่ re-render ทั้งหน้า
+      const myUid = currentUser ? currentUser.uid : null;
+      newComments.forEach(nc => {
+        const badge = document.getElementById('comment-like-badge-' + nc.id);
+        if (badge) {
+          if ((nc.likes || 0) > 0) { badge.textContent = '👍 ' + nc.likes; badge.classList.remove('hidden'); }
+          else { badge.classList.add('hidden'); }
+        }
+        // อัปเดตปุ่มเฉพาะ comment ที่ไม่ได้กำลัง like อยู่ (ไม่งั้นจะชน optimistic UI)
+        if (!_likeInProgress.has(nc.id)) {
+          const btn = document.querySelector(`button.like-btn[onclick="toggleLike('${nc.id}')"]`);
+          if (btn) {
+            const hasLiked = myUid && Array.isArray(nc.likedBy) && nc.likedBy.includes(myUid);
+            if (hasLiked) { btn.classList.add('liked'); btn.innerHTML = '👍 ถูกใจ ✓'; }
+            else { btn.classList.remove('liked'); btn.innerHTML = '👍 ถูกใจ'; }
+          }
+        }
+      });
+      return;
+    }
+
     renderComments(allComments);
     allComments.forEach(function(cm) {
       if (!replyListeners[cm.id]) subscribeReplies(cm.id);
@@ -4409,25 +4446,44 @@
   };
   window.toggleLike = async function(docId) {
     if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
+    if (_likeInProgress.has(docId)) return; // กัน spam click ขณะ request ยังไม่เสร็จ
+    _likeInProgress.add(docId);
+
     const uid = currentUser.uid;
     const ref = doc(db, 'comments', docId);
     const commentData = allComments.find(c => c.id === docId);
     const likedBy = (commentData && commentData.likedBy) || [];
     const alreadyLiked = likedBy.includes(uid);
-    if (alreadyLiked) await updateDoc(ref, { likes: increment(-1), likedBy: arrayRemove(uid) });
-    else await updateDoc(ref, { likes: increment(1), likedBy: arrayUnion(uid) });
-    // update badge ทันที
+    const oldCount = commentData ? (commentData.likes || 0) : 0;
+    const newCount = oldCount + (alreadyLiked ? -1 : 1);
+
+    // Optimistic UI — อัปเดต DOM ก่อนรอ Firestore
     const badge = document.getElementById('comment-like-badge-' + docId);
+    const btn = document.querySelector(`button.like-btn[onclick="toggleLike('${docId}')"]`);
     if (badge) {
-      const newCount = (commentData ? (commentData.likes || 0) : 0) + (alreadyLiked ? -1 : 1);
       if (newCount > 0) { badge.textContent = '👍 ' + newCount; badge.classList.remove('hidden'); }
       else { badge.classList.add('hidden'); }
     }
-    // update like-btn style ทันที
-    const btn = document.querySelector(`button.like-btn[onclick="toggleLike('${docId}')"]`);
     if (btn) {
       if (alreadyLiked) { btn.classList.remove('liked'); btn.innerHTML = '👍 ถูกใจ'; }
       else { btn.classList.add('liked'); btn.innerHTML = '👍 ถูกใจ ✓'; }
+    }
+
+    try {
+      if (alreadyLiked) await updateDoc(ref, { likes: increment(-1), likedBy: arrayRemove(uid) });
+      else await updateDoc(ref, { likes: increment(1), likedBy: arrayUnion(uid) });
+    } catch(e) {
+      // Rollback UI ถ้า Firestore error
+      if (badge) {
+        if (oldCount > 0) { badge.textContent = '👍 ' + oldCount; badge.classList.remove('hidden'); }
+        else { badge.classList.add('hidden'); }
+      }
+      if (btn) {
+        if (alreadyLiked) { btn.classList.add('liked'); btn.innerHTML = '👍 ถูกใจ ✓'; }
+        else { btn.classList.remove('liked'); btn.innerHTML = '👍 ถูกใจ'; }
+      }
+    } finally {
+      _likeInProgress.delete(docId); // ปลดล็อกหลัง request เสร็จ
     }
   };
   window._revealComment = function(docId) {
