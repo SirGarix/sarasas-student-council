@@ -231,65 +231,73 @@
       position: relative;
       overflow: hidden;
       will-change: transform;
+      isolation: isolate;
     }
     .social-link::before {
       content: '';
       position: absolute; inset: 0;
-      background: rgba(0,0,0,0.06);
+      background: rgba(255,255,255,0.08);
       transform: translateX(-100%);
       transition: transform 0.3s;
+      z-index: 0;
+      border-radius: inherit;
     }
+    .social-link > * { position: relative; z-index: 1; }
     .social-link:hover::before { transform: translateX(0); }
     .social-link:hover { transform: translateY(-3px); }
     .social-ig {
-      background: linear-gradient(135deg, rgba(131,58,180,0.25), rgba(252,176,69,0.18));
-      border-color: rgba(200,100,200,0.45);
+      background: linear-gradient(135deg, rgba(131,58,180,0.22) 0%, rgba(252,176,69,0.15) 100%);
+      border-color: rgba(200,100,200,0.55);
       color: #e090f0;
+      box-shadow: inset 0 0 0 1px rgba(200,100,200,0.15);
     }
     .social-ig:hover {
-      border-color: rgba(220,130,255,0.8);
-      box-shadow: 0 6px 24px rgba(180,80,220,0.35);
+      border-color: rgba(220,130,255,0.85);
+      box-shadow: 0 6px 24px rgba(180,80,220,0.35), inset 0 0 0 1px rgba(200,100,200,0.2);
       color: #f0b8ff;
     }
     .social-ngl {
-      background: linear-gradient(135deg, rgba(255, 31, 143, 0.20), rgba(255, 138, 0, 0.15));
-      border-color: rgba(255, 120, 160, 0.45);
+      background: linear-gradient(135deg, rgba(255,31,143,0.18) 0%, rgba(255,138,0,0.13) 100%);
+      border-color: rgba(255,120,160,0.55);
       color: #ff8fb8;
+      box-shadow: inset 0 0 0 1px rgba(255,120,160,0.15);
     }
-
     .social-ngl:hover {
-      border-color: rgba(255, 150, 180, 0.8);
-      box-shadow: 0 6px 24px rgba(255, 80, 120, 0.3);
+      border-color: rgba(255,150,180,0.85);
+      box-shadow: 0 6px 24px rgba(255,80,120,0.3), inset 0 0 0 1px rgba(255,120,160,0.2);
       color: #ffc2d6;
     }
     .social-fb {
-      background: linear-gradient(135deg, rgba(24,119,242,0.25), rgba(66,103,178,0.18));
-      border-color: rgba(80,130,240,0.45);
+      background: linear-gradient(135deg, rgba(24,119,242,0.22) 0%, rgba(66,103,178,0.15) 100%);
+      border-color: rgba(80,130,240,0.55);
       color: #80b0ff;
+      box-shadow: inset 0 0 0 1px rgba(80,130,240,0.15);
     }
     .social-fb:hover {
-      border-color: rgba(100,160,255,0.8);
-      box-shadow: 0 6px 24px rgba(24,119,242,0.35);
+      border-color: rgba(100,160,255,0.85);
+      box-shadow: 0 6px 24px rgba(24,119,242,0.35), inset 0 0 0 1px rgba(80,130,240,0.2);
       color: #a8ccff;
     }
     .social-tt {
-      background: linear-gradient(135deg, rgba(105,201,208,0.2), rgba(238,29,82,0.15));
-      border-color: rgba(105,201,208,0.55);
+      background: linear-gradient(135deg, rgba(105,201,208,0.18) 0%, rgba(238,29,82,0.12) 100%);
+      border-color: rgba(105,201,208,0.60);
       color: #69C9D0;
+      box-shadow: inset 0 0 0 1px rgba(105,201,208,0.15);
     }
     .social-tt:hover {
-      border-color: rgba(105,201,208,0.85);
-      box-shadow: 0 6px 24px rgba(105,201,208,0.3), 0 0 0 1px rgba(238,29,82,0.15);
+      border-color: rgba(105,201,208,0.90);
+      box-shadow: 0 6px 24px rgba(105,201,208,0.3), inset 0 0 0 1px rgba(105,201,208,0.2);
       color: #8fe8ed;
     }
     .social-line {
-      background: linear-gradient(135deg, rgba(6,199,85,0.25), rgba(0,180,76,0.18));
-      border-color: rgba(6,199,85,0.45);
+      background: linear-gradient(135deg, rgba(6,199,85,0.22) 0%, rgba(0,180,76,0.15) 100%);
+      border-color: rgba(6,199,85,0.55);
       color: #29d96a;
+      box-shadow: inset 0 0 0 1px rgba(6,199,85,0.15);
     }
     .social-line:hover {
-      border-color: rgba(6,199,85,0.8);
-      box-shadow: 0 6px 24px rgba(6,199,85,0.35);
+      border-color: rgba(6,199,85,0.85);
+      box-shadow: 0 6px 24px rgba(6,199,85,0.35), inset 0 0 0 1px rgba(6,199,85,0.2);
       color: #5cf397;
     }
     .social-icon {
@@ -2442,7 +2450,7 @@
         <span class="anon-desc">ซ่อนชื่อจากทุกคน (ยกเว้นทีมเรา)</span>
       </label>
       <label class="anon-row" for="privateCheck" style="border-color:rgba(192,57,43,0.2);background:rgba(192,57,43,0.06)">
-        <input type="checkbox" id="privateCheck" style="accent-color:#f1c40f" />
+        <input type="checkbox" id="privateCheck" style="accent-color:#c0392b" />
         <span class="anon-label" style="color:rgba(192,57,43,0.95)">🔒 ส่งตรงถึงทีม</span>
         <span class="anon-desc">มีแค่ทีมเราเท่านั้นที่เห็น คนอื่นมองไม่เห็น</span>
       </label>
