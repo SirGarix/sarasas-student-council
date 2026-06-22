@@ -4260,6 +4260,7 @@
           <div class="reply-body">
             <div class="reply-author-row">
               <span class="reply-author-name">${r.name || 'ไม่ระบุ'}</span>
+              ${(r.isAdmin && !r.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>` : ''}
               <span class="reply-time">${r.time || ''}</span>
               ${canDelete ? `<button class="reply-delete-btn" onclick="deleteReply('${commentId}','${r.id}')" title="ลบ">🗑️</button>` : ''}
             </div>
@@ -4331,6 +4332,7 @@
         photoURL: isAnon ? '' : (currentUser.photoURL || ''),
         avatar: randomAvatar,
         isAnon: isAnon,
+        isAdmin: isAdmin,
         text,
         time: new Date().toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit', day:'numeric', month:'short' }),
         createdAt: Date.now()
@@ -4549,7 +4551,7 @@
             <div class="comment-meta">
               <div class="comment-author">
                 ${nameDisplay}
-                ${(c.isAdmin && !c.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">🗳️ ทีมของเรา</span>` : ''}
+                ${(c.isAdmin && !c.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>` : ''}
                 ${isBanView && cEmail ? `<span class="comment-level-badge" style="font-size:0.65rem">${cEmail}</span>` : ''}
                 ${c.level ? `<span class="comment-level-badge">${c.level}</span>` : ''}
                 ${c.type ? `<span class="comment-type-pill pill-${c.type}">${c.type}</span>` : ''}
@@ -4583,6 +4585,14 @@
         </div>
       `;
     }).join('');
+    // หลัง render DOM ใหม่เสร็จ ให้ restore replies ที่มีอยู่ใน cache กลับเข้าไปด้วย
+    Object.keys(repliesCache).forEach(function(commentId) {
+      if (repliesCache[commentId] && repliesCache[commentId].length > 0) {
+        renderReplies(commentId);
+        var chip = document.getElementById('reply-count-' + commentId);
+        if (chip) chip.textContent = repliesCache[commentId].length;
+      }
+    });
   }
 </script>
 </body>
