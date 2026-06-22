@@ -1550,30 +1550,49 @@
     .replies-container { display: none; margin-top: 0.8rem; }
     .replies-container.open { display: block; }
     .reply-item {
-      display: flex; gap: 0.6rem;
-      margin-bottom: 0.7rem;
-      padding: 0.7rem 0.9rem;
-      background: #fafafa;
-      border: 1px solid rgba(0,0,0,0.06);
-      border-radius: 12px;
+      display: flex; gap: 0.5rem;
+      margin-bottom: 0.6rem;
       animation: slideIn 0.3s ease;
+      align-items: flex-start;
     }
     .reply-avatar {
-      width: 30px; height: 30px; border-radius: 50%;
+      width: 28px; height: 28px; border-radius: 50%;
       background: linear-gradient(135deg, var(--royal), var(--accent));
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; flex-shrink: 0;
+      font-size: 0.75rem; flex-shrink: 0;
       overflow: hidden; border: 1.5px solid rgba(0,0,0,0.08);
+      margin-top: 2px;
     }
     .reply-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
     .reply-body { flex: 1; }
+    .reply-bubble {
+      display: inline-block;
+      background: #f0f2f5;
+      border-radius: 18px;
+      padding: 0.45rem 0.85rem 0.5rem;
+      max-width: 100%;
+    }
     .reply-author-row {
       display: flex; align-items: center; gap: 0.4rem;
-      margin-bottom: 0.25rem; flex-wrap: wrap;
+      margin-bottom: 0.1rem; flex-wrap: wrap;
     }
-    .reply-author-name { font-size: 0.82rem; font-weight: 700; }
-    .reply-time { font-size: 0.7rem; color: var(--text-faint); }
-    .reply-text { font-size: 0.88rem; color: rgba(30,30,30,0.85); line-height: 1.6; }
+    .reply-author-name { font-size: 0.82rem; font-weight: 700; color: var(--text-main); }
+    .reply-text { font-size: 0.88rem; color: rgba(30,30,30,0.85); line-height: 1.5; }
+    .reply-footer {
+      display: flex; align-items: center; gap: 0.8rem;
+      margin-top: 0.25rem; padding-left: 0.3rem;
+    }
+    .reply-time { font-size: 0.72rem; color: var(--text-faint); }
+    .reply-like-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.72rem; font-weight: 700; color: var(--text-faint);
+      padding: 0; font-family: 'Sarabun', sans-serif;
+      transition: color 0.2s;
+    }
+    .reply-like-btn:hover, .reply-like-btn.liked { color: var(--red); }
+    .reply-like-count {
+      font-size: 0.72rem; color: var(--text-faint);
+    }
     .reply-delete-btn {
       background: none; border: none; cursor: pointer;
       color: rgba(0,0,0,0.12); font-size: 0.85rem;
@@ -1625,25 +1644,25 @@
       margin-bottom: 0.35rem; font-family: 'Sarabun', sans-serif;
     }
     .reply-mention-tag b { font-weight: 700; }
-    .reply-actions-row { margin-top: 0.45rem; display: flex; gap: 0.6rem; }
+    .reply-actions-row { margin-top: 0; display: flex; gap: 0; }
     .reply-to-reply-btn {
-      background: rgba(192,57,43,0.08);
-      border: 1.5px solid rgba(192,57,43,0.35);
-      color: var(--crimson);
+      background: none;
+      border: none;
+      color: var(--text-faint);
       cursor: pointer;
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-family: 'Sarabun', sans-serif; font-weight: 700;
-      padding: 0.25rem 0.7rem;
-      border-radius: 50px;
-      display: inline-flex; align-items: center; gap: 0.3rem;
-      transition: all 0.2s;
+      padding: 0;
+      border-radius: 0;
+      display: inline-flex; align-items: center; gap: 0;
+      transition: color 0.2s;
     }
-    .reply-to-reply-btn::before { content: '↩'; font-size: 0.8rem; }
+    .reply-to-reply-btn::before { content: ''; }
     .reply-to-reply-btn:hover {
-      background: rgba(192,57,43,0.16);
-      border-color: rgba(192,57,43,0.6);
-      color: var(--crimson-dark);
-      transform: translateY(-1px);
+      color: var(--crimson);
+      background: none;
+      border-color: transparent;
+      transform: none;
     }
       font-size: 0.78rem; color: var(--text-faint);
       font-family: 'Sarabun', sans-serif; margin-top: 0.5rem;
@@ -4298,23 +4317,26 @@
         ? `<div class="reply-mention-tag">↪ ตอบกลับ <b>${r.replyToName}</b></div>`
         : '';
       const replyToReplyBtn = currentUser
-        ? `<div class="reply-actions-row">
-             <button class="reply-to-reply-btn" onclick="setReplyTarget('${commentId}','${r.id}','${safeReplyName}')">ตอบกลับ</button>
-           </div>`
+        ? `<button class="reply-to-reply-btn" onclick="setReplyTarget('${commentId}','${r.id}','${safeReplyName}')">ตอบกลับ</button>`
         : '';
       return `
         <div class="reply-item">
           <div class="reply-avatar">${avatarHtml}</div>
           <div class="reply-body">
-            <div class="reply-author-row">
-              <span class="reply-author-name">${r.name || 'ไม่ระบุ'}</span>
-              ${(r.isAdmin && !r.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>` : ''}
-              <span class="reply-time">${r.time || ''}</span>
-              ${canDelete ? `<button class="reply-delete-btn" onclick="deleteReply('${commentId}','${r.id}')" title="ลบ">🗑️</button>` : ''}
+            <div class="reply-bubble">
+              <div class="reply-author-row">
+                <span class="reply-author-name">${r.name || 'ไม่ระบุ'}</span>
+                ${(r.isAdmin && !r.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>` : ''}
+              </div>
+              ${mentionTagHtml}
+              <div class="reply-text">${(r.text || '').replace(/\n/g,'<br/>')}</div>
             </div>
-            ${mentionTagHtml}
-            <div class="reply-text">${(r.text || '').replace(/\n/g,'<br/>')}</div>
-            ${replyToReplyBtn}
+            <div class="reply-footer">
+              <span class="reply-time">${r.time || ''}</span>
+              <button class="reply-like-btn" onclick="toggleReplyLike('${commentId}','${r.id}',this)">ถูกใจ</button>
+              ${replyToReplyBtn}
+              ${canDelete ? `<button class="reply-delete-btn" onclick="deleteReply('${commentId}','${r.id}')" title="ลบ" style="margin-left:auto">🗑️</button>` : ''}
+            </div>
           </div>
         </div>
       `;
@@ -4435,6 +4457,10 @@
       const { doc: d, deleteDoc: del } = window._fbImports;
       await del(d(db, 'comments', commentId, 'replies', replyId));
     } catch(e) { alert('ลบไม่สำเร็จ'); console.error(e); }
+  };
+  window.toggleReplyLike = function(commentId, replyId, btn) {
+    if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
+    btn.classList.toggle('liked');
   };
   function renderComments(comments) {
     const list = document.getElementById('commentsList');
