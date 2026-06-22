@@ -1625,14 +1625,26 @@
       margin-bottom: 0.35rem; font-family: 'Sarabun', sans-serif;
     }
     .reply-mention-tag b { font-weight: 700; }
-    .reply-actions-row { margin-top: 0.3rem; display: flex; gap: 0.9rem; }
+    .reply-actions-row { margin-top: 0.45rem; display: flex; gap: 0.6rem; }
     .reply-to-reply-btn {
-      background: none; border: none; cursor: pointer;
-      color: var(--text-faint); font-size: 0.76rem;
-      font-family: 'Sarabun', sans-serif; font-weight: 600;
-      padding: 0; transition: color 0.2s;
+      background: rgba(192,57,43,0.08);
+      border: 1.5px solid rgba(192,57,43,0.35);
+      color: var(--crimson);
+      cursor: pointer;
+      font-size: 0.74rem;
+      font-family: 'Sarabun', sans-serif; font-weight: 700;
+      padding: 0.25rem 0.7rem;
+      border-radius: 50px;
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      transition: all 0.2s;
     }
-    .reply-to-reply-btn:hover { color: var(--crimson); text-decoration: underline; }
+    .reply-to-reply-btn::before { content: '↩'; font-size: 0.8rem; }
+    .reply-to-reply-btn:hover {
+      background: rgba(192,57,43,0.16);
+      border-color: rgba(192,57,43,0.6);
+      color: var(--crimson-dark);
+      transform: translateY(-1px);
+    }
       font-size: 0.78rem; color: var(--text-faint);
       font-family: 'Sarabun', sans-serif; margin-top: 0.5rem;
     }
