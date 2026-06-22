@@ -1555,6 +1555,11 @@
       animation: slideIn 0.3s ease;
       align-items: flex-start;
     }
+    .reply-item.reply-nested {
+      margin-left: 1.8rem;
+      padding-left: 0.75rem;
+      border-left: 2px solid rgba(0,0,0,0.13);
+    }
     .reply-avatar {
       width: 28px; height: 28px; border-radius: 50%;
       background: linear-gradient(135deg, var(--royal), var(--accent));
@@ -1578,6 +1583,9 @@
     }
     .reply-author-name { font-size: 0.82rem; font-weight: 700; color: var(--text-main); }
     .reply-text { font-size: 0.88rem; color: rgba(30,30,30,0.85); line-height: 1.5; }
+    .reply-mention-inline {
+      color: #1877f2; font-weight: 700; font-size: 0.88rem;
+    }
     .reply-footer {
       display: flex; align-items: center; gap: 0.8rem;
       margin-top: 0.25rem; padding-left: 0.3rem;
@@ -1590,9 +1598,15 @@
       transition: color 0.2s;
     }
     .reply-like-btn:hover, .reply-like-btn.liked { color: var(--red); }
-    .reply-like-count {
-      font-size: 0.72rem; color: var(--text-faint);
+    .reply-like-badge {
+      display: inline-flex; align-items: center; gap: 0.15rem;
+      background: #fff; border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 20px; padding: 0.05rem 0.45rem;
+      font-size: 0.72rem; color: var(--text-muted);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      margin-left: auto;
     }
+    .reply-like-badge.hidden { display: none; }
     .reply-delete-btn {
       background: none; border: none; cursor: pointer;
       color: rgba(0,0,0,0.12); font-size: 0.85rem;
@@ -1663,9 +1677,6 @@
       background: none;
       border-color: transparent;
       transform: none;
-    }
-      font-size: 0.78rem; color: var(--text-faint);
-      font-family: 'Sarabun', sans-serif; margin-top: 0.5rem;
     }
     #policy {
       background: linear-gradient(180deg, #f0f0f5 0%, #e8e8ed 60%, #f0f0f5 100%);
@@ -4313,14 +4324,20 @@
         : `<span style="font-size:0.75rem">${r.avatar || '😊'}</span>`;
       const canDelete = isAdmin || (myUid && myUid === r.uid);
       const safeReplyName = (r.name || 'ไม่ระบุ').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-      const mentionTagHtml = r.replyToName
-        ? `<div class="reply-mention-tag">↪ ตอบกลับ <b>${r.replyToName}</b></div>`
+      const isNested = !!r.replyToId;
+      const mentionHtml = r.replyToName
+        ? `<span class="reply-mention-inline">@${r.replyToName}</span> `
         : '';
+      const likeCount = r.likes || 0;
+      const myLiked = r.likedBy && currentUser && r.likedBy[currentUser.uid];
+      const likeBadgeHtml = likeCount > 0
+        ? `<span class="reply-like-badge" id="reply-like-badge-${r.id}">👍 ${likeCount}</span>`
+        : `<span class="reply-like-badge hidden" id="reply-like-badge-${r.id}">👍 0</span>`;
       const replyToReplyBtn = currentUser
         ? `<button class="reply-to-reply-btn" onclick="setReplyTarget('${commentId}','${r.id}','${safeReplyName}')">ตอบกลับ</button>`
         : '';
       return `
-        <div class="reply-item">
+        <div class="reply-item${isNested ? ' reply-nested' : ''}">
           <div class="reply-avatar">${avatarHtml}</div>
           <div class="reply-body">
             <div class="reply-bubble">
@@ -4328,14 +4345,14 @@
                 <span class="reply-author-name">${r.name || 'ไม่ระบุ'}</span>
                 ${(r.isAdmin && !r.isAnon) ? `<span style="background:rgba(255,215,0,0.18);color:rgba(255,215,0,0.95);border:1px solid rgba(255,215,0,0.4);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>` : ''}
               </div>
-              ${mentionTagHtml}
-              <div class="reply-text">${(r.text || '').replace(/\n/g,'<br/>')}</div>
+              <div class="reply-text">${mentionHtml}${(r.text || '').replace(/\n/g,'<br/>')}</div>
             </div>
             <div class="reply-footer">
               <span class="reply-time">${r.time || ''}</span>
-              <button class="reply-like-btn" onclick="toggleReplyLike('${commentId}','${r.id}',this)">ถูกใจ</button>
+              <button class="reply-like-btn${myLiked ? ' liked' : ''}" onclick="toggleReplyLike('${commentId}','${r.id}',this)">ถูกใจ</button>
               ${replyToReplyBtn}
-              ${canDelete ? `<button class="reply-delete-btn" onclick="deleteReply('${commentId}','${r.id}')" title="ลบ" style="margin-left:auto">🗑️</button>` : ''}
+              ${likeBadgeHtml}
+              ${canDelete ? `<button class="reply-delete-btn" onclick="deleteReply('${commentId}','${r.id}')" title="ลบ">🗑️</button>` : ''}
             </div>
           </div>
         </div>
@@ -4458,9 +4475,32 @@
       await del(d(db, 'comments', commentId, 'replies', replyId));
     } catch(e) { alert('ลบไม่สำเร็จ'); console.error(e); }
   };
-  window.toggleReplyLike = function(commentId, replyId, btn) {
+  window.toggleReplyLike = async function(commentId, replyId, btn) {
     if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
-    btn.classList.toggle('liked');
+    const myUid = currentUser.uid;
+    const { doc: d, updateDoc: upd, getDoc: getD } = window._fbImports;
+    const replyRef = d(db, 'comments', commentId, 'replies', replyId);
+    try {
+      const snap = await getD(replyRef);
+      if (!snap.exists()) return;
+      const data = snap.data();
+      const likedBy = data.likedBy || {};
+      const liked = !!likedBy[myUid];
+      const newLikedBy = { ...likedBy };
+      if (liked) { delete newLikedBy[myUid]; } else { newLikedBy[myUid] = true; }
+      const newCount = Object.keys(newLikedBy).length;
+      await upd(replyRef, { likedBy: newLikedBy, likes: newCount });
+      btn.classList.toggle('liked', !liked);
+      const badge = document.getElementById('reply-like-badge-' + replyId);
+      if (badge) {
+        if (newCount > 0) {
+          badge.textContent = '👍 ' + newCount;
+          badge.classList.remove('hidden');
+        } else {
+          badge.classList.add('hidden');
+        }
+      }
+    } catch(e) { console.error('toggleReplyLike error', e); }
   };
   function renderComments(comments) {
     const list = document.getElementById('commentsList');
