@@ -1123,11 +1123,11 @@
     }
     .comment-menu-btn:hover { background: rgba(0,0,0,0.06); color: rgba(30,30,30,0.9); }
     .comment-dropdown {
-      position: fixed;
+      position: absolute;
       background: var(--dark-mid); border: 1px solid rgba(192,57,43,0.18);
       border-radius: 10px; min-width: 160px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-      z-index: 9999; overflow: hidden;
+      z-index: 99999; overflow: hidden;
       display: none;
     }
     .comment-dropdown.open { display: block; }
@@ -1617,11 +1617,11 @@
     }
     .reply-menu-btn:hover { background: rgba(0,0,0,0.06); color: rgba(30,30,30,0.7); }
     .reply-dropdown {
-      position: fixed;
+      position: absolute;
       background: #fff; border: 1px solid rgba(0,0,0,0.1);
       border-radius: 10px; min-width: 150px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.14);
-      z-index: 9999; overflow: hidden; display: none;
+      z-index: 99999; overflow: hidden; display: none;
     }
     .reply-dropdown.open { display: block; }
     .reply-dropdown-item {
@@ -3212,40 +3212,66 @@
       nameInput.placeholder = '';
     }
   };
+  /* ===== DROPDOWN PORTAL ===== */
+  // ย้าย dropdown ไปติดกับ body เพื่อหนี transform containing block ของ .page
+  function portalDropdown(menu, btnRect, menuW, estimatedH) {
+    if (!menu) return;
+    if (menu.parentElement !== document.body) {
+      document.body.appendChild(menu);
+    }
+    // คำนวณตำแหน่งจาก viewport + scroll
+    const scrollX = window.scrollX || 0;
+    const scrollY = window.scrollY || 0;
+    let left = btnRect.right - menuW + scrollX;
+    if (left < 4) left = 4;
+    if (left + menuW > window.innerWidth + scrollX - 4) left = window.innerWidth + scrollX - menuW - 4;
+    let top = btnRect.bottom + 4 + scrollY;
+    if (btnRect.bottom + 4 + estimatedH > window.innerHeight) {
+      top = btnRect.top - estimatedH - 4 + scrollY;
+      if (top < scrollY + 4) top = scrollY + 4;
+    }
+    menu.style.position = 'absolute';
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+  }
+
   window.toggleCommentMenu = function(id, e) {
     e.stopPropagation();
     e.stopImmediatePropagation();
-    document.querySelectorAll('.comment-dropdown').forEach(d => {
+    // ปิด dropdown อื่นก่อน
+    document.querySelectorAll('.comment-dropdown.open').forEach(d => {
       if (d.id !== 'menu-' + id) d.classList.remove('open');
     });
+    document.querySelectorAll('.reply-dropdown.open').forEach(d => d.classList.remove('open'));
     const menu = document.getElementById('menu-' + id);
     if (!menu) return;
     const wasOpen = menu.classList.contains('open');
     if (wasOpen) {
       menu.classList.remove('open');
     } else {
-      // คำนวณตำแหน่ง fixed จาก button
-      const btn = e.currentTarget || e.target;
+      const btn = e.currentTarget || e.target.closest('.comment-menu-btn') || e.target;
       const rect = btn.getBoundingClientRect();
-      const menuW = 170;
-      let left = rect.right - menuW;
-      if (left < 4) left = 4;
-      let top = rect.bottom + 4;
-      // ถ้า dropdown จะหลุดออกนอกหน้าจอด้านล่าง ให้แสดงด้านบน
-      const estimatedH = 200;
-      if (top + estimatedH > window.innerHeight) {
-        top = rect.top - estimatedH - 4;
-        if (top < 4) top = 4;
-      }
-      menu.style.left = left + 'px';
-      menu.style.top = top + 'px';
+      portalDropdown(menu, rect, 170, 220);
       menu.classList.add('open');
     }
   };
   document.addEventListener('mousedown', (e) => {
-    if (!e.target.closest('.comment-menu-wrap')) {
-      document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
+    // ไม่ปิดถ้าคลิกที่ wrap หรือ dropdown เอง (รวม item ข้างใน)
+    if (!e.target.closest('.comment-menu-wrap') && !e.target.closest('.comment-dropdown')) {
+      document.querySelectorAll('.comment-dropdown.open').forEach(d => d.classList.remove('open'));
     }
+    if (!e.target.closest('.reply-menu-wrap') && !e.target.closest('.reply-dropdown')) {
+      document.querySelectorAll('.reply-dropdown.open').forEach(d => d.classList.remove('open'));
+    }
+  });
+  // ปิด dropdown เมื่อ scroll (ใช้ window.addEventListener เพื่อความแน่ใจ)
+  window.addEventListener('load', function() {
+    document.querySelectorAll('.page').forEach(function(pg) {
+      pg.addEventListener('scroll', function() {
+        document.querySelectorAll('.comment-dropdown.open').forEach(d => d.classList.remove('open'));
+        document.querySelectorAll('.reply-dropdown.open').forEach(d => d.classList.remove('open'));
+      }, { passive: true });
+    });
   });
   window.revealIdentity = function(docId) {
     document.querySelectorAll('.comment-dropdown').forEach(d => d.classList.remove('open'));
@@ -4577,27 +4603,34 @@
     if (!menu) return;
     const isOpen = menu.classList.contains('open');
     closeAllReplyMenus();
+    document.querySelectorAll('.comment-dropdown.open').forEach(d => d.classList.remove('open'));
     if (!isOpen) {
-      const btn = e.currentTarget || e.target;
+      const btn = e.currentTarget || e.target.closest('.reply-menu-btn') || e.target;
       const rect = btn.getBoundingClientRect();
-      const menuW = 160;
-      let left = rect.right - menuW;
-      if (left < 4) left = 4;
-      let top = rect.bottom + 4;
-      const estimatedH = 100;
-      if (top + estimatedH > window.innerHeight) {
-        top = rect.top - estimatedH - 4;
-        if (top < 4) top = 4;
-      }
-      menu.style.left = left + 'px';
-      menu.style.top = top + 'px';
+      portalDropdown(menu, rect, 160, 100);
       menu.classList.add('open');
     }
   };
   window.closeAllReplyMenus = function() {
     document.querySelectorAll('.reply-dropdown.open').forEach(m => m.classList.remove('open'));
   };
-  document.addEventListener('click', function() { window.closeAllReplyMenus(); });
+  // ปิด dropdown หลังจาก click item ข้างใน (ทำงานหลัง onclick ของ item)
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.dropdown-item')) {
+      setTimeout(function() {
+        document.querySelectorAll('.comment-dropdown.open').forEach(d => d.classList.remove('open'));
+      }, 80);
+    }
+    if (e.target.closest('.reply-dropdown-item')) {
+      setTimeout(function() {
+        document.querySelectorAll('.reply-dropdown.open').forEach(d => d.classList.remove('open'));
+      }, 80);
+    }
+    // ปิดเมื่อคลิกนอก
+    if (!e.target.closest('.reply-menu-wrap') && !e.target.closest('.reply-dropdown')) {
+      window.closeAllReplyMenus();
+    }
+  });
 
   /* ===== EDIT HISTORY POPUP ===== */
   // inject HTML ครั้งเดียว
