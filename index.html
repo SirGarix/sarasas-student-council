@@ -842,6 +842,7 @@
       border-radius: 20px; padding: 2px 9px;
       font-size: 0.76rem; color: var(--text-muted);
       box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+      margin-left: auto;
     }
     .comment-like-badge.hidden { display: none; }
     .like-btn {
@@ -4579,7 +4580,7 @@
     );
     const likeBadgeHtml = likeCount > 0
       ? `<span class="reply-like-badge" id="reply-like-badge-${r.id}">👍 ${likeCount}</span>`
-      : `<span class="reply-like-badge hidden" id="reply-like-badge-${r.id}">👍 0</span>`;
+      : `<span class="reply-like-badge hidden" id="reply-like-badge-${r.id}"></span>`;
     const replyToReplyBtn = currentUser
       ? `<button class="reply-to-reply-btn" onclick="setReplyTarget('${commentId}','${r.id}','${safeReplyName}')">ตอบกลับ</button>`
       : '';
@@ -4614,9 +4615,9 @@
           <div class="reply-footer">
             <span class="reply-time">${r.time || ''}</span>
             <button class="reply-like-btn${myLiked ? ' liked' : ''}" onclick="toggleReplyLike('${commentId}','${r.id}',this)">ถูกใจ</button>
-            ${likeBadgeHtml}
             ${replyToReplyBtn}
             ${r.editedAt ? `<button class="edited-label" onclick="window.openEditHistory('${encodeURIComponent(JSON.stringify(Array.isArray(r.editHistory) ? r.editHistory : [{text:r.text,editedAt:r.editedAt}]))}')">แก้ไขแล้ว</button>` : ''}
+            ${likeBadgeHtml}
           </div>
         </div>
         ${replyMenuHtml}
