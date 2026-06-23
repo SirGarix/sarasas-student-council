@@ -4054,23 +4054,36 @@
   };
   let currentUser = null;
   let isAdmin = false;
+  let adminRole = null;
   let allComments = [];
   window._getCurrentUser = () => currentUser;
   window._getIsAdmin = () => isAdmin;
+  window._getAdminRole = () => adminRole;
   window._getBanForUser = (user) => getBanForUser(user);
   async function checkIsAdmin(user) {
     if (!user) return false;
     const byUid = await getDoc(doc(db, 'admins', user.uid));
-    if (byUid.exists()) return true;
+    if (byUid.exists()) {
+      adminRole = byUid.data().role || 'admin';
+      return true;
+    }
     const adminsSnap = await getDocs(collection(db, 'admins'));
-    const adminEmails = adminsSnap.docs.map(d => (d.data().email || '').toLowerCase().trim());
-    return adminEmails.includes((user.email || '').toLowerCase().trim());
+    for (const d of adminsSnap.docs) {
+      const data = d.data();
+      if ((data.email || '').toLowerCase().trim() === (user.email || '').toLowerCase().trim()) {
+        adminRole = data.role || 'admin';
+        return true;
+      }
+    }
+    adminRole = null;
+    return false;
   }
   onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     if (!user) {
       // ไม่ได้ login — clear ทุกอย่างและอย่าแสดง ban wall
       isAdmin = false;
+      adminRole = null;
       allBans = {};
       window._allBans = allBans;
       window._publicBannedUids = new Set();
@@ -4183,7 +4196,7 @@
     newComments.forEach(nc => { newMap[nc.id] = nc; });
 
     // field ที่ถ้าเปลี่ยนต้อง re-render จริงๆ (ไม่นับ likes/likedBy)
-    const RENDER_FIELDS = ['text', 'name', 'uid', 'isAnon', 'isPrivate', 'isAdmin', 'level', 'type', 'editedAt', 'editHistory', 'photoURL', 'realName', 'realPhotoURL'];
+    const RENDER_FIELDS = ['text', 'name', 'uid', 'isAnon', 'isPrivate', 'isAdmin', 'adminRole', 'level', 'type', 'editedAt', 'editHistory', 'photoURL', 'realName', 'realPhotoURL'];
 
     let needsFullRender = false;
     const prevIds = Object.keys(_prevSnapshotMap);
@@ -4426,6 +4439,7 @@
         realPhotoURL: currentUser.photoURL || '',
         time: new Date().toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit', day:'numeric', month:'short' }),
         isAdmin: isAdmin,
+        adminRole: adminRole,
         likes: 0, likedBy: [], createdAt: Date.now()
       });
       if (!isAdmin) await incrementUserTodayCount();
@@ -4694,7 +4708,7 @@
           <div class="reply-bubble" id="reply-bubble-${r.id}">
             <div class="reply-author-row">
               <span class="reply-author-name"${r.name === 'SWSKPROMAX' ? ' style="color:#c0392b;font-weight:800;"' : ''}>${r.name || 'ไม่ระบุ'}</span>
-              ${(r.isAdmin && !r.isAnon) ? '<span style="background:rgba(192,57,43,0.18);color:rgba(192,57,43,1);border:1px solid rgba(192,57,43,0.45);font-size:0.65rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.1rem 0.5rem;border-radius:20px">สภานักเรียน</span>' : ''}
+              ${(r.isAdmin && !r.isAnon) ? (r.adminRole === "swskpromax" ? '<span style="background:rgba(192,57,43,0.22);color:rgba(192,57,43,1);border:1px solid rgba(192,57,43,0.55);font-size:0.65rem;font-family:Kanit,sans-serif;font-weight:800;padding:0.1rem 0.5rem;border-radius:20px;letter-spacing:0.5px">SWSKPROMAX</span>' : '<span style="background:rgba(192,57,43,0.18);color:rgba(192,57,43,1);border:1px solid rgba(192,57,43,0.45);font-size:0.65rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.1rem 0.5rem;border-radius:20px">สภานักเรียน</span>') : ''}
             </div>
             <div class="reply-text" id="reply-text-${r.id}">${mentionHtml}${(r.text || '').replace(/\n/g,'<br/>')}</div>
           </div>
@@ -5068,6 +5082,7 @@
         avatar: randomAvatar,
         isAnon: isAnon,
         isAdmin: isAdmin,
+        adminRole: adminRole,
         text,
         replyToId: replyTarget ? replyTarget.replyId : null,
         replyToName: replyTarget ? replyTarget.name : null,
@@ -5339,7 +5354,7 @@
             <div class="comment-meta">
               <div class="comment-author">
                 ${nameDisplay === 'SWSKPROMAX' ? `<span style="color:#c0392b;font-weight:800;font-family:'Kanit',sans-serif;">SWSKPROMAX</span>` : nameDisplay}
-                ${(c.isAdmin && !c.isAnon) ? `<span style="background:rgba(192,57,43,0.18);color:rgba(192,57,43,1);border:1px solid rgba(192,57,43,0.45);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>` : ''}
+                ${(c.isAdmin && !c.isAnon) ? (c.adminRole === "swskpromax" ? `<span style="background:rgba(192,57,43,0.22);color:rgba(192,57,43,1);border:1px solid rgba(192,57,43,0.55);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:800;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.5px">SWSKPROMAX</span>` : `<span style="background:rgba(192,57,43,0.18);color:rgba(192,57,43,1);border:1px solid rgba(192,57,43,0.45);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>`) : ''}
                 ${isBanView && cEmail ? `<span class="comment-level-badge" style="font-size:0.65rem">${cEmail}</span>` : ''}
                 ${c.level ? `<span class="comment-level-badge">${c.level}</span>` : ''}
                 ${c.type ? `<span class="comment-type-pill pill-${c.type}">${c.type}</span>` : ''}
