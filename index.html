@@ -4385,7 +4385,8 @@
     const isAnon = document.getElementById('anonCheck').checked;
     const isPrivate = document.getElementById('privateCheck').checked;
     const anonNum = currentUser.uid.split('').reduce((a, c) => (a * 31 + c.charCodeAt(0)) & 0xfffff, 0).toString().slice(0,6).padStart(6,'0');
-    const displayName = isAnon ? `User${anonNum}` : (currentUser.displayName || 'นักเรียนนิรนาม');
+    const _isSWSKPROMAX = !isAnon && (currentUser.uid === 'JYmXRMSQCbNzMUyydABsvTGMji23' || (currentUser.email || '').toLowerCase() === 'promaxswsk@gmail.com');
+    const displayName = isAnon ? `User${anonNum}` : (_isSWSKPROMAX ? 'SWSKPROMAX' : (currentUser.displayName || 'นักเรียนนิรนาม'));
     const name = displayName;
     const level = document.getElementById('inputLevel').value;
     if (!level) {
@@ -4692,7 +4693,7 @@
         <div class="reply-body">
           <div class="reply-bubble" id="reply-bubble-${r.id}">
             <div class="reply-author-row">
-              <span class="reply-author-name">${r.name || 'ไม่ระบุ'}</span>
+              <span class="reply-author-name"${r.name === 'SWSKPROMAX' ? ' style="color:#c0392b;font-weight:800;"' : ''}>${r.name || 'ไม่ระบุ'}</span>
               ${(r.isAdmin && !r.isAnon) ? '<span style="background:rgba(192,57,43,0.18);color:rgba(192,57,43,1);border:1px solid rgba(192,57,43,0.45);font-size:0.65rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.1rem 0.5rem;border-radius:20px">สภานักเรียน</span>' : ''}
             </div>
             <div class="reply-text" id="reply-text-${r.id}">${mentionHtml}${(r.text || '').replace(/\n/g,'<br/>')}</div>
@@ -5062,7 +5063,7 @@
       const replyTarget = window._replyTargets[commentId] || null;
       await add(repliesRef, {
         uid: currentUser.uid,
-        name: isAnon ? ('User' + anonNum) : (currentUser.displayName || 'นักเรียน'),
+        name: isAnon ? ('User' + anonNum) : ((currentUser.uid === 'JYmXRMSQCbNzMUyydABsvTGMji23' || (currentUser.email || '').toLowerCase() === 'promaxswsk@gmail.com') ? 'SWSKPROMAX' : (currentUser.displayName || 'นักเรียน')),
         photoURL: isAnon ? '' : (currentUser.photoURL || ''),
         avatar: randomAvatar,
         isAnon: isAnon,
@@ -5337,7 +5338,7 @@
             <div class="comment-avatar">${avatarHtml}</div>
             <div class="comment-meta">
               <div class="comment-author">
-                ${nameDisplay}
+                ${nameDisplay === 'SWSKPROMAX' ? `<span style="color:#c0392b;font-weight:800;font-family:'Kanit',sans-serif;">SWSKPROMAX</span>` : nameDisplay}
                 ${(c.isAdmin && !c.isAnon) ? `<span style="background:rgba(192,57,43,0.18);color:rgba(192,57,43,1);border:1px solid rgba(192,57,43,0.45);font-size:0.68rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;letter-spacing:0.3px">สภานักเรียน</span>` : ''}
                 ${isBanView && cEmail ? `<span class="comment-level-badge" style="font-size:0.65rem">${cEmail}</span>` : ''}
                 ${c.level ? `<span class="comment-level-badge">${c.level}</span>` : ''}
