@@ -2475,6 +2475,7 @@
       <button class="filter-tab" onclick="setFilter('ข้อเสนอแนะ', this)">💡 ข้อเสนอแนะ</button>
       <button class="filter-tab" onclick="setFilter('ร้องเรียน', this)">🚨 ร้องเรียน</button>
       <button class="filter-tab" onclick="setFilter('ขอสิ่งอำนวยความสะดวก', this)">🙏 ขอสิ่งอำนวยความสะดวก</button>
+      <button class="filter-tab admin-only-tab" id="pendingOnlyTab" style="display:none;background:rgba(230,126,34,0.15);border-color:rgba(230,126,34,0.4);color:#e67e22" onclick="setFilter('__pending__', this)">🕓 รออนุมัติ</button>
       <button class="filter-tab admin-only-tab" id="adminOnlyTab" style="display:none;background:rgba(192,57,43,0.15);border-color:rgba(192,57,43,0.35);color:#ff8080" onclick="setFilter('__banned__', this)">🚫 รายชื่อคนถูกระงับ</button>
       <button class="filter-tab admin-only-tab" id="adminHistoryTab" style="display:none;background:rgba(120,80,200,0.15);border-color:rgba(120,80,200,0.35);color:#c084fc" onclick="setFilter('__ban_history__', this)">📋 ประวัติรายชื่อคนโดนแบน</button>
       <button class="filter-tab" id="councilOnlyTab" style="display:none;background:rgba(192,57,43,0.08);border-color:rgba(192,57,43,0.30);color:rgba(192,57,43,0.90)" onclick="setFilter('__council__', this)">🔒 เฉพาะทีมเรา</button>
@@ -3647,7 +3648,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
   import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, signInAnonymously, updateProfile, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
   window._fbImports = { collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc };
   window._fbWrite = { updateDoc, doc, deleteDoc, setDoc, increment, arrayUnion, arrayRemove };
   window._getDb = () => db;
@@ -4096,7 +4097,10 @@
       if (adminHistoryTab) adminHistoryTab.style.display = 'none';
       const councilTab = document.getElementById('councilOnlyTab');
       if (councilTab) councilTab.style.display = 'none';
-      if (allComments.length > 0) renderComments(allComments);
+      const pendingTab = document.getElementById('pendingOnlyTab');
+      if (pendingTab) pendingTab.style.display = 'none';
+      if (window._reprocessComments) window._reprocessComments();
+      else if (allComments.length > 0) renderComments(allComments);
       return;
     }
     isAdmin = await checkIsAdmin(user);
@@ -4113,7 +4117,10 @@
     if (adminHistoryTab) adminHistoryTab.style.display = isAdmin ? '' : 'none';
     const councilTab = document.getElementById('councilOnlyTab');
     if (councilTab) councilTab.style.display = isAdmin ? '' : 'none';
-    if (allComments.length > 0) renderComments(allComments);
+    const pendingTab = document.getElementById('pendingOnlyTab');
+    if (pendingTab) pendingTab.style.display = isAdmin ? '' : 'none';
+    if (window._reprocessComments) window._reprocessComments();
+    else if (allComments.length > 0) renderComments(allComments);
     if (_bansReady) checkAndShowBanWall();
   });
   function updateAuthUI() {
@@ -4124,9 +4131,9 @@
       const banned = !isAdmin && ban;
       loginArea.innerHTML = `
         <div class="user-info" style="flex-wrap:wrap;gap:0.5rem 0.8rem;">
-          <img src="${currentUser.photoURL || ''}" class="user-photo" onerror="this.style.display='none'" />
+          ${currentUser.photoURL ? `<img src="${currentUser.photoURL}" class="user-photo" onerror="this.style.display='none'" />` : ''}
           <div style="display:flex;flex-direction:column;gap:0.1rem;flex:1;min-width:0;">
-            <span class="user-name" style="line-height:1.2;">👤 ${currentUser.displayName || currentUser.email}</span>
+            <span class="user-name" style="line-height:1.2;">👤 ${currentUser.displayName || currentUser.email || 'ผู้ใช้'}</span>
             <span class="user-uid-badge" style="white-space:normal;word-break:break-all;max-width:none;">UserUID:${currentUser.uid}</span>
           </div>
           ${isAdmin ? '<span class="admin-badge">🛡️ Admin</span>' : ''}
@@ -4145,16 +4152,35 @@
     } else {
       loginArea.innerHTML = `
         <div class="login-prompt">
-          <p>กรุณาเข้าสู่ระบบเพื่อแสดงความคิดเห็น</p>
-          <button class="btn-google-login" onclick="window.loginWithGoogle()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" />
-            เข้าสู่ระบบด้วย Google
-          </button>
+          <p>ตั้งชื่อที่จะแสดง แล้วเริ่มแสดงความคิดเห็นได้เลย ไม่ต้องล็อกอินด้วยบัญชีอะไรทั้งนั้น</p>
+          <div style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;justify-content:center">
+            <input type="text" id="nicknameEntry" maxlength="30" placeholder="ชื่อที่จะแสดง (เช่น ชื่อเล่น)" style="flex:1;min-width:180px;padding:0.6rem 0.9rem;border-radius:10px;border:1px solid var(--border-strong);font-family:'Sarabun',sans-serif" />
+            <button class="btn-google-login" style="background:var(--crimson);color:#fff;border:none" onclick="window.startAnonSession()">🙋 เริ่มคอมเมนต์</button>
+          </div>
+          <button class="admin-google-login-link" onclick="window.loginWithGoogle()" style="margin-top:0.7rem;background:none;border:none;text-decoration:underline;color:var(--text-faint);font-size:0.78rem;font-family:'Sarabun',sans-serif;cursor:pointer">เข้าสู่ระบบด้วย Google (สำหรับแอดมิน/สภานักเรียน)</button>
         </div>
       `;
       formBox.style.display = 'none';
     }
   }
+  window.startAnonSession = async function() {
+    const input = document.getElementById('nicknameEntry');
+    const nickname = (input ? input.value : '').trim().slice(0, 30);
+    if (!nickname) {
+      if (input) { input.style.borderColor = '#c0392b'; input.focus(); }
+      showToast('⚠️ กรุณาตั้งชื่อที่จะแสดงก่อน', '#c0392b');
+      return;
+    }
+    try {
+      const cred = await signInAnonymously(auth);
+      await updateProfile(cred.user, { displayName: nickname });
+      currentUser = auth.currentUser; // updateProfile ไม่ trigger onAuthStateChanged ต้อง sync มือ
+      updateAuthUI();
+    } catch(e) {
+      console.error(e);
+      alert('เริ่มเซสชันไม่สำเร็จ กรุณาลองใหม่');
+    }
+  };
   window.loginWithGoogle = async function() {
     try {
       await signInWithPopup(auth, provider);
@@ -4186,16 +4212,23 @@
 
   // snapshot ครั้งก่อน สำหรับ diff
   let _prevSnapshotMap = {};
+  let _lastRawSnapshotDocs = null;
 
-  onSnapshot(q, (snapshot) => {
-    const newComments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  function _processSnapshot(snapshotDocs) {
+    _lastRawSnapshotDocs = snapshotDocs;
+    const rawComments = snapshotDocs.map(d => ({ id: d.id, ...d.data() }));
+    // คอมเมนต์ pending: เห็นเฉพาะเจ้าของกับแอดมิน (ยังไม่ได้อนุมัติให้คนอื่นเห็น)
+    // status เป็น undefined = คอมเมนต์เก่าก่อนมีระบบอนุมัติ ให้ถือว่า approved แล้ว
+    const newComments = rawComments.filter(c =>
+      c.status !== 'pending' || isAdmin || (currentUser && c.uid === currentUser.uid)
+    );
 
     // สร้าง map ใหม่เพื่อ diff
     const newMap = {};
     newComments.forEach(nc => { newMap[nc.id] = nc; });
 
     // field ที่ถ้าเปลี่ยนต้อง re-render จริงๆ (ไม่นับ likes/likedBy)
-    const RENDER_FIELDS = ['text', 'name', 'uid', 'isAnon', 'isPrivate', 'isAdmin', 'adminRole', 'level', 'type', 'editedAt', 'editHistory', 'photoURL', 'realName', 'realPhotoURL'];
+    const RENDER_FIELDS = ['text', 'name', 'uid', 'isAnon', 'isPrivate', 'isAdmin', 'adminRole', 'level', 'type', 'editedAt', 'editHistory', 'photoURL', 'status'];
 
     let needsFullRender = false;
     const prevIds = Object.keys(_prevSnapshotMap);
@@ -4231,10 +4264,17 @@
     }
 
     renderComments(allComments);
+    _hookReplyListeners();
+  }
+  window._reprocessComments = function() {
+    if (_lastRawSnapshotDocs) _processSnapshot(_lastRawSnapshotDocs);
+  };
+  function _hookReplyListeners() {
     allComments.forEach(function(cm) {
       if (!replyListeners[cm.id]) subscribeReplies(cm.id);
     });
-  });
+  }
+  onSnapshot(q, (snapshot) => { _processSnapshot(snapshot.docs); });
   const DAILY_LIMIT = 3;
   const SUBMIT_COOLDOWN_MS = 30000;
   const REPLY_COOLDOWN_MS = 15000;
@@ -4426,6 +4466,7 @@
     btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...';
     _lastSubmitTime = Date.now();
     try {
+      const status = isAdmin ? 'approved' : 'pending';
       await addDoc(commentsCol, {
         name, level, uid: currentUser.uid,
         type: window._selectedType, text: cleanText,
@@ -4433,19 +4474,21 @@
         isAnon: isAnon,
         isPrivate: isPrivate,
         photoURL: isAnon ? '' : (currentUser.photoURL || ''),
-        realName: currentUser.displayName || '',
-        realEmail: currentUser.email || '',
-        realPhotoURL: currentUser.photoURL || '',
         time: new Date().toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit', day:'numeric', month:'short' }),
         isAdmin: isAdmin,
         adminRole: adminRole,
+        status: status,
         likes: 0, likedBy: [], createdAt: Date.now()
       });
       if (!isAdmin) await incrementUserTodayCount();
       document.getElementById('inputText').value = '';
       document.getElementById('inputLevel').value = '';
       // ไม่รีเซ็ต anonCheck และ privateCheck — ให้คงสถานะเหมือนเดิม
-      showToast();
+      if (status === 'pending') {
+        showToast('📨 ส่งแล้ว รอแอดมินตรวจสอบก่อนขึ้นหน้าเว็บ', '#e67e22');
+      } else {
+        showToast();
+      }
       _submitAttempts = 0;
       if (!isAdmin) {
         const newCount = todayCount + 1;
@@ -4640,6 +4683,27 @@
       await deleteDoc(doc(db, 'comments', docId));
     }
     catch(e) { alert('ลบไม่สำเร็จ'); console.error(e); }
+  };
+  window.approveComment = async function(docId) {
+    if (!isAdmin) return;
+    try {
+      const { updateDoc: _upd, doc: _doc } = window._fbWrite;
+      const _db = window._getDb();
+      await _upd(_doc(_db, 'comments', docId), {
+        status: 'approved',
+        approvedBy: currentUser ? (currentUser.displayName || currentUser.uid) : 'admin',
+        approvedAt: Date.now()
+      });
+      showToast('✅ อนุมัติคอมเมนต์แล้ว');
+    } catch(e) { alert('อนุมัติไม่สำเร็จ'); console.error(e); }
+  };
+  window.rejectComment = async function(docId) {
+    if (!isAdmin) return;
+    if (!confirm('ปฏิเสธคอมเมนต์นี้? (จะถูกลบทิ้งถาวร)')) return;
+    try {
+      await deleteDoc(doc(db, 'comments', docId));
+      showToast('❌ ปฏิเสธคอมเมนต์แล้ว', '#c0392b');
+    } catch(e) { alert('ปฏิเสธไม่สำเร็จ'); console.error(e); }
   };
   const repliesCache = {};
   window.repliesCache = repliesCache; // expose for toggleReplyLike
@@ -5208,21 +5272,24 @@
         }
       });
     } else if (filterType === '__council__' && isAdmin) {
-      filtered = comments.filter(c => c.isPrivate);
+      filtered = comments.filter(c => c.isPrivate && c.status !== 'pending');
+    } else if (filterType === '__pending__' && isAdmin) {
+      filtered = comments.filter(c => c.status === 'pending');
     } else if (filterType === 'ทั้งหมด') {
+      // status 'pending' ไม่โผล่หน้าฟีดหลัก (แม้แต่แอดมิน) ยกเว้นคอมเมนต์รอตรวจของตัวเอง — ไปดูรวมได้ที่แท็บ "รออนุมัติ"
       filtered = isAdmin
-        ? comments
-        : comments.filter(c => !publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
+        ? comments.filter(c => c.status !== 'pending' || c.uid === myUid)
+        : comments.filter(c => (c.status !== 'pending' || c.uid === myUid) && !publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
     } else {
       filtered = isAdmin
-        ? comments.filter(c => c.type === filterType)
-        : comments.filter(c => c.type === filterType && !publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
+        ? comments.filter(c => c.type === filterType && (c.status !== 'pending' || c.uid === myUid))
+        : comments.filter(c => c.type === filterType && (c.status !== 'pending' || c.uid === myUid) && !publicBannedUids.has(c.uid) && (!c.isPrivate || c.uid === myUid));
     }
     const gradeFilter = window._gradeFilter || '';
     if (gradeFilter) {
       filtered = filtered.filter(c => c.level === gradeFilter);
     }
-    if (filterType !== '__banned__' && filterType !== '__council__' && filterType !== '__ban_history__') {
+    if (filterType !== '__banned__' && filterType !== '__council__' && filterType !== '__ban_history__' && filterType !== '__pending__') {
       filtered = [...filtered].sort((a, b) => {
         const likesDiff = (b.likes || 0) - (a.likes || 0);
         if (likesDiff !== 0) return likesDiff;
@@ -5231,7 +5298,7 @@
     }
     document.getElementById('countBadge').textContent = filtered.length;
     if (filtered.length === 0) {
-      list.innerHTML = `<div class="empty-state"><div class="icon">${filterType === '__banned__' ? '✅' : filterType === '__ban_history__' ? '📋' : filterType === '__council__' ? '🔒' : '🌟'}</div><p>${filterType === '__banned__' ? 'ยังไม่มีผู้ถูกระงับ' : filterType === '__ban_history__' ? 'ยังไม่มีประวัติการแบน' : filterType === '__council__' ? 'ยังไม่มีข้อความเฉพาะทีม' : 'ยังไม่มีความคิดเห็นในหมวดนี้<br/>เป็นคนแรกที่บอกเราได้เลย!'}</p></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="icon">${filterType === '__banned__' ? '✅' : filterType === '__ban_history__' ? '📋' : filterType === '__council__' ? '🔒' : filterType === '__pending__' ? '✅' : '🌟'}</div><p>${filterType === '__banned__' ? 'ยังไม่มีผู้ถูกระงับ' : filterType === '__ban_history__' ? 'ยังไม่มีประวัติการแบน' : filterType === '__council__' ? 'ยังไม่มีข้อความเฉพาะทีม' : filterType === '__pending__' ? 'ไม่มีคอมเมนต์รอตรวจสอบตอนนี้' : 'ยังไม่มีความคิดเห็นในหมวดนี้<br/>เป็นคนแรกที่บอกเราได้เลย!'}</p></div>`;
       return;
     }
     list.innerHTML = filtered.map(c => {
@@ -5275,10 +5342,10 @@
           <div class="comment-menu-wrap" id="menu-wrap-${c.id}">
             <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
             <div class="comment-dropdown" id="menu-${c.id}">
-              <div class="dropdown-item" onclick="revealIdentity('${c.id}')">🔍 ดูตัวจริง</div>
+              ${c.status === 'pending' ? `<div class="dropdown-item success" onclick="approveComment('${c.id}')">✅ อนุมัติให้แสดง</div>` : ''}
               ${isOwner ? `<div class="dropdown-item" onclick="startEditComment('${c.id}')">✏️ แก้ไขข้อความ</div>` : ''}
               ${banBtn}
-              <div class="dropdown-item danger" onclick="deleteComment('${c.id}')">🗑️ ลบข้อความ</div>
+              <div class="dropdown-item danger" onclick="${c.status === 'pending' ? `rejectComment('${c.id}')` : `deleteComment('${c.id}')`}">🗑️ ${c.status === 'pending' ? 'ปฏิเสธ (ลบ)' : 'ลบข้อความ'}</div>
             </div>
           </div>`;
       } else if (isAdmin && c.isBanOnly && _isReleasedFromBan) {
@@ -5287,7 +5354,6 @@
           <div class="comment-menu-wrap" id="menu-wrap-${c.id}">
             <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
             <div class="comment-dropdown" id="menu-${c.id}">
-              <div class="dropdown-item" onclick="revealIdentityByUid('${safeUid}','${safeName}')">🔍 ดูตัวจริง</div>
               <div class="dropdown-item warn" onclick="openBanModal('${safeUid}','${safeName}')">🚫 ระงับอีกครั้ง</div>
             </div>
           </div>`;
@@ -5297,7 +5363,6 @@
           <div class="comment-menu-wrap" id="menu-wrap-${c.id}">
             <button class="comment-menu-btn" onclick="toggleCommentMenu('${c.id}', event)">⋮</button>
             <div class="comment-dropdown" id="menu-${c.id}">
-              <div class="dropdown-item" onclick="revealIdentityByUid('${safeUid}','${safeName}')">🔍 ดูตัวจริง</div>
               <div class="dropdown-item success" onclick="unbanUser('${safeUid}')">✅ ปลดแบน</div>
               <div class="dropdown-item warn" onclick="openExtendModal('${safeUid}','${safeName}',${banData ? banData.until : 0})">⏰ เพิ่มเวลาแบน</div>
               <div class="dropdown-item" style="color:#c084fc" onclick="openResetBanModal('${safeUid}','${safeName}')">🔄 ตั้งเวลาแบนใหม่</div>
@@ -5344,9 +5409,18 @@
           }
         </div>` : '';
       const nameDisplay = isBanView ? (c.realName || c.name) : c.name;
+      const pendingBadgeHtml = c.status === 'pending' ? `
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;flex-wrap:wrap">
+          <span style="background:rgba(230,126,34,0.14);color:#e67e22;border:1px solid rgba(230,126,34,0.4);font-size:0.72rem;font-family:Kanit,sans-serif;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px">🕓 ${isAdmin ? 'รอตรวจสอบ' : 'กำลังรอตรวจสอบ ยังไม่แสดงต่อสาธารณะ'}</span>
+          ${isAdmin ? `
+            <button class="like-btn" style="background:rgba(80,200,120,0.14);border-color:rgba(80,200,120,0.4);color:#2ecc71" onclick="approveComment('${c.id}')">✅ อนุมัติ</button>
+            <button class="like-btn" style="background:rgba(192,57,43,0.10);border-color:rgba(192,57,43,0.35);color:#c0392b" onclick="rejectComment('${c.id}')">❌ ปฏิเสธ</button>
+          ` : ''}
+        </div>` : '';
       return `
         <div class="comment-item ${isHistoryView && (isUnbanned || isExpiredBan) ? 'history-ban-expired-item' : (userBanned || isBanView) ? 'banned-comment-item' : ''}${c.isPrivate ? ' private-comment-item' : ''}">
           ${bannedBadgesHtml}
+          ${pendingBadgeHtml}
           ${privateBadgeHtml}
           <div class="comment-header">
             <div class="comment-avatar">${avatarHtml}</div>
