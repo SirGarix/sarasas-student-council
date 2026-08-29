@@ -2419,11 +2419,11 @@
   <div class="comment-container">
     <div id="loginArea" style="margin-bottom:1.5rem">
       <div class="login-prompt">
-        <p>กรุณาเข้าสู่ระบบเพื่อแสดงความคิดเห็น</p>
-        <button class="btn-google-login" id="defaultLoginBtn" onclick="if(window.loginWithGoogle){window.loginWithGoogle()}else{document.getElementById('defaultLoginBtn').textContent='⏳ กำลังโหลด...';setTimeout(()=>{if(window.loginWithGoogle)window.loginWithGoogle();else alert('กรุณารอสักครู่แล้วลองใหม่')},2000)}">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" />
-          เข้าสู่ระบบด้วย Google
-        </button>
+        <p>ตั้งชื่อที่จะแสดง แล้วเริ่มแสดงความคิดเห็นได้เลย</p>
+        <div style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;justify-content:center">
+          <input type="text" id="nicknameEntry" maxlength="30" placeholder="ชื่อที่จะแสดง (เช่น ชื่อเล่น)" style="flex:1;min-width:180px;padding:0.6rem 0.9rem;border-radius:10px;border:1px solid var(--border-strong);font-family:'Sarabun',sans-serif" />
+          <button class="btn-google-login" id="defaultLoginBtn" style="background:var(--crimson);color:#fff;border:none" onclick="if(window.startAnonSession){window.startAnonSession()}else{this.textContent='⏳ กำลังโหลด...';setTimeout(()=>{if(window.startAnonSession)window.startAnonSession();else alert('กรุณารอสักครู่แล้วลองใหม่')},2000)}">🙋 เริ่มคอมเมนต์</button>
+        </div>
       </div>
     </div>
     <div class="comment-form-box" id="formBox" style="display:none">
@@ -4157,12 +4157,33 @@
             <input type="text" id="nicknameEntry" maxlength="30" placeholder="ชื่อที่จะแสดง (เช่น ชื่อเล่น)" style="flex:1;min-width:180px;padding:0.6rem 0.9rem;border-radius:10px;border:1px solid var(--border-strong);font-family:'Sarabun',sans-serif" />
             <button class="btn-google-login" style="background:var(--crimson);color:#fff;border:none" onclick="window.startAnonSession()">🙋 เริ่มคอมเมนต์</button>
           </div>
-          <button class="admin-google-login-link" onclick="window.loginWithGoogle()" style="margin-top:0.7rem;background:none;border:none;text-decoration:underline;color:var(--text-faint);font-size:0.78rem;font-family:'Sarabun',sans-serif;cursor:pointer">เข้าสู่ระบบด้วย Google (สำหรับแอดมิน/สภานักเรียน)</button>
         </div>
       `;
       formBox.style.display = 'none';
     }
   }
+  // ทางเข้า Google login สำหรับแอดมิน/สภานักเรียน ซ่อนไว้ ไม่โชว์ปุ่มให้เห็น
+  // แตะโลโก้ตราโรงเรียนในหน้าแรกติดกัน 5 ครั้ง (ภายใน 3 วิ) เพื่อเปิดฟอร์ม Google login
+  (function setupSecretAdminEntry() {
+    let clickCount = 0;
+    let resetTimer = null;
+    function attach() {
+      const seal = document.getElementById('lobbySeal');
+      if (!seal) { setTimeout(attach, 300); return; }
+      seal.style.cursor = 'pointer';
+      seal.addEventListener('click', () => {
+        clickCount++;
+        if (resetTimer) clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => { clickCount = 0; }, 3000);
+        if (clickCount >= 5) {
+          clickCount = 0;
+          if (resetTimer) clearTimeout(resetTimer);
+          window.loginWithGoogle();
+        }
+      });
+    }
+    attach();
+  })();
   window.startAnonSession = async function() {
     const input = document.getElementById('nicknameEntry');
     const nickname = (input ? input.value : '').trim().slice(0, 30);
