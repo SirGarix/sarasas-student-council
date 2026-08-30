@@ -3653,6 +3653,15 @@
   window._fbWrite = { updateDoc, doc, deleteDoc, setDoc, increment, arrayUnion, arrayRemove };
   window._getDb = () => db;
   window._debugAuth = () => ({ uid: currentUser && currentUser.uid, email: currentUser && currentUser.email, displayName: currentUser && currentUser.displayName, isAdmin, adminRole });
+  window._checkAdminDoc = async () => {
+    if (!currentUser) return { error: 'ยังไม่ได้ล็อกอิน' };
+    const d = await getDoc(doc(db, 'admins', currentUser.uid));
+    return {
+      uidThatWasChecked: currentUser.uid,
+      docExistsAtThisExactId: d.exists(),
+      docData: d.exists() ? d.data() : null
+    };
+  };
   const firebaseConfig = {
     apiKey: "AIzaSyBbTMEyc4-3_sn-i47Xm5xTvw52r36SWkM",
     authDomain: "sarasas-student-council.firebaseapp.com",
