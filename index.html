@@ -3652,6 +3652,7 @@
   window._fbImports = { collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc };
   window._fbWrite = { updateDoc, doc, deleteDoc, setDoc, increment, arrayUnion, arrayRemove };
   window._getDb = () => db;
+  window._debugAuth = () => ({ uid: currentUser && currentUser.uid, email: currentUser && currentUser.email, displayName: currentUser && currentUser.displayName, isAdmin, adminRole });
   const firebaseConfig = {
     apiKey: "AIzaSyBbTMEyc4-3_sn-i47Xm5xTvw52r36SWkM",
     authDomain: "sarasas-student-council.firebaseapp.com",
