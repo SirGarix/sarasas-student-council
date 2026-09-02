@@ -2438,7 +2438,7 @@
       <div class="form-title">✍️ แสดงความคิดเห็น</div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">ชื่อ (จาก Google Account)</label>
+          <label class="form-label">ชื่อ</label>
           <input class="form-input" id="inputName" type="text" readonly style="opacity:0.6;cursor:not-allowed;" />
         </div>
         <div class="form-group">
@@ -2741,21 +2741,24 @@
       html: `
         <div class="privacy-section">
           <div class="privacy-section-title">📌 ข้อมูลที่เก็บรวบรวม</div>
-          <div class="privacy-text">เมื่อคุณเข้าสู่ระบบด้วย Google Account ระบบจะจัดเก็บข้อมูลต่อไปนี้เพื่อใช้งานในระบบ:</div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">👤</span><span>ชื่อแสดงผล (Display Name) จาก Google Account</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">📧</span><span>อีเมล Google ของคุณ (ใช้สำหรับยืนยันตัวตน ไม่เปิดเผยต่อสาธารณะ)</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">🖼️</span><span>รูปโปรไฟล์ Google (แสดงในความคิดเห็น เว้นแต่ใช้โหมดไม่ระบุตัวตน)</span></div>
+          <div class="privacy-text">การแสดงความคิดเห็นบนเว็บนี้ <strong>ไม่ต้องเข้าสู่ระบบด้วยบัญชีใดๆ ทั้งสิ้น</strong> คุณเพียงตั้งชื่อที่จะแสดงเอง ระบบจะจัดเก็บข้อมูลต่อไปนี้เท่านั้น:</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">👤</span><span>ชื่อที่คุณตั้งเอง (ไม่ใช่ชื่อจริงหรือข้อมูลจากบัญชีใดๆ)</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">💬</span><span>ข้อความความคิดเห็นที่คุณส่ง พร้อมวันเวลาและประเภท</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔑</span><span>รหัสอุปกรณ์ชั่วคราวที่ระบบสุ่มสร้างให้อัตโนมัติ ใช้เพื่ออ้างอิงโพสของคุณและระบบระงับการใช้งานเท่านั้น ไม่ใช่ตัวตนจริงและไม่ผูกกับบัญชีอะไรทั้งสิ้น</span></div>
+          <div class="privacy-text" style="margin-top:0.8rem"><strong>เราไม่เก็บอีเมล ไม่เก็บรูปโปรไฟล์ และไม่มีทางรู้ว่าคุณเป็นใครในชีวิตจริง</strong> ต่างจากระบบเดิมที่เคยต้องเข้าสู่ระบบด้วย Google Account</div>
+        </div>
+        <div class="privacy-section">
+          <div class="privacy-section-title">🛡️ สำหรับทีมงาน/สภานักเรียน</div>
+          <div class="privacy-text">สมาชิกทีมงาน (Admin) ที่ต้องจัดการระบบจะเข้าสู่ระบบด้วย Google Account แยกต่างหากจากผู้ใช้งานทั่วไป เพื่อยืนยันสิทธิ์การจัดการเท่านั้น ไม่เกี่ยวข้องกับผู้ที่มาแสดงความคิดเห็น</div>
         </div>
         <div class="privacy-section">
           <div class="privacy-section-title">🔒 การปกป้องข้อมูล</div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ข้อมูลส่วนตัวจะไม่ถูกเปิดเผยให้บุคคลภายนอกโดยไม่ได้รับความยินยอม</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>อีเมลและข้อมูลจริงของคุณจะถูกเก็บในระบบ ทีมของเราสามารถเข้าถึงได้เพื่อวัตถุประสงค์ในการดูแลระบบและป้องกันการกระทำผิดกฎหมายเท่านั้น</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ข้อความที่คุณส่งจะถูกทีมงานตรวจสอบก่อนเผยแพร่สู่สาธารณะเสมอ (ดูรายละเอียดในข้อกำหนดการใช้งาน)</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ระบบใช้ Firebase (Google) เป็นฐานข้อมูล มีมาตรฐานความปลอดภัยตาม Google Cloud</span></div>
         </div>
         <div class="privacy-section">
           <div class="privacy-section-title">🗂️ การเก็บข้อมูลและระยะเวลา</div>
-          <div class="privacy-text">ข้อมูลของคุณจะถูกเก็บไว้ตราบเท่าที่จำเป็นสำหรับการทำงานของระบบ หากต้องการลบข้อมูลของคุณ กรุณาติดต่อทีมโดยตรง</div>
+          <div class="privacy-text">ข้อมูลของคุณจะถูกเก็บไว้ตราบเท่าที่จำเป็นสำหรับการทำงานของระบบ หากต้องการลบข้อความของคุณ กรุณาติดต่อทีมโดยตรง</div>
         </div>
         <div class="privacy-updated">นโยบายนี้อาจมีการปรับปรุงได้ตลอดเวลา การใช้งานต่อเนื่องถือว่ายอมรับนโยบายฉบับปัจจุบัน</div>
       `
@@ -2766,23 +2769,26 @@
       html: `
         <div class="privacy-section">
           <div class="privacy-section-title">✅ สิ่งที่ทำได้</div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">💬</span><span>แสดงความคิดเห็น ข้อเสนอแนะ หรือร้องเรียนในนามของตัวเองหรือนิรนาม</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">💬</span><span>แสดงความคิดเห็น ข้อเสนอแนะ หรือร้องเรียนโดยตั้งชื่อที่แสดงเอง</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">🔒</span><span>ส่งเรื่องเป็นความลับ ส่งตรงถึงทีมของเราโดยใช้โหมดลับ</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">👍</span><span>กด "เห็นด้วย" ความคิดเห็นที่คุณเห็นด้วย</span></div>
+        </div>
+        <div class="privacy-section">
+          <div class="privacy-section-title">🕓 ระบบตรวจสอบก่อนเผยแพร่</div>
+          <div class="privacy-text">ทุกความคิดเห็นที่ส่งเข้ามา <strong>จะยังไม่ปรากฏต่อสาธารณะทันที</strong> แต่จะเข้าสู่คิว "รอตรวจสอบ" ให้ทีมงานพิจารณาก่อน หากเนื้อหาเหมาะสมและไม่ขัดต่อข้อกำหนด ทีมงานจะกดอนุมัติให้แสดงผล นี่คือกลไกหลักที่เราใช้ป้องกันสแปมและถ้อยคำไม่เหมาะสม แทนการอ้างอิงตัวตนจริงของผู้โพส</div>
         </div>
         <div class="privacy-section">
           <div class="privacy-section-title">🚫 สิ่งที่ห้ามทำ</div>
           <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามโพสข้อความที่มีเนื้อหาหมิ่นประมาท ดูหมิ่น หรือใส่ร้ายบุคคลอื่น</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามโพสข้อความที่ขัดต่อกฎหมายไทย ได้แก่ การคุกคาม ข่มขู่ หรือเนื้อหาลามกอนาจาร</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามใช้โหมดนิรนามเพื่อหลบเลี่ยงความรับผิดชอบในการกระทำที่ผิดกฎหมาย เนื่องจากทีมสามารถตรวจสอบตัวตนจริงได้</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามโพสข้อมูลส่วนตัวของผู้อื่นโดยไม่ได้รับอนุญาต</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามสร้างบัญชีหลายบัญชีเพื่อหลีกเลี่ยงการระงับการใช้งาน</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">⛔</span><span>ห้ามพยายามส่งข้อความซ้ำๆ หรือสแปมเพื่อหลบเลี่ยงการตรวจสอบ</span></div>
         </div>
         <div class="privacy-section">
           <div class="privacy-section-title">⚖️ ผลของการละเมิดข้อกำหนด</div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">🔴</span><span>ทีมของเรามีสิทธิ์ระงับการใช้งานชั่วคราวหรือถาวรหากพบการละเมิด</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">🔴</span><span>หากการกระทำมีความผิดทางกฎหมาย ข้อมูลตัวตนจริงอาจถูกส่งให้ผู้มีอำนาจที่เกี่ยวข้อง</span></div>
-          <div class="privacy-warn">⚠️ การใช้โหมดนิรนามไม่ได้หมายความว่าคุณไม่สามารถถูกระบุตัวตนได้ ทีมของเราสามารถดูว่าโพสนั้นเป็นของใครได้เสมอ</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔴</span><span>ทีมงานมีสิทธิ์ปฏิเสธหรือลบความคิดเห็นที่ไม่ผ่านการตรวจสอบได้โดยไม่ต้องแจ้งเหตุผล</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔴</span><span>ทีมของเรามีสิทธิ์ระงับการใช้งาน (อ้างอิงจากรหัสอุปกรณ์) ชั่วคราวหรือถาวรหากพบการละเมิดซ้ำๆ</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">🔴</span><span>หากพบการกระทำที่มีความผิดร้ายแรงตามกฎหมาย ทีมงานจะดำเนินการตามความเหมาะสมและอาจประสานงานกับผู้เกี่ยวข้องของโรงเรียน</span></div>
         </div>
         <div class="privacy-updated">ข้อกำหนดนี้บังคับใช้กับผู้ใช้งานทุกคน การใช้งานระบบถือว่ายอมรับข้อกำหนดทั้งหมด</div>
       `
@@ -2792,12 +2798,16 @@
       sub: 'คำอธิบายโหมดความเป็นส่วนตัว — ทีม SARASAS PROMAX',
       html: `
         <div class="privacy-section">
+          <div class="privacy-section-title">🕓 ระบบตรวจสอบก่อนเผยแพร่ <span class="privacy-badge-anon">Pre-approval</span></div>
+          <div class="privacy-text" style="margin-bottom:0.8rem">ความคิดเห็นทุกอันที่ส่งเข้ามาจะเข้าคิว "รอตรวจสอบ" ก่อนเสมอ คุณจะเห็นโพสของตัวเองพร้อมป้าย 🕓 กำลังรอตรวจสอบ ระหว่างที่รอ เมื่อทีมงานกดอนุมัติแล้วโพสจะไปปรากฏในฟีดสาธารณะให้ทุกคนเห็น</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>เป็นกลไกหลักที่เราใช้กันสแปม/คำหยาบ แทนการอ้างอิงตัวตนจริงของผู้โพส</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>เจ้าของโพสเห็นสถานะของตัวเองได้เสมอ แม้จะยังไม่ได้รับการอนุมัติ</span></div>
+        </div>
+        <div class="privacy-section">
           <div class="privacy-section-title">🕵️ โหมดไม่ระบุตัวตน <span class="privacy-badge-anon">Anon Mode</span></div>
-          <div class="privacy-text" style="margin-bottom:0.8rem">เมื่อเปิดโหมดนี้ ความคิดเห็นของคุณจะปรากฏโดยไม่แสดงชื่อหรือรูปโปรไฟล์จริง</div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ทุกคนสามารถเห็นความคิดเห็นของคุณ แต่จะไม่รู้ว่าคุณเป็นใคร</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>คุณจะใช้ชื่อนิรนามและอีโมจิสุ่มแทนตัวตนจริง</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">🛡️</span><span><strong>ทีมของเรา (Admin)</strong> สามารถดูตัวตนจริงของผู้โพสในโหมดนิรนามได้ เพื่อป้องกันการกระทำที่ผิดกฎหมายและการไม่ยอมรับของระบบ</span></div>
-          <div class="privacy-warn">⚠️ โหมดนิรนามไม่ใช่การปกปิดตัวตนจากทีมเรา เป็นเพียงการซ่อนจากนักเรียนคนอื่นเท่านั้น</div>
+          <div class="privacy-text" style="margin-bottom:0.8rem">เมื่อเปิดโหมดนี้ ความคิดเห็นของคุณจะแสดงเป็นชื่อสุ่ม (เช่น User123456) แทนชื่อที่คุณตั้งไว้</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>ทุกคนสามารถเห็นความคิดเห็นของคุณ แต่จะไม่รู้ว่าคุณตั้งชื่ออะไรไว้</span></div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">ℹ️</span><span>เนื่องจากระบบไม่เก็บตัวตนจริงของผู้ใช้อยู่แล้วตั้งแต่แรก แม้แต่ทีมงานก็ไม่สามารถดูชื่อจริงเบื้องหลังโหมดนิรนามได้ — การป้องกันการใช้งานในทางที่ผิดจึงอาศัยระบบตรวจสอบก่อนเผยแพร่ด้านบนเป็นหลัก</span></div>
         </div>
         <div class="privacy-section">
           <div class="privacy-section-title">🔒 โหมดลับเฉพาะทีม <span class="privacy-badge-private">Council Only</span></div>
@@ -2805,11 +2815,10 @@
           <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>เฉพาะทีมของเรา (Admin) เท่านั้นที่เห็นความคิดเห็นนี้</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span><strong>คุณเอง</strong> (ผู้โพส) จะเห็นโพสของตัวเองในฟีดปกติด้วย เพื่อยืนยันว่าส่งสำเร็จ</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">✅</span><span>นักเรียนคนอื่นจะไม่เห็นความคิดเห็นนี้เลย เหมาะสำหรับเรื่องส่วนตัวหรือเรื่องละเอียดอ่อน</span></div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">🔍</span><span>ทีมของเราจะเห็นชื่อจริงและอีเมลของผู้โพส แม้จะใช้โหมดนิรนามร่วมด้วย</span></div>
         </div>
         <div class="privacy-section">
-          <div class="privacy-section-title">🌐 โหมดปกติ (ไม่ติ้กอะไรเลย)</div>
-          <div class="privacy-rule"><span class="privacy-rule-icon">👁️</span><span>ทุกคนเห็นความคิดเห็น รวมถึงชื่อและรูปโปรไฟล์ของคุณ</span></div>
+          <div class="privacy-section-title">🌐 โหมดปกติ (ไม่ติ๊กอะไรเลย)</div>
+          <div class="privacy-rule"><span class="privacy-rule-icon">👁️</span><span>ทุกคนเห็นความคิดเห็น รวมถึงชื่อที่คุณตั้งไว้ (หลังผ่านการอนุมัติแล้ว)</span></div>
           <div class="privacy-rule"><span class="privacy-rule-icon">👍</span><span>ผู้อื่นสามารถกด "เห็นด้วย" ได้</span></div>
         </div>
         <div class="privacy-updated">หากมีข้อสงสัย ติดต่อทีมของเราได้โดยตรง หรือส่งเรื่องผ่านโหมดลับเฉพาะทีม</div>
@@ -4190,22 +4199,33 @@
   // ทางเข้า Google login สำหรับแอดมิน/สภานักเรียน ซ่อนไว้ ไม่โชว์ปุ่มให้เห็น
   // แตะโลโก้ตราโรงเรียนในหน้าแรกติดกัน 5 ครั้ง (ภายใน 3 วิ) เพื่อเปิดฟอร์ม Google login
   (function setupSecretAdminEntry() {
-    let clickCount = 0;
+    let tapCount = 0;
     let resetTimer = null;
     function attach() {
       const seal = document.getElementById('lobbySeal');
       if (!seal) { setTimeout(attach, 300); return; }
       seal.style.cursor = 'pointer';
-      seal.addEventListener('click', () => {
-        clickCount++;
+      seal.style.touchAction = 'manipulation';
+      seal.style.position = seal.style.position || 'relative';
+      // ขยายพื้นที่แตะให้ใหญ่ขึ้นแบบมองไม่เห็น (มือถือแตะโดนยากตอนพื้นที่เล็ก)
+      const hitArea = document.createElement('div');
+      hitArea.style.cssText = 'position:absolute;top:-16px;left:-16px;right:-16px;bottom:-16px;z-index:5;cursor:pointer;';
+      hitArea.setAttribute('aria-hidden', 'true');
+      seal.appendChild(hitArea);
+      const handleTap = (e) => {
+        e.preventDefault();
+        tapCount++;
         if (resetTimer) clearTimeout(resetTimer);
-        resetTimer = setTimeout(() => { clickCount = 0; }, 3000);
-        if (clickCount >= 5) {
-          clickCount = 0;
+        resetTimer = setTimeout(() => { tapCount = 0; }, 4000);
+        if (tapCount >= 5) {
+          tapCount = 0;
           if (resetTimer) clearTimeout(resetTimer);
           window.loginWithGoogle();
         }
-      });
+      };
+      // pointerup ครอบคลุมทั้งเมาส์และสัมผัสในอีเวนต์เดียว ไม่นับซ้ำเหมือน click+touchend
+      // (ฟังที่ hitArea แค่จุดเดียวพอ ห้ามฟังซ้ำที่ seal ด้วย เพราะอีเวนต์จะ bubble ขึ้นมาซ้ำ)
+      hitArea.addEventListener('pointerup', handleTap);
     }
     attach();
   })();
@@ -4259,6 +4279,7 @@
   // snapshot ครั้งก่อน สำหรับ diff
   let _prevSnapshotMap = {};
   let _lastRawSnapshotDocs = null;
+  let _hasRenderedOnce = false;
 
   function _processSnapshot(snapshotDocs) {
     _lastRawSnapshotDocs = snapshotDocs;
@@ -4276,7 +4297,10 @@
     // field ที่ถ้าเปลี่ยนต้อง re-render จริงๆ (ไม่นับ likes/likedBy)
     const RENDER_FIELDS = ['text', 'name', 'uid', 'isAnon', 'isPrivate', 'isAdmin', 'adminRole', 'level', 'type', 'editedAt', 'editHistory', 'photoURL', 'status'];
 
-    let needsFullRender = false;
+    // ครั้งแรกที่ได้ข้อมูลมาต้อง render เสมอ แม้จะไม่มีคอมเมนต์เลยก็ตาม
+    // (ไม่งั้นตอนคอมเมนต์ว่างเปล่า placeholder "กำลังโหลด..." จะค้างอยู่แบบนั้นตลอดไป
+    //  เพราะ prevIds=[] เทียบกับ newIds=[] จะเท่ากันเสมอ ทำให้ logic ด้านล่างคิดว่า "ไม่มีอะไรเปลี่ยน")
+    let needsFullRender = !_hasRenderedOnce;
     const prevIds = Object.keys(_prevSnapshotMap);
     const newIds = newComments.map(c => c.id);
 
@@ -4310,6 +4334,7 @@
     }
 
     renderComments(allComments);
+    _hasRenderedOnce = true;
     _hookReplyListeners();
   }
   window._reprocessComments = function() {
