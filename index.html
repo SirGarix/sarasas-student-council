@@ -3662,16 +3662,32 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
   import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signInAnonymously, updateProfile, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-  import FingerprintJS from "https://openfpcdn.io/fingerprintjs/v4";
   // ลายนิ้วมือเบราว์เซอร์ — อยู่รอดแม้ล้างคุกกี้/site data (ต่างจาก anonymous uid ที่หายไปตอนล้าง)
   // ใช้เสริม uid ในการกันแบน/กัน limit หลบ ไม่ใช่ตัวเดียวที่ตัดสิน (โกงได้ถ้าตั้งใจจริงๆ แต่กันคนล้างคุกกี้เฉยๆ ได้เกือบหมด)
+  // ใช้ dynamic import() แทน static import — ถ้าโหลดพัง จะแค่ reject promise นี้ ไม่ทำให้ทั้งสคริปต์เว็บพังไปด้วย
   let _deviceFingerprint = null;
   let _fpReadyPromise = (async () => {
     try {
+      const mod = await import("https://openfpcdn.io/fingerprintjs/v4");
+      const FingerprintJS = mod.default;
       const fpAgent = await FingerprintJS.load();
       const result = await fpAgent.get();
       _deviceFingerprint = result.visitorId;
-    } catch(e) { console.warn('fingerprint init failed', e); _deviceFingerprint = 'fp_unavailable'; }
+    } catch(e) {
+      console.warn('fingerprint init failed, ใช้ fallback แทน', e);
+      // fallback: เก็บ id สุ่มไว้ใน localStorage (ยังไม่เนียนเท่า fingerprint จริง แต่อย่างน้อยแยกคนได้
+      // ห้ามใช้ค่าคงที่ตายตัวเด็ดขาด เพราะถ้าแบน fingerprint นี้จะกลายเป็นแบนทุกคนที่โหลด fingerprint ไม่ผ่านพร้อมกันหมด)
+      try {
+        let fallbackId = localStorage.getItem('_fp_fallback_id');
+        if (!fallbackId) {
+          fallbackId = 'fb_' + (crypto.randomUUID ? crypto.randomUUID() : (Date.now() + '_' + Math.random().toString(36).slice(2)));
+          localStorage.setItem('_fp_fallback_id', fallbackId);
+        }
+        _deviceFingerprint = fallbackId;
+      } catch(e2) {
+        _deviceFingerprint = 'fb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      }
+    }
     return _deviceFingerprint;
   })();
   window._getDeviceFingerprint = async () => { await _fpReadyPromise; return _deviceFingerprint; };
@@ -3940,7 +3956,7 @@
     const targetComment = allComments.find(c => c.uid === uid);
     const targetEmail = targetComment ? (targetComment.realEmail || '') : (window._banTargetEmail || '');
     const targetPhotoURL = targetComment ? (targetComment.realPhotoURL || targetComment.photoURL || '') : '';
-    const userCommentsForFp = allComments.filter(c => c.uid === uid && c.fingerprint);
+    const userCommentsForFp = allComments.filter(c => c.uid === uid && c.fingerprint && c.fingerprint !== 'fp_unavailable');
     const targetFingerprint = userCommentsForFp.length > 0 ? userCommentsForFp[0].fingerprint : '';
     try {
       const banData = {
