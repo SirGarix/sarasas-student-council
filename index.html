@@ -3488,6 +3488,7 @@
       const { updateDoc: _upd, doc: _doc } = window._fbWrite;
       const _db = window._getDb();
       await _upd(_doc(_db, 'bans', uid), { until: newUntil, bannedAt: Date.now() });
+      await syncFingerprintBanUntil(uid, newUntil);
       window.closeResetBanModal();
     } catch(e) { alert('เกิดข้อผิดพลาด: ' + e.message); console.error(e); }
   };
@@ -3661,6 +3662,19 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
   import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signInAnonymously, updateProfile, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+  import FingerprintJS from "https://openfpcdn.io/fingerprintjs/v4";
+  // ลายนิ้วมือเบราว์เซอร์ — อยู่รอดแม้ล้างคุกกี้/site data (ต่างจาก anonymous uid ที่หายไปตอนล้าง)
+  // ใช้เสริม uid ในการกันแบน/กัน limit หลบ ไม่ใช่ตัวเดียวที่ตัดสิน (โกงได้ถ้าตั้งใจจริงๆ แต่กันคนล้างคุกกี้เฉยๆ ได้เกือบหมด)
+  let _deviceFingerprint = null;
+  let _fpReadyPromise = (async () => {
+    try {
+      const fpAgent = await FingerprintJS.load();
+      const result = await fpAgent.get();
+      _deviceFingerprint = result.visitorId;
+    } catch(e) { console.warn('fingerprint init failed', e); _deviceFingerprint = 'fp_unavailable'; }
+    return _deviceFingerprint;
+  })();
+  window._getDeviceFingerprint = async () => { await _fpReadyPromise; return _deviceFingerprint; };
   window._fbImports = { collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc };
   window._fbWrite = { updateDoc, doc, deleteDoc, setDoc, increment, arrayUnion, arrayRemove };
   window._getDb = () => db;
@@ -3712,6 +3726,20 @@
     if (!ban) return false;
     if (ban.until === -1) return true;
     return ban.until > Date.now();
+  }
+  // อัปเดตวันหมดอายุของ "แบนตามลายนิ้วมือเครื่อง" ให้ตรงกับแบนหลักเสมอ
+  // (เรียกทุกครั้งที่ ban/extend/reduce/reset เปลี่ยนแปลง until ของ uid ใดๆ)
+  async function syncFingerprintBanUntil(uid, until, reason) {
+    try {
+      const ban = allBans[uid] || {};
+      const fp = ban.fingerprint;
+      if (!fp) return;
+      const { updateDoc: _upd, doc: _doc } = window._fbWrite;
+      const _db = window._getDb();
+      await _upd(_doc(_db, 'banned_fingerprints', fp), {
+        until, reason: reason !== undefined ? reason : (ban.reason || 'ไม่ระบุ')
+      });
+    } catch(e) { console.warn('sync fingerprint ban failed', e); }
   }
   function isBanned(uid) {
     const ban = allBans[uid];
@@ -3912,10 +3940,13 @@
     const targetComment = allComments.find(c => c.uid === uid);
     const targetEmail = targetComment ? (targetComment.realEmail || '') : (window._banTargetEmail || '');
     const targetPhotoURL = targetComment ? (targetComment.realPhotoURL || targetComment.photoURL || '') : '';
+    const userCommentsForFp = allComments.filter(c => c.uid === uid && c.fingerprint);
+    const targetFingerprint = userCommentsForFp.length > 0 ? userCommentsForFp[0].fingerprint : '';
     try {
       const banData = {
         uid,
         email: targetEmail.toLowerCase().trim(),
+        fingerprint: targetFingerprint,
         reason: reason || 'ไม่ระบุ',
         until,
         bannedAt: Date.now(),
@@ -3924,6 +3955,19 @@
         realPhotoURL: targetPhotoURL
       };
       await setDoc(doc(db, 'bans', uid), banData);
+      // แบนลายนิ้วมือเครื่องด้วย กันหลบแบนด้วยการล้างคุกกี้ได้ uid ใหม่
+      if (targetFingerprint) {
+        try {
+          await setDoc(doc(db, 'banned_fingerprints', targetFingerprint), {
+            fingerprint: targetFingerprint,
+            fromUid: uid,
+            reason: reason || 'ไม่ระบุ',
+            until,
+            bannedAt: Date.now(),
+            bannedBy: currentUser ? currentUser.email : 'admin'
+          });
+        } catch(eFp) { console.warn('บันทึก banned_fingerprints ไม่สำเร็จ:', eFp); }
+      }
       // บันทึกประวัติการแบนถาวร (ไม่ถูกลบตอนปลดแบน)
       try {
         await setDoc(doc(db, 'ban_history', uid), {
@@ -3975,8 +4019,8 @@
     if (!confirm('ปลดแบนผู้ใช้นี้?')) return;
     try {
       // บันทึกประวัติว่าถูกปลดแบนแล้ว
+      const hist = allBanHistory[uid] || allBans[uid] || {};
       try {
-        const hist = allBanHistory[uid] || allBans[uid] || {};
         await setDoc(doc(db, 'ban_history', uid), {
           ...hist,
           unbannedAt: Date.now(),
@@ -3986,6 +4030,9 @@
       } catch(eH) { console.warn('อัปเดต ban_history ไม่สำเร็จ:', eH); }
       await deleteDoc(doc(db, 'bans', uid));
       try { await deleteDoc(doc(db, 'bannedComments', uid)); } catch(e2) {}
+      if (hist.fingerprint) {
+        try { await deleteDoc(doc(db, 'banned_fingerprints', hist.fingerprint)); } catch(e3) {}
+      }
       delete allBans[uid];
       window._allBans = allBans;
       window._publicBannedUids = new Set(
@@ -4035,6 +4082,7 @@
         } catch(eH) { console.warn('ban_history update failed:', eH); }
         await _del(_doc(_db, 'bans', uid));
         try { await _del(_doc(_db, 'bannedComments', uid)); } catch(e3) {}
+        if (ban.fingerprint) { try { await _del(_doc(_db, 'banned_fingerprints', ban.fingerprint)); } catch(e4) {} }
         delete allBans[uid];
         window._allBans = allBans;
         window._publicBannedUids = new Set(
@@ -4046,6 +4094,7 @@
         else renderComments([]);
       } else {
         await _upd(_doc(_db, 'bans', uid), { until: newUntil });
+        await syncFingerprintBanUntil(uid, newUntil);
       }
       window.closeReduceModal();
     } catch(e) { alert('เกิดข้อผิดพลาด'); console.error(e); }
@@ -4071,6 +4120,7 @@
       const { updateDoc: _upd, doc: _doc } = window._fbWrite;
       const _db = window._getDb();
       await _upd(_doc(_db, 'bans', uid), { until: newUntil });
+      await syncFingerprintBanUntil(uid, newUntil);
       window.closeExtendModal();
     } catch(e) { alert('เกิดข้อผิดพลาด'); console.error(e); }
   };
@@ -4237,11 +4287,37 @@
       await updateProfile(cred.user, { displayName: nickname });
       currentUser = auth.currentUser; // updateProfile ไม่ trigger onAuthStateChanged ต้อง sync มือ
       updateAuthUI();
+      await checkFingerprintBanOnNewSession();
     } catch(e) {
       console.error(e);
       alert('เริ่มเซสชันไม่สำเร็จ กรุณาลองใหม่');
     }
   };
+  // ตรวจว่า "เครื่องนี้" เคยโดนแบนไว้ไหม แม้ uid จะเป็นของใหม่ (ล้างคุกกี้มา)
+  // ถ้าเจอ จำลอง object แบนแบบเดียวกับของจริง แล้วปล่อยให้กลไก ban wall เดิมทำงานตามปกติ
+  async function checkFingerprintBanOnNewSession() {
+    if (!currentUser || isAdmin) return;
+    try {
+      const fp = await window._getDeviceFingerprint();
+      const fpBanDoc = await getDoc(doc(db, 'banned_fingerprints', fp));
+      if (!fpBanDoc.exists()) return;
+      const fpBan = fpBanDoc.data();
+      if (!(fpBan.until === -1 || fpBan.until > Date.now())) return;
+      allBans[currentUser.uid] = {
+        uid: currentUser.uid,
+        fingerprint: fp,
+        reason: fpBan.reason || 'ไม่ระบุ',
+        until: fpBan.until,
+        bannedAt: fpBan.bannedAt || Date.now(),
+        bannedBy: fpBan.bannedBy || 'admin'
+      };
+      window._allBans = allBans;
+      window._publicBannedUids = new Set(
+        Object.entries(allBans).filter(([u, b]) => b && isActiveBan(b)).map(([u]) => u)
+      );
+      checkAndShowBanWall();
+    } catch(e) { console.warn('fingerprint ban check (session start) failed', e); }
+  }
   window.loginWithGoogle = async function() {
     try {
       await signInWithPopup(auth, provider);
@@ -4414,23 +4490,40 @@
   }
   async function getUserTodayCount() {
     if (!currentUser) return 0;
-    const limitDoc = doc(db, 'daily_limits', `${currentUser.uid}_${getTodayKey()}`);
+    const uidDoc = doc(db, 'daily_limits', `${currentUser.uid}_${getTodayKey()}`);
     try {
-      const snap = await getDoc(limitDoc);
-      return snap.exists() ? (snap.data().count || 0) : 0;
+      const [uidSnap, fp] = await Promise.all([getDoc(uidDoc), window._getDeviceFingerprint()]);
+      const uidCount = uidSnap.exists() ? (uidSnap.data().count || 0) : 0;
+      let fpCount = 0;
+      try {
+        const fpSnap = await getDoc(doc(db, 'daily_limits', `fp_${fp}_${getTodayKey()}`));
+        fpCount = fpSnap.exists() ? (fpSnap.data().count || 0) : 0;
+      } catch(e) {}
+      // เอาค่ามากสุด กันคนล้างคุกกี้ได้ uid ใหม่แต่เครื่อง (fingerprint) เดิมยังส่งไปแล้ววันนี้
+      return Math.max(uidCount, fpCount);
     } catch(e) { return 0; }
   }
-  async function incrementUserTodayCount() {
+  async function incrementUserTodayCount(deviceFp) {
     if (!currentUser) return;
-    const limitDoc = doc(db, 'daily_limits', `${currentUser.uid}_${getTodayKey()}`);
+    const uidDoc = doc(db, 'daily_limits', `${currentUser.uid}_${getTodayKey()}`);
     try {
-      const snap = await getDoc(limitDoc);
+      const snap = await getDoc(uidDoc);
       if (snap.exists()) {
-        await updateDoc(limitDoc, { count: increment(1) });
+        await updateDoc(uidDoc, { count: increment(1) });
       } else {
-        await setDoc(limitDoc, { uid: currentUser.uid, date: getTodayKey(), count: 1 });
+        await setDoc(uidDoc, { uid: currentUser.uid, date: getTodayKey(), count: 1 });
       }
     } catch(e) { console.error('limit update error', e); }
+    try {
+      const fp = deviceFp || await window._getDeviceFingerprint();
+      const fpDoc = doc(db, 'daily_limits', `fp_${fp}_${getTodayKey()}`);
+      const fpSnap = await getDoc(fpDoc);
+      if (fpSnap.exists()) {
+        await updateDoc(fpDoc, { count: increment(1) });
+      } else {
+        await setDoc(fpDoc, { fingerprint: fp, date: getTodayKey(), count: 1 });
+      }
+    } catch(e) { console.error('fp limit update error', e); }
   }
   function updateSubmitButtonState(count) {
     const btn = document.querySelector('.btn-submit');
@@ -4477,12 +4570,24 @@
   }
   window.submitComment = async function() {
     if (!currentUser) { alert('กรุณาเข้าสู่ระบบก่อน'); return; }
+    const deviceFp = await window._getDeviceFingerprint();
     if (!isAdmin) {
       const ban = getBanForUser(currentUser);
       if (ban) {
         showBanWall(currentUser);
         return;
       }
+      // เช็คแบนจากลายนิ้วมือเครื่อง เผื่อ uid นี้เป็นของใหม่ (ล้างคุกกี้มา) แต่เครื่องเดิมโดนแบนอยู่
+      try {
+        const fpBanDoc = await getDoc(doc(db, 'banned_fingerprints', deviceFp));
+        if (fpBanDoc.exists()) {
+          const fpBan = fpBanDoc.data();
+          if (fpBan.until === -1 || fpBan.until > Date.now()) {
+            showToast('🚫 อุปกรณ์นี้ถูกระงับการใช้งาน', '#c0392b');
+            return;
+          }
+        }
+      } catch(e) { console.warn('fingerprint ban check failed', e); }
     }
     if (!isAdmin) {
       const sinceLastSubmit = Date.now() - _lastSubmitTime;
@@ -4535,6 +4640,7 @@
       const status = isAdmin ? 'approved' : 'pending';
       await addDoc(commentsCol, {
         name, level, uid: currentUser.uid,
+        fingerprint: deviceFp,
         type: window._selectedType, text: cleanText,
         avatar: randomAvatar,
         isAnon: isAnon,
@@ -4546,7 +4652,7 @@
         status: status,
         likes: 0, likedBy: [], createdAt: Date.now()
       });
-      if (!isAdmin) await incrementUserTodayCount();
+      if (!isAdmin) await incrementUserTodayCount(deviceFp);
       document.getElementById('inputText').value = '';
       document.getElementById('inputLevel').value = '';
       // ไม่รีเซ็ต anonCheck และ privateCheck — ให้คงสถานะเหมือนเดิม
