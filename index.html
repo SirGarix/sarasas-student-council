@@ -3666,27 +3666,38 @@
   // ใช้เสริม uid ในการกันแบน/กัน limit หลบ ไม่ใช่ตัวเดียวที่ตัดสิน (โกงได้ถ้าตั้งใจจริงๆ แต่กันคนล้างคุกกี้เฉยๆ ได้เกือบหมด)
   // ใช้ dynamic import() แทน static import — ถ้าโหลดพัง จะแค่ reject promise นี้ ไม่ทำให้ทั้งสคริปต์เว็บพังไปด้วย
   let _deviceFingerprint = null;
-  let _fpReadyPromise = (async () => {
+  function _getFallbackFingerprint() {
+    // fallback: เก็บ id สุ่มไว้ใน localStorage (ยังไม่เนียนเท่า fingerprint จริง แต่อย่างน้อยแยกคนได้)
+    // ห้ามใช้ค่าคงที่ตายตัวเด็ดขาด เพราะถ้าแบน fingerprint นี้จะกลายเป็นแบนทุกคนที่โหลดไม่ผ่านพร้อมกันหมด
     try {
+      let fallbackId = localStorage.getItem('_fp_fallback_id');
+      if (!fallbackId) {
+        fallbackId = 'fb_' + (crypto.randomUUID ? crypto.randomUUID() : (Date.now() + '_' + Math.random().toString(36).slice(2)));
+        localStorage.setItem('_fp_fallback_id', fallbackId);
+      }
+      return fallbackId;
+    } catch(e2) {
+      return 'fb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    }
+  }
+  let _fpReadyPromise = (async () => {
+    // บาง browser (เช่น Firefox ที่เปิด Enhanced Tracking Protection) จะบล็อกการโหลดสคริปต์ fingerprint
+    // แบบ "เงียบ" คือ request ไม่ error แต่ก็ไม่จบสักที (ค้างตลอดไป) ถ้าไม่ใส่ timeout ทุกอย่างที่รอค่านี้จะค้างไปด้วย
+    const TIMEOUT_MS = 2500;
+    const timeout = new Promise(resolve => setTimeout(() => resolve('__timeout__'), TIMEOUT_MS));
+    const attempt = (async () => {
       const mod = await import("https://openfpcdn.io/fingerprintjs/v4");
       const FingerprintJS = mod.default;
       const fpAgent = await FingerprintJS.load();
       const result = await fpAgent.get();
-      _deviceFingerprint = result.visitorId;
+      return result.visitorId;
+    })();
+    try {
+      const outcome = await Promise.race([attempt, timeout]);
+      _deviceFingerprint = (outcome === '__timeout__') ? _getFallbackFingerprint() : outcome;
     } catch(e) {
       console.warn('fingerprint init failed, ใช้ fallback แทน', e);
-      // fallback: เก็บ id สุ่มไว้ใน localStorage (ยังไม่เนียนเท่า fingerprint จริง แต่อย่างน้อยแยกคนได้
-      // ห้ามใช้ค่าคงที่ตายตัวเด็ดขาด เพราะถ้าแบน fingerprint นี้จะกลายเป็นแบนทุกคนที่โหลด fingerprint ไม่ผ่านพร้อมกันหมด)
-      try {
-        let fallbackId = localStorage.getItem('_fp_fallback_id');
-        if (!fallbackId) {
-          fallbackId = 'fb_' + (crypto.randomUUID ? crypto.randomUUID() : (Date.now() + '_' + Math.random().toString(36).slice(2)));
-          localStorage.setItem('_fp_fallback_id', fallbackId);
-        }
-        _deviceFingerprint = fallbackId;
-      } catch(e2) {
-        _deviceFingerprint = 'fb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-      }
+      _deviceFingerprint = _getFallbackFingerprint();
     }
     return _deviceFingerprint;
   })();
